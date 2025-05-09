@@ -4,14 +4,19 @@ import DashboardSidebar from "./DashboardSlidbar";
 import "../styles/Dashboard.css";
 import DoctorView from "./DoctorView";
 import PatientView from "./PatientView";
+import AdminView from "./AdminView"; // ⬅️ Make sure this component exists
+
+const USER_TYPES = ["patient", "doctor", "admin"];
 
 const Dashboard = () => {
-  const [userType, setUserType] = useState("patient"); // 'patient' or 'doctor'
+  const [userTypeIndex, setUserTypeIndex] = useState(0); // 0: patient, 1: doctor, 2: admin
   const [activeTab, setActiveTab] = useState("home");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  const userType = USER_TYPES[userTypeIndex];
+
   const toggleUserType = () => {
-    setUserType((prev) => (prev === "patient" ? "doctor" : "patient"));
+    setUserTypeIndex((prevIndex) => (prevIndex + 1) % USER_TYPES.length);
   };
 
   return (
@@ -30,9 +35,9 @@ const Dashboard = () => {
         <div className="dashboard-content">
           {userType === "patient" ? (
             <PatientView activeTab={activeTab} />
-          ) : (
+          ) : userType=='doctor'?(
             <DoctorView activeTab={activeTab} />
-          )}
+          ):<AdminView activeTab={activeTab} />}
         </div>
       </div>
     </div>
