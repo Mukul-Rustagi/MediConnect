@@ -1,0 +1,482 @@
+/* Base Styles */
+.medical-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .page-header h1 {
+    font-size: 28px;
+    color: #2c3e50;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .btn.primary {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  .btn.primary:hover {
+    background-color: #2980b9;
+  }
+  
+  .btn.secondary {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+  }
+  
+  .btn.secondary:hover {
+    background-color: #d5dbdb;
+  }
+  
+  .btn.danger {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .btn.danger:hover {
+    background-color: #c0392b;
+  }
+  
+  .btn.small {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  /* Filter Tabs */
+  .filter-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 10px;
+  }
+  
+  .filter-tab {
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #7f8c8d;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+  
+  .filter-tab.active {
+    background-color: #3498db;
+    color: white;
+  }
+  
+  /* Appointments Page */
+  .appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .appointment-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    border-left: 4px solid #3498db;
+  }
+  
+  .appointment-card.pending {
+    border-left-color: #f39c12;
+  }
+  
+  .appointment-card.completed {
+    border-left-color: #2ecc71;
+  }
+  
+  .appointment-card.cancelled {
+    border-left-color: #e74c3c;
+  }
+  
+  .appointment-main {
+    flex: 1;
+  }
+  
+  .appointment-meta {
+    color: #7f8c8d;
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .appointment-meta .label {
+    color: #34495e;
+    font-weight: 500;
+  }
+  
+  .appointment-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-left: 20px;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .status-badge.confirmed {
+    background-color: #d5f5e3;
+    color: #27ae60;
+  }
+  
+  .status-badge.pending {
+    background-color: #fdebd0;
+    color: #f39c12;
+  }
+  
+  .status-badge.completed {
+    background-color: #d6eaf8;
+    color: #2980b9;
+  }
+  
+  .status-badge.cancelled {
+    background-color: #fadbd8;
+    color: #c0392b;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  /* Messages Page */
+  .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .message-card {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .message-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .message-card.unread {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+  }
+  
+  .message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .message-header h3 {
+    font-size: 16px;
+    color: #2c3e50;
+  }
+  
+  .message-time {
+    font-size: 12px;
+    color: #95a5a6;
+  }
+  
+  .message-sender {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 8px;
+  }
+  
+  .message-preview {
+    font-size: 14px;
+    color: #34495e;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    /* -webkit-line-clamp: 2; */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .attachment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #7f8c8d;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #ecf0f1;
+  }
+  
+  .message-detail-view {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  
+  .message-meta {
+    margin: 15px 0;
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+  
+  .message-meta p {
+    margin: 5px 0;
+  }
+  
+  .message-content {
+    line-height: 1.6;
+    margin: 20px 0;
+    padding: 20px 0;
+    border-top: 1px solid #ecf0f1;
+    border-bottom: 1px solid #ecf0f1;
+  }
+  
+  .message-attachments {
+    margin: 20px 0;
+  }
+  
+  .message-attachments h4 {
+    margin-bottom: 10px;
+  }
+  
+  .attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ecf0f1;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .attachment-item svg {
+    flex-shrink: 0;
+  }
+  
+  .attachment-item div {
+    flex: 1;
+  }
+  
+  .attachment-item div p:first-child {
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .attachment-item div p:last-child {
+    font-size: 12px;
+    color: #7f8c8d;
+  }
+  
+  .message-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Profile Page */
+  .profile-page {
+    max-width: 800px;
+  }
+  
+  .profile-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .profile-section {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ecf0f1;
+  }
+  
+  .profile-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .profile-section h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+  }
+  
+  .profile-info h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+  }
+  
+  .profile-info p {
+    color: #7f8c8d;
+  }
+  
+  .profile-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-label {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 4px;
+  }
+  
+  .info-value {
+    font-size: 16px;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    color: #7f8c8d;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .appointment-card {
+      flex-direction: column;
+    }
+    
+    .appointment-actions {
+      margin-left: 0;
+      margin-top: 15px;
+      align-items: flex-start;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .profile-info {
+      text-align: center;
+    }
+  }
