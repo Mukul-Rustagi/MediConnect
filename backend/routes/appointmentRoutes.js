@@ -1,18 +1,22 @@
-// routes/appointmentRoutes.js
 const express = require('express');
-const { createAppointment, getAppointments, updateAppointmentStatus } = require('../controllers/appointmentController');
+const router = express.Router();
+const appointmentController = require('../controllers/appointmentController');
 const authenticate = require('../middleware/authenticate');
 const authorizeRoles = require('../middleware/authorizeRoles');
 
-const router = express.Router();
+// All appointment routes require authentication
+router.use(authenticate);
 
-// POST - Create Appointment
-router.post('/create', authenticate, createAppointment);
+// Book a new appointment
+router.post('/', appointmentController.bookAppointment);
 
-// GET - Get Appointments (Doctor or Patient)
-router.get('/appointments', authenticate, getAppointments);
+// Get all appointments for the logged-in user
+router.get('/', appointmentController.getAppointmentsByUser);
 
-// PUT - Update Appointment Status (Doctor)
-router.put('/appointment/:id/status', authenticate, authorizeRoles('doctor'), updateAppointmentStatus);
+// Update an appointment status (admin or doctor only)
+router.put('/:id', authorizeRoles('admin', 'doctor'), appointmentController.updateAppointment);
+
+// Cancel an appointment (user can cancel their own)
+router.delete('/:id', appointmentController.cancelAppointment);
 
 module.exports = router;

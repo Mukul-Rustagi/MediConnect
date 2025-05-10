@@ -1,21 +1,27 @@
-// routes/authRoutes.js
 const express = require('express');
-const { login, signup, sendOtp, verifyOtp } = require('../controllers/authController');
-const authenticate = require('../middleware/authenticate');
-const otpMiddleware = require('../middleware/otpMiddleware');
-
 const router = express.Router();
+const authController = require('../controllers/authController');
+const authenticate = require('../middleware/authenticate');
+const authorizeRoles = require('../middleware/authorizeRoles');
 
-// POST - Signup
-router.post('/signup', signup);
+// @route   POST /api/auth/register
+// @desc    Register user
+// @access  Public
+router.post('/register', authController.registerUser);
 
-// POST - Login
-router.post('/login', login);
+// @route   POST /api/auth/login
+// @desc    Login user
+// @access  Public
+router.post('/login', authController.loginUser);
 
-// POST - Send OTP
-router.post('/otp/send', sendOtp);
+// Example: Protected route for authenticated users
+router.get('/me', authenticate, (req, res) => {
+  res.status(200).json({ message: 'Protected route accessed', user: req.user });
+});
 
-// POST - Verify OTP
-router.post('/otp/verify', otpMiddleware, verifyOtp);
+// Example: Admin-only route
+router.get('/admin', authenticate, authorizeRoles('admin'), (req, res) => {
+  res.status(200).json({ message: 'Admin route accessed', user: req.user });
+});
 
 module.exports = router;

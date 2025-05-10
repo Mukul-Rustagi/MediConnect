@@ -1,14 +1,16 @@
-// routes/userRoutes.js
 const express = require('express');
-const { getUserProfile, updateUserProfile } = require('../controllers/userController');
-const authenticate = require('../middleware/authenticate');
-
 const router = express.Router();
+const userController = require('../controllers/userController');
+const authenticate = require('../middleware/authenticate'); // Auth middleware to verify token
 
-// GET - Get User Profile
-router.get('/profile', authenticate, getUserProfile);
+// @route   GET /api/users/profile
+// @desc    Get user profile
+// @access  Private
+router.get('/profile', authenticate, userController.getUserProfile);
 
-// PUT - Update User Profile
-router.put('/profile', authenticate, updateUserProfile);
+// @route   PUT /api/users/profile
+// @desc    Update user profile
+// @access  Private
+router.put('/profile', authenticate, userController.updateUserProfile);
 
 module.exports = router;

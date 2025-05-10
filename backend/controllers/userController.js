@@ -1,17 +1,17 @@
-// controllers/userController.js
-const userService = require('../services/userService'); // Importing userService
+const userService = require('../services/userService');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 
 // Get user profile
 const getUserProfile = async (req, res) => {
   try {
-    const userId = req.user.id; // User ID from authenticated request
+    const userId = req.user.id; // Extracted from auth middleware
     const result = await userService.getUserProfile(userId);
     if (result.status === 'error') {
       return res.status(400).json(result);
     }
     return res.status(200).json(result);
   } catch (error) {
+    console.error(error);
     return res.status(500).json(sendErrorResponse('Error fetching user profile.'));
   }
 };
@@ -27,6 +27,7 @@ const updateUserProfile = async (req, res) => {
     }
     return res.status(200).json(result);
   } catch (error) {
+    console.error(error);
     return res.status(500).json(sendErrorResponse('Error updating profile.'));
   }
 };
