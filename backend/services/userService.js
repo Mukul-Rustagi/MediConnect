@@ -4,7 +4,7 @@ const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHan
 // Fetch User Profile
 const getUserProfile = async (userId) => {
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('-password -otp'); // Exclude sensitive data
     if (!user) throw new Error('User not found');
     return sendSuccessResponse(user);
   } catch (error) {
@@ -15,7 +15,7 @@ const getUserProfile = async (userId) => {
 // Update User Profile
 const updateUserProfile = async (userId, userData) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true }).select('-password -otp');
     if (!updatedUser) throw new Error('User update failed');
     return sendSuccessResponse(updatedUser);
   } catch (error) {

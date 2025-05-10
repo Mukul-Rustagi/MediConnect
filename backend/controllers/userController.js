@@ -14,6 +14,7 @@ const getUserProfile = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
+    console.error(error);
     return res.status(500).json(sendErrorResponse('Error fetching user profile.'));
   }
 };
@@ -40,7 +41,8 @@ const updateUserProfile = [
     } catch (error) {
       return res.status(500).json(sendErrorResponse('Error updating profile.'));
     }
-  }
+
+  } 
 ];
 
 // Upload Multiple Files for Meeting (e.g., files and images)

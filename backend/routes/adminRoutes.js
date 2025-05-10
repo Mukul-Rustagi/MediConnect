@@ -1,18 +1,20 @@
-// routes/adminRoutes.js
 const express = require('express');
-const { getAllUsers, deleteUser, updateUserRole } = require('../controllers/adminController');
+const router = express.Router();
+const adminController = require('../controllers/adminController');
 const authenticate = require('../middleware/authenticate');
 const authorizeRoles = require('../middleware/authorizeRoles');
 
-const router = express.Router();
+// Admin-only access for all routes below
+router.use(authenticate);
+router.use(authorizeRoles('admin'));
 
-// GET - Get All Users (Admin Only)
-router.get('/users', authenticate, authorizeRoles('admin'), getAllUsers);
+// GET /api/admin/users - fetch all users
+router.get('/users', adminController.getAllUsers);
 
-// DELETE - Delete User (Admin Only)
-router.delete('/user/:id', authenticate, authorizeRoles('admin'), deleteUser);
+// DELETE /api/admin/users/:userId - delete user
+router.delete('/users/:userId', adminController.deleteUser);
 
-// PUT - Update User Role (Admin Only)
-router.put('/user/:id/role', authenticate, authorizeRoles('admin'), updateUserRole);
+// PUT /api/admin/users/:userId/role - update user role
+router.put('/users/:userId/role', adminController.updateUserRole);
 
 module.exports = router;
