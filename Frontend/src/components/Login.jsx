@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
+import { useNavigate } from "react-router";
 
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -66,7 +68,11 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               <label htmlFor="rememberMe">Keep me logged in</label>
             </div>
 
-            <button type="submit" className="auth-button">
+            <button
+              type="submit"
+              className="auth-button"
+              onClick={() => navigate("/dashboard")}
+            >
               Log in
             </button>
           </form>
