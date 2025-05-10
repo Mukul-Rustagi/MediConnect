@@ -9,8 +9,6 @@ import {
   FaFileAlt,
   FaUser,
   FaMoneyBillAlt,
-  FaUsers,
-  FaBars,
   FaArrowLeft,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +22,6 @@ const DashboardSidebar = ({ userType }) => {
   const [collapsed, setCollapsed] = useState(false);
   const mobileOpen = useSelector((state) => state.ui.mobileOpen);
 
-  // Tab configuSrations with icons (keep the same)
   const patientTabs = [
     { id: "home", label: "Home", path: "/dashboard", icon: <FaHome /> },
     {
@@ -33,12 +30,7 @@ const DashboardSidebar = ({ userType }) => {
       path: "/dashboard/appointments",
       icon: <FaCalendarAlt />,
     },
-    {
-      id: "messages",
-      label: "Messages",
-      path: "/dashboard/messages",
-      icon: <FaEnvelope />,
-    },
+
     {
       id: "prescriptions",
       label: "Prescriptions",
@@ -74,12 +66,7 @@ const DashboardSidebar = ({ userType }) => {
       path: "/dashboard/appointments",
       icon: <FaCalendarAlt />,
     },
-    {
-      id: "messages",
-      label: "Messages",
-      path: "/dashboard/messages",
-      icon: <FaEnvelope />,
-    },
+
     {
       id: "profile",
       label: "Profile",
@@ -90,7 +77,6 @@ const DashboardSidebar = ({ userType }) => {
 
   const tabs = userType === "patient" ? patientTabs : doctorTabs;
 
-  // Determine active tab based on path
   const isActive = (path) => {
     return (
       location.pathname === path ||
@@ -98,12 +84,9 @@ const DashboardSidebar = ({ userType }) => {
     );
   };
 
-  const toggleCollapse = () => setCollapsed(!collapsed);
   const goBack = () => navigate(-1);
-  console.log(mobileOpen);
   return (
     <>
-      {/* Sidebar */}
       <aside
         className={`dashboard-sidebar ${collapsed ? "collapsed" : ""} ${
           mobileOpen ? "mobile-open" : ""
@@ -121,7 +104,6 @@ const DashboardSidebar = ({ userType }) => {
 
         <nav>
           <ul>
-            {/* Back Button */}
             <li>
               <button className="sidebar-tab back-button" onClick={goBack}>
                 <span className="tab-icon">

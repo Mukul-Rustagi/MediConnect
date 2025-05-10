@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import "../styles/Login.css";
+import { useNavigate } from "react-router";
 
 const Signup = ({ onSwitchToLogin }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     country: "",
-    role:""
+    role: "",
   });
 
   const handleChange = (e) => {
@@ -24,6 +26,7 @@ const Signup = ({ onSwitchToLogin }) => {
     e.preventDefault();
     console.log("Signup submitted:", formData);
     // Add your signup logic here
+    navigate("/dashboard");
   };
 
   return (
@@ -103,28 +106,27 @@ const Signup = ({ onSwitchToLogin }) => {
             </div>
 
             <div className="form-group">
-  <label htmlFor="role">Role</label>
-  <select
-    name="role"
-    id="role"
-    onChange={handleChange}
-    value={formData.role}
-  >
-    <option>Select</option>
-    <option value="Patient">Patient</option>
-    <option value="Doctor">Doctor</option>
-    <option value="Admin">Admin</option>
-  </select>
-</div>
-
+              <label htmlFor="role">Role</label>
+              <select
+                name="role"
+                id="role"
+                onChange={handleChange}
+                value={formData.role}
+              >
+                <option>Select</option>
+                <option value="Patient">Patient</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
 
             <button type="submit" className="auth-button">
-              Send OTP
+              Create User
             </button>
           </form>
 
           <div className="auth-footer">
-            <button className="auth-link" onClick={onSwitchToLogin}>
+            <button className="auth-link" onClick={() => navigate("/login")}>
               Already have an account? Log in.
             </button>
           </div>

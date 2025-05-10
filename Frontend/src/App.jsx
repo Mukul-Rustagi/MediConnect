@@ -18,7 +18,7 @@ import DoctorView from "./components/DoctorView";
 import DoctorHome from "./components/DoctorHome";
 
 function App() {
-  const [user, setUser] = useState({ type: "doctor" }); // You can manage user state here
+  const [user, setUser] = useState({ type: "patient" }); // You can manage user state here
   const {
     name = "Patient",
     upcomingAppointments = [],
@@ -50,7 +50,10 @@ function App() {
             <Route index element={<PatientHome summaryData={summaryData} />} />
             <Route path="appointments" element={<AppoinmentsPage />} />
             <Route path="messages" element={<MessagesPage />} />
-            <Route path="profile" element={<ProfilePage />} />
+            <Route
+              path="profile"
+              element={<ProfilePage isDoctorView={false} />}
+            />
 
             <Route path="prescriptions" element={<PatientPrescription />} />
             <Route path="labs" element={<PatientsLabs />} />

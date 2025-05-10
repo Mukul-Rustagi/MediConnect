@@ -22,6 +22,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     e.preventDefault();
     console.log("Login submitted:", formData);
     // Add your authentication logic here
+    navigate("/dashboard");
   };
 
   return (
@@ -68,11 +69,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               <label htmlFor="rememberMe">Keep me logged in</label>
             </div>
 
-            <button
-              type="submit"
-              className="auth-button"
-              onClick={() => navigate("/dashboard")}
-            >
+            <button type="submit" className="auth-button">
               Log in
             </button>
           </form>
@@ -82,7 +79,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               Forgot your username or password?
             </button>
             <span className="auth-divider">|</span>
-            <button className="auth-link" onClick={onSwitchToSignup}>
+            <button className="auth-link" onClick={() => navigate("/signUp")}>
               Don't have an account? Sign up now.
             </button>
           </div>

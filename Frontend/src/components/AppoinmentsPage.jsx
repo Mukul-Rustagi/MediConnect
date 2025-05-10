@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles/MedicalPage.css";
 import ScheduleAppointment from "./ScheduleAppointment.jsx";
 
-const AppoinmentsPage = ({ isDoctorView = false }) => {
+const AppoinmentsPage = ({ isDoctorView = true }) => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
   const [showSchedule, setShowSchedule] = useState(false);
   // Sample appointment data
@@ -56,14 +56,16 @@ const AppoinmentsPage = ({ isDoctorView = false }) => {
         <>
           <header className="page-header">
             <h1>Appointments</h1>
-            <div className="action-buttons">
-              <button
-                className="btn primary"
-                onClick={() => setShowSchedule(true)}
-              >
-                + New Appointment
-              </button>
-            </div>
+            {isDoctorView && (
+              <div className="action-buttons">
+                <button
+                  className="btn primary"
+                  onClick={() => setShowSchedule(true)}
+                >
+                  + New Appointment
+                </button>
+              </div>
+            )}
           </header>
 
           <div className="filter-tabs">
@@ -121,7 +123,7 @@ const AppoinmentsPage = ({ isDoctorView = false }) => {
                     <span className={`status-badge ${appointment.status}`}>
                       {appointment.status}
                     </span>
-                    <div className="action-buttons">
+                    {/* <div className="action-buttons">
                       {appointment.status === "pending" && (
                         <button className="btn small">Confirm</button>
                       )}
@@ -129,7 +131,7 @@ const AppoinmentsPage = ({ isDoctorView = false }) => {
                         Reschedule
                       </button>
                       <button className="btn small">Details</button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ))
