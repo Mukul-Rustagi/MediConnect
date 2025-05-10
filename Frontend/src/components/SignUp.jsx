@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 import "../styles/Login.css";
 
 const Signup = ({ onSwitchToLogin }) => {
@@ -8,6 +9,7 @@ const Signup = ({ onSwitchToLogin }) => {
     email: "",
     phone: "",
     country: "",
+    role:""
   });
 
   const handleChange = (e) => {
@@ -99,6 +101,22 @@ const Signup = ({ onSwitchToLogin }) => {
                 required
               />
             </div>
+
+            <div className="form-group">
+  <label htmlFor="role">Role</label>
+  <select
+    name="role"
+    id="role"
+    onChange={handleChange}
+    value={formData.role}
+  >
+    <option>Select</option>
+    <option value="Patient">Patient</option>
+    <option value="Doctor">Doctor</option>
+    <option value="Admin">Admin</option>
+  </select>
+</div>
+
 
             <button type="submit" className="auth-button">
               Send OTP
