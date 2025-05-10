@@ -1,4 +1,3 @@
-// controllers/dietController.js
 const dietService = require('../services/dietService'); // Importing dietService
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 

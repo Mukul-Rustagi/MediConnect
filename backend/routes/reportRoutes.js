@@ -1,6 +1,5 @@
-// routes/reportRoutes.js
 const express = require('express');
-const { generatePatientReport, getPatientReports } = require('../controllers/reportController');
+const { generatePatientReport, getPatientReports, deleteReport } = require('../controllers/reportController');
 const authenticate = require('../middleware/authenticate');
 const authorizeRoles = require('../middleware/authorizeRoles');
 
@@ -10,6 +9,9 @@ const router = express.Router();
 router.post('/generate', authenticate, authorizeRoles('doctor'), generatePatientReport);
 
 // GET - Get All Patient Reports (Admin or Doctor)
-router.get('/all', authenticate, authorizeRoles('admin', 'doctor'), getPatientReports);
+router.get('/all/:userId', authenticate, authorizeRoles('admin', 'doctor'), getPatientReports);
+
+// DELETE - Delete a Patient Report (Admin or Doctor)
+router.delete('/:id', authenticate, authorizeRoles('admin', 'doctor'), deleteReport);
 
 module.exports = router;

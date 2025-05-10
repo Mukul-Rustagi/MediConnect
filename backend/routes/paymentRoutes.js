@@ -1,14 +1,14 @@
-// routes/paymentRoutes.js
 const express = require('express');
-const { makePayment, getPaymentStatus } = require('../controllers/paymentController');
-const authenticate = require('../middleware/authenticate');
+const paymentController = require('../controllers/paymentController');
+const authenticate = require('../middleware/authenticate'); // Import authenticate middleware
+const { validatePaymentData } = require('../middleware/authMiddleware'); // Assuming you still have the validatePaymentData middleware
 
 const router = express.Router();
 
-// POST - Make Payment
-router.post('/make', authenticate, makePayment);
+// POST route for making payments with authentication and validation middleware
+router.post('/make-payment', authenticate, validatePaymentData, paymentController.processPayment);
 
-// GET - Get Payment Status
-router.get('/status/:id', authenticate, getPaymentStatus);
+// GET route for fetching payment status with authentication middleware
+router.get('/payment-status/:paymentId', authenticate, paymentController.getPaymentStatus);
 
 module.exports = router;

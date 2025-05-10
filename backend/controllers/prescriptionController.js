@@ -2,13 +2,22 @@ const DoctorPrescription = require('../models/DoctorPrescription');
 const pdfkit = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
-const redis = require('../config/redis');
+const { createPrescription } = require('../services/prescriptionService');
 
-
+// POST /api/prescription/generate
 exports.createPrescription = async (req, res) => {
-  const { userId, doctorId, prescriptionDetails } = req.body;
+  const { userId, doctorId, conversationText } = req.body;
+
+  const result = await createPrescription(conversationText);
+
+  if (result.status === 'error') {
+    return res.status(400).json(result);
+  }
+
+  const prescriptionDetails = result.data;
 
   try {
+    // Save prescription to DB
     const prescription = new DoctorPrescription({
       userId,
       doctorId,
@@ -16,17 +25,15 @@ exports.createPrescription = async (req, res) => {
     });
 
     await prescription.save();
-    
 
+    // Generate PDF
     const doc = new pdfkit();
     const filePath = path.join(__dirname, '../storage/prescriptions', `${userId}_${Date.now()}.pdf`);
     const writeStream = fs.createWriteStream(filePath);
-    
+
     doc.pipe(writeStream);
     doc.text('Doctor Prescription\n');
-    doc.text(`User ID: ${userId}\n`);
-    doc.text(`Doctor ID: ${doctorId}\n`);
-    doc.text(`Date Issued: ${prescription.dateIssued}\n\n`);
+    doc.text(`User ID: ${userId}\nDoctor ID: ${doctorId}\nDate Issued: ${prescription.dateIssued}\n\n`);
 
     doc.text('Medications:\n');
     prescriptionDetails.medications.forEach(med => {
@@ -34,15 +41,13 @@ exports.createPrescription = async (req, res) => {
     });
 
     doc.text(`\nInstructions: ${prescriptionDetails.instructions}`);
-
     doc.end();
-
 
     prescription.pdfPath = filePath;
     await prescription.save();
 
-    res.status(201).json({ message: 'Prescription created and saved', pdfPath: filePath });
-  } catch (err) {
-    res.status(500).json({ message: 'Prescription creation failed', error: err.message });
+    return res.status(201).json({ message: 'Prescription generated and saved', pdfPath: filePath });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to save prescription', error: error.message });
   }
 };

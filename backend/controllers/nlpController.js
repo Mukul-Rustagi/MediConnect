@@ -1,21 +1,31 @@
-// controllers/nlpController.js
-const nlpService = require('../services/nlpService'); // Importing nlpService
-const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
+const nlpService = require('../services/nlpService');
+const { sendErrorResponse } = require('../utils/responseHandler');
 
-// Convert audio to text
-const convertAudioToText = async (req, res) => {
+exports.storeConversationController = async (req, res) => {
   try {
-    const audioFile = req.file; // Audio file sent in the request
-    const result = await nlpService.convertAudioToText(audioFile);
+    const { conversationText, patientId } = req.body;
+    const doctorId = req.user.id; // assuming authenticated doctor
+
+    const result = await nlpService.storeConversation(conversationText, doctorId, patientId);
     if (result.status === 'error') {
       return res.status(400).json(result);
     }
-    return res.status(200).json(result);
+    res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json(sendErrorResponse('Error processing audio.'));
+    res.status(500).json(sendErrorResponse('Failed to store conversation.'));
   }
 };
 
-module.exports = {
-  convertAudioToText,
+exports.generatePrescriptionController = async (req, res) => {
+  try {
+    const { conversationText } = req.body;
+
+    const result = await nlpService.generatePrescription(conversationText);
+    if (result.status === 'error') {
+      return res.status(400).json(result);
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json(sendErrorResponse('Failed to generate prescription.'));
+  }
 };
