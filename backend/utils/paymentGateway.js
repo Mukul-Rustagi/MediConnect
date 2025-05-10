@@ -23,11 +23,16 @@ const processPayment = async (paymentData) => {
   });
 
   const response = await paypalClient.execute(request);
+
+  const approvalLink = response.result.links.find(link => link.rel === 'approve')?.href;
+
   return {
     orderID: response.result.id,
-    status: response.result.status
+    status: response.result.status,
+    approvalLink
   };
 };
+
 
 // Get payment status: capture a PayPal order
 const getPaymentStatus = async (orderId) => {

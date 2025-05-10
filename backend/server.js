@@ -18,13 +18,14 @@ const paymentController = require('./controllers/paymentController');
 const consultationController = require('./controllers/consultationController');
 const conversationController = require('./controllers/conversationController');
 const patientController = require('./controllers/patientController');
+const dietController=require('./controllers/dietController');
 
 // Routes
 const paymentRoutes = require('./routes/paymentRoutes');
 const consultationRoutes = require('./routes/consultationRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const patientRoutes = require('./routes/patientRoutes');
-
+const dietRoutes=require('./routes/dietRoutes');
 // Load environment variables
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/consultations', consultationRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/patients', patientRoutes);
+app.use('/api/diets',dietRoutes);
 
 // Error handling for invalid routes
 app.all('*', (req, res) => {
