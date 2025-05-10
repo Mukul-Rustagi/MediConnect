@@ -1,6 +1,6 @@
 // services/paymentService.js
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
-const { processPayment, getPaymentStatus } = require('../utils/paymentGateway');
+const { processPayment, getPaymentStatus: checkPaymentStatus } = require('../utils/paymentGateway');
 
 // Make a payment
 const makePayment = async (paymentData) => {
@@ -16,7 +16,7 @@ const makePayment = async (paymentData) => {
 // Get payment status
 const getPaymentStatus = async (paymentId) => {
   try {
-    const status = await getPaymentStatus(paymentId);
+    const status = await checkPaymentStatus(paymentId);
     return sendSuccessResponse(status);
   } catch (error) {
     return sendErrorResponse(error.message);

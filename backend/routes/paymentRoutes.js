@@ -6,9 +6,9 @@ const { validatePaymentData } = require('../middleware/authMiddleware'); // Assu
 const router = express.Router();
 
 // POST route for making payments with authentication and validation middleware
-router.post('/make-payment', authenticate, validatePaymentData, paymentController.processPayment);
+router.post('/', authenticate, validatePaymentData, paymentController.processPayment);
 
 // GET route for fetching payment status with authentication middleware
-router.get('/payment-status/:paymentId', authenticate, paymentController.getPaymentStatus);
+router.get('/status/:paymentId', authenticate, paymentController.getPaymentStatus);
 
 module.exports = router;
