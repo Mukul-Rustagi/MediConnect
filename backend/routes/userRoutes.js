@@ -4,7 +4,6 @@ const authenticate = require('../middleware/authenticate');
 
 const router = express.Router();
 const userController = require('../controllers/userController');
-const authenticate = require('../middleware/authenticate'); // Auth middleware to verify token
 
 // @route   GET /api/users/profile
 // @desc    Get user profile

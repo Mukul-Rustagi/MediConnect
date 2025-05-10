@@ -23,14 +23,25 @@ const processPayment = async (paymentData) => {
   });
 
   const response = await paypalClient.execute(request);
+
+  const orderID = response.result.id;
+  const userId = paymentData.userId;
+
+  // ✅ Get approval link
+  const approvalUrl = response.result.links.find(link => link.rel === 'approve')?.href;
+
   return {
-    orderID: response.result.id,
-    status: response.result.status
+    orderID,
+    status: response.result.status,
+    approvalUrl,
+    userId
   };
 };
 
+
 // Get payment status: capture a PayPal order
 const getPaymentStatus = async (orderId) => {
+
   const request = new checkoutNodeJssdk.orders.OrdersCaptureRequest(orderId);
   request.requestBody({});
 
