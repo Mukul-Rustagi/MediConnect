@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
+import { format } from "../utils/dateUtils"; // Import format from date-fns
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectSelectedProvider,
@@ -22,6 +23,19 @@ const DateTimeSelection = () => {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
 
+  // Add the missing formatDate function
+  const formatDate = (date) => {
+    const d = new Date(date);
+    let month = "" + (d.getMonth() + 1);
+    let day = "" + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
+
   const formatTimeDisplay = (time) => {
     const [hours, minutes] = time.split(":");
     const hour = parseInt(hours, 10);
@@ -29,6 +43,7 @@ const DateTimeSelection = () => {
       ? `${hour > 12 ? hour - 12 : hour}:${minutes} PM`
       : `${hour}:${minutes} AM`;
   };
+
   const handleContinue = () => {
     if (selectedTime) {
       const appointmentDate = formatDate(date);
@@ -45,7 +60,7 @@ const DateTimeSelection = () => {
   };
 
   const isAvailable = (date) => {
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = formatDate(date);
     return availableDates.includes(dateString);
   };
 

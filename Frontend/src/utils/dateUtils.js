@@ -1,4 +1,4 @@
-export const formatDate = (date) => {
+export const format = (date) => {
   const d = new Date(date);
   d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
   let month = "" + (d.getMonth() + 1);
@@ -12,6 +12,6 @@ export const formatDate = (date) => {
 };
 
 export const isDateAvailable = (date, availableDates) => {
-  const dateString = formatDate(date);
+  const dateString = format(date);
   return availableDates.includes(dateString);
 };
