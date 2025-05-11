@@ -36,6 +36,7 @@ const processPayment = async (paymentData) => {
 
 // Get payment status: capture a PayPal order
 const getPaymentStatus = async (orderId) => {
+
   const request = new checkoutNodeJssdk.orders.OrdersCaptureRequest(orderId);
   request.requestBody({});
 

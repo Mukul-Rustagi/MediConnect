@@ -42,7 +42,8 @@ const getPaymentStatus = async (req, res) => {
     if (result.status === "error") {
       return res.status(404).json(result); // Return error if status fetch fails
     }
-    return res.status(200).json(result); // Return success if status fetch is successful
+
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Controller Error:", error);
     return res

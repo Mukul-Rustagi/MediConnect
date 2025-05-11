@@ -21,6 +21,9 @@ const patientController = require('./controllers/patientController');
 const dietController=require('./controllers/dietController');
 const doctorController=require('./controllers/doctorController');
 
+const authController = require('./controllers/authController');
+const userController = require('./controllers/userController');
+const appointmentController = require('./controllers/appointmentController');
 // Routes
 const paymentRoutes = require('./routes/paymentRoutes');
 const consultationRoutes = require('./routes/consultationRoutes');
@@ -28,6 +31,10 @@ const conversationRoutes = require('./routes/conversationRoutes');
 const patientRoutes = require('./routes/patientRoutes');
 const dietRoutes=require('./routes/dietRoutes');
 const doctorRoutes=require('./routes/doctorRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+
 // Load environment variables
 dotenv.config();
 
@@ -48,8 +55,8 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB connection
 connectDb();
 
-// Static file serving for uploaded files (Multer uploads)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static file serving for uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'storage/uploads')));
 
 // Routes for API Endpoints
 app.use('/api/payments', paymentRoutes);
@@ -58,6 +65,9 @@ app.use('/api/conversations', conversationRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/diets',dietRoutes);
 app.use('/api/doctors',doctorRoutes);
+app.use('/api/v1',authRoutes);
+app.use('/api/user',userRoutes);
+app.use('/api/appointment',appointmentRoutes);
 
 // Error handling for invalid routes
 app.all('*', (req, res) => {

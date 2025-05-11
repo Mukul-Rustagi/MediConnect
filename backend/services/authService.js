@@ -9,7 +9,7 @@ const JWT_EXPIRES_IN = '7d'; // Or customize via env
 // Register a new user
 const register = async (userData) => {
   try {
-    const { username, email, password, phoneNumber } = userData;
+    const { firstName,lastName,email,phone,gender,password,role } = userData;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -22,10 +22,7 @@ const register = async (userData) => {
 
     // Create user
     const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      phoneNumber,
+      firstName,lastName,email,phone,gender,password:hashedPassword,role
     });
 
     await user.save();
