@@ -30,7 +30,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
             <span>
               {isDoctorView
                 ? `Patient: ${appointment.patient}`
-                : `${appointment.doctor.name}`}
+                : `${appointment.doctorId}`}
             </span>
           </div>
           <div className="detail-row">
