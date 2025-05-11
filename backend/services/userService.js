@@ -1,10 +1,18 @@
 const User = require('../models/User');
+const Doctor = require('../models/Doctor');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 
 // Fetch User Profile
-const getUserProfile = async (userId) => {
+const getUserProfile = async (userId,role) => {
   try {
-    const user = await User.findById(userId).select('-password -otp'); // Exclude sensitive data
+    let user;
+
+    if (role === 'Doctor') {
+      user = await Doctor.findById(userId).select('-password -token');
+    } else {
+      user = await User.findById(userId).select('-password -otp');
+    }
+
     if (!user) throw new Error('User not found');
     return sendSuccessResponse(user);
   } catch (error) {

@@ -1,6 +1,18 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import axios from 'axios';
 import "../styles/MedicalPage.css";
 const ProfilePage = ({ isDoctorView = true }) => {
+  let decodedToken="";
+    useEffect(()=>{
+      (async function(){
+        const token = localStorage.getItem('token');
+        console.log(token);
+        const userData = await axios.get('http://localhost:5000/api/user/profile', {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    });
+        console.log(userData);
+      })();
+    },[]);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "John",

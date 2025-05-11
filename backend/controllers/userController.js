@@ -6,7 +6,7 @@ const upload = require('../middleware/uploadMiddleware'); // Multer upload middl
 const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id; // Extract user ID from auth middleware
-    const result = await userService.getUserProfile(userId);
+    const result = await userService.getUserProfile(userId,req.user.role);
 
     if (result.status === 'error') {
       return res.status(404).json(result);

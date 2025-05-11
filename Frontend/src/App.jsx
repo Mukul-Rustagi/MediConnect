@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import Login from "./components/Login";
@@ -16,9 +16,18 @@ import AppoinmentsPage from "./components/AppoinmentsPage";
 import patientData from "./Data/PatientData";
 import DoctorView from "./components/DoctorView";
 import DoctorHome from "./components/DoctorHome";
+import { jwtDecode } from "jwt-decode";
+// import useEffect from
 
 function App() {
-  const [user, setUser] = useState({ type: "patient" }); // You can manage user state here
+  let decodedToken="";
+  useEffect(()=>{
+    const token = localStorage.getItem('token');
+    decodedToken = jwtDecode(token);
+    console.log(decodedToken.role,decodedToken.id,decodedToken.email);
+
+  })
+  const [user, setUser] = useState({ type: decodedToken.role }); // You can manage user state here
   const {
     name = "Patient",
     upcomingAppointments = [],
