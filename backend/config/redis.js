@@ -1,11 +1,24 @@
-// const Redis = require('ioredis');
-// const redis = new Redis(process.env.REDIS_URL || undefined); // Uses REDIS_URL from .env if available
+// redis.js
+const { createClient } = require('redis');
 
-// redis.on('connect', () => {
-//   console.log('Connected to Redis');
-// });
-// redis.on('error', (err) => {
-//   console.error('Redis connection error:', err);
-// });
+const client = createClient({
+    username: 'default',
+    password: '6Xz6d0mcxU91PVggjeY2xzFuOixSZ2wf',
+    socket: {
+        host: 'redis-19029.crce179.ap-south-1-1.ec2.redns.redis-cloud.com',
+        port: 19029
+    }
+});
 
-// module.exports = redis;
+client.on('error', err => console.error('Redis Client Error', err));
+
+async function connectRedis() {
+    await client.connect();
+    await client.set('foo', 'bar');
+    const result = await client.get('foo');
+    console.log(result); // bar
+}
+
+connectRedis();
+
+module.exports = client;

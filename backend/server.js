@@ -6,7 +6,7 @@ const path = require('path');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { initWebRTC } = require('./utils/webrtcHelper'); // WebRTC helper
-// const redis = require('./config/redis'); // Redis configuration
+const redis = require('./config/redis'); // Redis configuration
 const { connectDb } = require('./config/db'); // MongoDB configuration
 
 // Middleware
@@ -20,7 +20,7 @@ const conversationController = require('./controllers/conversationController');
 const patientController = require('./controllers/patientController');
 const dietController=require('./controllers/dietController');
 const doctorController=require('./controllers/doctorController');
-
+const adminController=require('./controllers/adminController');
 const authController = require('./controllers/authController');
 const userController = require('./controllers/userController');
 const appointmentController = require('./controllers/appointmentController');
@@ -34,6 +34,7 @@ const doctorRoutes=require('./routes/doctorRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const adminRoutes=require('./routes/adminRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -68,6 +69,7 @@ app.use('/api/doctors',doctorRoutes);
 app.use('/api/v1',authRoutes);
 app.use('/api/user',userRoutes);
 app.use('/api/appointment',appointmentRoutes);
+app.use('/api/admin',adminRoutes);
 
 // Error handling for invalid routes
 app.all('*', (req, res) => {
