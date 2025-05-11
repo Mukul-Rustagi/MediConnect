@@ -29,8 +29,15 @@ const loginUser = async (req, res) => {
     return res.status(500).json(sendErrorResponse('Error during user login.'));
   }
 };
+const logoutUser = async (req, res) => {
+  // You can optionally clear cookies if using cookie-based JWTs
+  return res.status(200).json(sendSuccessResponse(null, 'Logged out successfully'));
+};
+
+
 
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser
 };
