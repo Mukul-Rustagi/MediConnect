@@ -1,49 +1,68 @@
 // services/appointmentService.js
 const Appointment = require('../models/Appointment');
+const User = require('../models/User');
+const Doctor = require('../models/Doctor');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
+const { sendAppointmentConfirmation } = require('../utils/emailService');
 
-// Create an appointment
-// utils/emailService.js
-const nodemailer = require('nodemailer');
+const Payment = require("../models/paymentModel"); // Import payment model
 
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+const createAppointment = async (appointmentData) => {
+  try {
+    const { userId, doctorId, date, time, paymentId } = appointmentData;
 
-exports.sendAppointmentConfirmation = async (toEmail, appointmentDetails) => {
-  const mailOptions = {
-    from: `MediConnect <${process.env.EMAIL_USER}>`,
-    to: toEmail,
-    subject: 'Appointment Confirmation',
-    html: `
-      <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h2 style="color: #2c3e50;">Appointment Booked Successfully!</h2>
-        <p>Dear ${appointmentDetails.user.name},</p>
-        <p>Your appointment has been confirmed with the following details:</p>
-        
-        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
-          <p><strong>Date:</strong> ${new Date(appointmentDetails.date).toLocaleDateString()}</p>
-          <p><strong>Time:</strong> ${appointmentDetails.time}</p>
-          <p><strong>Doctor:</strong> Dr. ${appointmentDetails.doctor.name}</p>
-          <p><strong>Department:</strong> ${appointmentDetails.department}</p>
-        </div>
+    // 1. Validate required data
+    if (!userId || !doctorId || !date || !time || !paymentId) {
+      return sendErrorResponse("Missing required appointment fields.");
+    }
 
-        <p style="margin-top: 20px;">
-          Please arrive 15 minutes prior to your appointment time. 
-          You can manage your appointment through your MediConnect account.
-        </p>
-        
-        <p>Best regards,<br/>MediConnect Team</p>
-      </div>
-    `,
-  };
+    // 2. Check if payment exists and is completed
+    const payment = await Payment.findById(paymentId);
+    if (!payment || payment.status !== "completed") {
+      return sendErrorResponse("Payment not found or not completed.");
+    }
 
-  await transporter.sendMail(mailOptions);
+    // 3. Prevent duplicate appointment for same payment
+    const existingAppointment = await Appointment.findOne({ paymentId });
+    if (existingAppointment) {
+      return sendErrorResponse("Appointment already created for this payment.");
+    }
+
+    // 4. Create appointment
+    const appointment = await Appointment.create({
+      user: userId,
+      doctor: doctorId,
+      date,
+      time,
+      paymentId,
+      status: "confirmed"
+    });
+
+    // 5. Fetch user and doctor for email
+    const [user, doctor] = await Promise.all([
+      User.findById(userId),
+      Doctor.findById(doctorId),
+    ]);
+    if (!user || !doctor) throw new Error("Doctor or user not found");
+
+    const emailData = {
+      ...appointment.toObject(),
+      user: { name: user.name },
+      doctor: { name: doctor.name },
+      department: doctor.specialization
+    };
+
+    sendAppointmentConfirmation(user.email, emailData)
+      .catch(err => console.error("Email sending failed:", err));
+
+    return sendSuccessResponse(appointment, "Appointment booked successfully.");
+  } catch (error) {
+    return sendErrorResponse("Failed to create appointment: " + error.message);
+  }
 };
+
+
+// ... rest of the service code remains same
 
 // Get all appointments for a user
 const getAppointments = async (userId) => {

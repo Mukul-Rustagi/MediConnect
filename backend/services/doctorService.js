@@ -1,24 +1,24 @@
-const Doctor = require('../models/Doctor'); // MongoDB via Mongoose
-const redis = require('../config/redis');   // Redis client
+const Doctor = require('../models/Doctor');
+// const redis = require('../config/redis');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 
-const CACHE_TTL = 3600; // 1 hour (TTL for Redis cache)
+// const CACHE_TTL = 3600; // 1 hour
 
-// === Redis Cache Key Helpers ===
-const cacheKeys = {
-  allDoctors: () => 'doctors:all',
-  bySpecialization: (specialization) => `doctors:specialization:${specialization}`,
-  byId: (id) => `doctor:${id}`,
-};
+// Cache key helpers
+// const cacheKeys = {
+//   allDoctors: () => 'doctors:all',
+//   bySpecialization: (specialization) => `doctors:specialization:${specialization}`,
+//   byId: (id) => `doctor:${id}`,
+// };
 
-// === Create Doctor (MongoDB only, invalidate Redis cache) ===
+// Create a new doctor (MongoDB only, Redis cache logic commented)
 const createDoctor = async (doctorData) => {
   try {
-    const doctor = await Doctor.create(doctorData); // MongoDB write
+    const doctor = await Doctor.create(doctorData);
 
-    // Invalidate related Redis caches
-    await redis.del(cacheKeys.allDoctors());
-    await redis.del(cacheKeys.bySpecialization(doctor.specialization));
+    // Invalidate cache
+    // await redis.del(cacheKeys.allDoctors());
+    // await redis.del(cacheKeys.bySpecialization(doctor.specialization));
 
     return sendSuccessResponse(doctor, 'Doctor created successfully');
   } catch (error) {
@@ -29,53 +29,54 @@ const createDoctor = async (doctorData) => {
   }
 };
 
-// === Get All Doctors (Read MongoDB → Cache in Redis) ===
+// Get all doctors or by specialization (MongoDB only)
 const getAllDoctors = async (specialization) => {
-  const cacheKey = specialization
-    ? cacheKeys.bySpecialization(specialization)
-    : cacheKeys.allDoctors();
+  // const cacheKey = specialization
+  //   ? cacheKeys.bySpecialization(specialization)
+  //   : cacheKeys.allDoctors();
 
   try {
-    const cachedData = await redis.get(cacheKey);
-    if (cachedData) {
-      return sendSuccessResponse(JSON.parse(cachedData));
-    }
+    // Try cache first
+    // const cachedData = await redis.get(cacheKey);
+    // if (cachedData) {
+    //   return sendSuccessResponse(JSON.parse(cachedData), 'Fetched from cache');
+    // }
 
-    // Not in cache → fetch from MongoDB
+    // Fallback to MongoDB
     const query = specialization ? { specialization } : {};
     const doctors = await Doctor.find(query).sort({ createdAt: -1 });
 
-    // Cache the result
-    await redis.set(cacheKey, JSON.stringify(doctors), 'EX', CACHE_TTL);
+    // Set cache (expires after TTL)
+    // await redis.set(cacheKey, JSON.stringify(doctors), 'EX', CACHE_TTL);
 
-    return sendSuccessResponse(doctors);
+    return sendSuccessResponse(doctors, 'Fetched from database');
   } catch (error) {
     return sendErrorResponse(error.message);
   }
 };
 
-// === Get Doctor By ID (Read MongoDB → Cache in Redis) ===
+// Get doctor by ID (MongoDB only)
 const getDoctorById = async (id) => {
-  const cacheKey = cacheKeys.byId(id);
+  // const cacheKey = cacheKeys.byId(id);
 
   try {
-    const cachedData = await redis.get(cacheKey);
-    if (cachedData) {
-      return sendSuccessResponse(JSON.parse(cachedData));
-    }
+    // const cachedData = await redis.get(cacheKey);
+    // if (cachedData) {
+    //   return sendSuccessResponse(JSON.parse(cachedData), 'Fetched from cache');
+    // }
 
-    const doctor = await Doctor.findById(id); // MongoDB read
+    const doctor = await Doctor.findById(id);
     if (!doctor) return sendErrorResponse('Doctor not found');
 
-    await redis.set(cacheKey, JSON.stringify(doctor), 'EX', CACHE_TTL);
+    // await redis.set(cacheKey, JSON.stringify(doctor), 'EX', CACHE_TTL);
 
-    return sendSuccessResponse(doctor);
+    return sendSuccessResponse(doctor, 'Fetched from database');
   } catch (error) {
     return sendErrorResponse(error.message);
   }
 };
 
-// === Update Doctor (Update MongoDB → Invalidate Redis) ===
+// Update doctor (MongoDB only)
 const updateDoctor = async (id, updateData) => {
   try {
     const doctor = await Doctor.findByIdAndUpdate(id, updateData, {
@@ -85,10 +86,9 @@ const updateDoctor = async (id, updateData) => {
 
     if (!doctor) return sendErrorResponse('Doctor not found');
 
-    // Invalidate relevant Redis keys
-    await redis.del(cacheKeys.byId(id));
-    await redis.del(cacheKeys.allDoctors());
-    await redis.del(cacheKeys.bySpecialization(doctor.specialization));
+    // await redis.del(cacheKeys.byId(id));
+    // await redis.del(cacheKeys.allDoctors());
+    // await redis.del(cacheKeys.bySpecialization(doctor.specialization));
 
     return sendSuccessResponse(doctor, 'Doctor updated successfully');
   } catch (error) {
@@ -96,16 +96,15 @@ const updateDoctor = async (id, updateData) => {
   }
 };
 
-// === Delete Doctor (Remove from MongoDB → Invalidate Redis) ===
+// Delete doctor (MongoDB only)
 const deleteDoctor = async (id) => {
   try {
     const doctor = await Doctor.findByIdAndDelete(id);
     if (!doctor) return sendErrorResponse('Doctor not found');
 
-    // Invalidate relevant Redis keys
-    await redis.del(cacheKeys.byId(id));
-    await redis.del(cacheKeys.allDoctors());
-    await redis.del(cacheKeys.bySpecialization(doctor.specialization));
+    // await redis.del(cacheKeys.byId(id));
+    // await redis.del(cacheKeys.allDoctors());
+    // await redis.del(cacheKeys.bySpecialization(doctor.specialization));
 
     return sendSuccessResponse(null, 'Doctor deleted successfully');
   } catch (error) {
@@ -113,7 +112,6 @@ const deleteDoctor = async (id) => {
   }
 };
 
-// === Exports ===
 module.exports = {
   createDoctor,
   getAllDoctors,

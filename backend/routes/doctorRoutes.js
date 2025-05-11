@@ -6,7 +6,7 @@ const authorizeRoles = require('../middleware/authorizeRoles');
 
 // Admin-only routes
 router.use(authenticate);
-router.use(authorizeRoles('admin','doctor'));
+// router.use(authorizeRoles('doctor'));
 
 router.post('/', doctorController.createDoctor);
 router.get('/', doctorController.getAllDoctors);
