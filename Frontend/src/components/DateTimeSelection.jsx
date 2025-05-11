@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosinstance";
 import SquarePaymentButton from "./PayPalButton";
 import { jwtDecode } from "jwt-decode";
+import "./DateTimeSelection.css";
 
 const DateTimeSelection = ({ id }) => {
   const [calendarDays, setCalendarDays] = useState([]);
@@ -17,21 +18,28 @@ const DateTimeSelection = ({ id }) => {
   const today = new Date();
 
   const timeSlots = [
-    "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM",
-    "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
-    "6:00 PM", "7:00 PM"
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+    "6:00 PM",
+    "7:00 PM",
   ];
 
   // Get user and token from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem("token");
     if (storedToken) {
       try {
         const decoded = jwtDecode(storedToken);
         setUser({ id: decoded.id, email: decoded.email });
         setToken(storedToken);
       } catch (error) {
-        console.error('Error decoding token:', error);
+        console.error("Error decoding token:", error);
       }
     }
   }, []);
@@ -47,7 +55,10 @@ const DateTimeSelection = ({ id }) => {
 
         const doctorBookedDates = all
           .filter((a) => a.doctorId === id)
-          .map((a) => new Date(a.dateTime).toDateString());
+          .map((a) => {
+            const date = new Date(a.dateTime);
+            return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+          });
 
         setBookedDates(doctorBookedDates);
       } catch (error) {
@@ -66,32 +77,44 @@ const DateTimeSelection = ({ id }) => {
     const days = [];
 
     for (let i = 0; i < firstDayIndex; i++) days.push(null);
-    for (let d = 1; d <= totalDays; d++) days.push(new Date(year, month, d));
+    for (let d = 1; d <= totalDays; d++) {
+      const date = new Date(year, month, d);
+      if (date >= today) {
+        // Only add future dates
+        days.push(date);
+      } else {
+        days.push(null);
+      }
+    }
 
     setCalendarDays(days);
   }, []);
 
   const handleDayClick = (date) => {
-    const strDate = date.toDateString();
-    if (!bookedDates.includes(strDate)) {
+    if (!date) return;
+
+    const dateStr = date.toISOString().split("T")[0];
+    if (!bookedDates.includes(dateStr)) {
       setSelectedDate(date);
-      setShowConfirmation(false); // Reset confirmation on new date selection
+      setShowConfirmation(false);
+      setSelectedTime(null);
     }
   };
 
   const handleTimeSlotClick = (time) => {
     setSelectedTime(time);
-    setShowConfirmation(true); // Show confirmation once a time slot is selected
+    setShowConfirmation(true);
   };
 
   const getBookedTimesForSelectedDate = () => {
     if (!selectedDate) return [];
 
+    const dateStr = selectedDate.toISOString().split("T")[0];
     return appointments
       .filter(
         (a) =>
           a.doctorId === id &&
-          new Date(a.dateTime).toDateString() === selectedDate.toDateString()
+          new Date(a.dateTime).toISOString().split("T")[0] === dateStr
       )
       .map((a) => {
         const t = new Date(a.dateTime);
@@ -109,22 +132,22 @@ const DateTimeSelection = ({ id }) => {
   const handlePaymentSuccess = (data) => {
     setPaymentSuccess(true);
     setPaymentError(null);
-    // You can add additional success handling here
-    console.log('Payment successful:', data);
+    console.log("Payment successful:", data);
   };
 
   const handlePaymentError = (error) => {
-    setPaymentError(error.message || 'Payment failed. Please try again.');
+    setPaymentError(error.message || "Payment failed. Please try again.");
     setPaymentSuccess(false);
-    console.error('Payment error:', error);
+    console.error("Payment error:", error);
   };
 
   // Render individual day buttons
   const renderDay = (date, idx) => {
     if (!date) return <div key={idx} className="col p-2" />;
 
-    const isBooked = bookedDates.includes(date.toDateString());
-    const isSelected = selectedDate?.toDateString() === date.toDateString();
+    const dateStr = date.toISOString().split("T")[0];
+    const isBooked = bookedDates.includes(dateStr);
+    const isSelected = selectedDate?.toISOString().split("T")[0] === dateStr;
 
     let btnClass = "btn w-100 ";
     if (isBooked) btnClass += "btn-danger";
@@ -145,23 +168,27 @@ const DateTimeSelection = ({ id }) => {
   };
 
   return (
-    <div className="container my-4 p-4 border rounded shadow-sm bg-white">
-      <h4 className="text-center mb-4">{monthYear}</h4>
+    <div className="datetime-selection-container">
+      <div className="calendar-section">
+        <h4 className="text-center mb-4">{monthYear}</h4>
 
-      <div className="row fw-bold text-center border-bottom pb-2">
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
-          <div className="col" key={d}>{d}</div>
-        ))}
-      </div>
+        <div className="row fw-bold text-center border-bottom pb-2">
+          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+            <div className="col" key={d}>
+              {d}
+            </div>
+          ))}
+        </div>
 
-      <div className="row flex-wrap text-center mt-2">
-        {calendarDays.map((date, idx) => renderDay(date, idx))}
+        <div className="row flex-wrap text-center mt-2">
+          {calendarDays.map((date, idx) => renderDay(date, idx))}
+        </div>
       </div>
 
       {selectedDate && !showConfirmation && (
-        <div className="mt-4">
+        <div className="time-slots-section">
           <h5 className="text-center">
-            Available Time Slots for {selectedDate.toDateString()}
+            Available Time Slots for {selectedDate.toLocaleDateString()}
           </h5>
           <div className="row text-center mt-3">
             {timeSlots.map((slot) => {
@@ -169,7 +196,9 @@ const DateTimeSelection = ({ id }) => {
               return (
                 <div key={slot} className="col-6 col-md-3 p-2">
                   <button
-                    className={`btn w-100 ${isBooked ? "btn-danger" : "btn-outline-success"}`}
+                    className={`btn w-100 ${
+                      isBooked ? "btn-danger" : "btn-outline-success"
+                    }`}
                     disabled={isBooked}
                     onClick={() => !isBooked && handleTimeSlotClick(slot)}
                   >
@@ -182,12 +211,12 @@ const DateTimeSelection = ({ id }) => {
         </div>
       )}
 
-      {/* Show confirmation button when time is selected */}
       {showConfirmation && (
-        <div className="mt-4 text-center">
+        <div className="confirmation-section">
           <h5>Confirm your appointment</h5>
           <p>
-            You have selected: {selectedDate.toDateString()} at {selectedTime}
+            You have selected: {selectedDate.toLocaleDateString()} at{" "}
+            {selectedTime}
           </p>
           <button
             className="btn btn-success w-50"
@@ -196,17 +225,16 @@ const DateTimeSelection = ({ id }) => {
             Confirm Appointment
           </button>
 
-          {/* Display Square Payment Button */}
-          <div className="mt-3">
+          <div className="payment-section mt-3">
             {user && token ? (
-              <SquarePaymentButton 
+              <SquarePaymentButton
                 amount={1}
                 user={user}
                 token={token}
                 appointmentData={{
                   doctorId: id,
-                  date: selectedDate.toISOString().split('T')[0],
-                  time: selectedTime
+                  date: selectedDate.toISOString().split("T")[0],
+                  time: selectedTime,
                 }}
               />
             ) : (

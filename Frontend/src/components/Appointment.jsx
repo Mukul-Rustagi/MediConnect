@@ -5,10 +5,11 @@ import {
   FaUserMd,
   FaTimes,
 } from "react-icons/fa";
+import "./Appointment.css";
 
 const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   const [showDetails, setShowDetails] = useState(false);
-
+  console.log(appointment);
   const toggleDetails = () => setShowDetails(!showDetails);
 
   return (
@@ -50,7 +51,6 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
           <button className="btn btn-outline" onClick={toggleDetails}>
             View Details
           </button>
-          <button className="btn btn-primary">Reschedule</button>
         </div>
       </div>
 

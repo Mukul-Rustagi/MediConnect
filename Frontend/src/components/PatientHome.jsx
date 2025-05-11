@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../styles/Dashboard.css";
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import {
   FaCalendarAlt,
   FaEnvelope,
@@ -18,17 +18,15 @@ import patientData from "../Data/PatientData";
 import axiosInstance from "../utils/axiosinstance";
 
 const PatientHome = ({ summaryData }) => {
-  const [logged_in_patient_data,set_patient_data] = useState({});
-  const [upcomingAppointments,set_upcomingappointments] = useState({});
-  useEffect(()=>{
-  (async function(){
-    const patientAppointment = await axiosInstance.get('appointment');
-    console.log(patientAppointment);
-    set_upcomingappointments(patientAppointment.data.data);
-  })();
-},[]);
-
-
+  const [logged_in_patient_data, set_patient_data] = useState({});
+  const [upcomingAppointments, set_upcomingappointments] = useState({});
+  useEffect(() => {
+    (async function () {
+      const patientAppointment = await axiosInstance.get("appointment");
+      console.log(patientAppointment);
+      set_upcomingappointments(patientAppointment.data.data);
+    })();
+  }, []);
 
   // Quick actions
   const quickActions = [
@@ -42,16 +40,16 @@ const PatientHome = ({ summaryData }) => {
     },
     {
       id: 2,
-      title: "Upload Documents",
-      description: "Share medical records with your team",
+      title: "Show Near by hospital",
+      description: "Showing the nearest hospital to the patient",
       icon: "📄",
-      actionText: "Upload now",
+      actionText: "Show Now",
       color: "var(--success)",
     },
     {
       id: 3,
-      title: "View Test Results",
-      description: "Access your latest lab reports",
+      title: "Make a Diet Plan by AI",
+      description: "Access your Diet Plan",
       icon: "🔬",
       actionText: "View results",
       color: "var(--purple)",
@@ -66,8 +64,6 @@ const PatientHome = ({ summaryData }) => {
     },
   ];
 
-
-
   return (
     <div className="patient-dashboard">
       <div className="dashboard-main">
@@ -81,14 +77,6 @@ const PatientHome = ({ summaryData }) => {
               <h3>Upcoming Appointments</h3>
               <p>{upcomingAppointments.length}</p>
             </div>
-
-
-
-
-           
-
-
-
 
             <div className="summary-card prescriptions">
               <div className="summary-icon">
@@ -126,8 +114,6 @@ const PatientHome = ({ summaryData }) => {
           </section>
 
           <div className="content-columns">
-            
-
             <section className="dashboard-section quick-actions-section">
               <div className="section-header">
                 <h2>Quick Actions</h2>
