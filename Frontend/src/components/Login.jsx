@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router";
-
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    rememberMe: false,
+    password: ""
   });
 
   const handleChange = (e) => {
@@ -18,11 +18,28 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Login submitted:", formData);
-    // Add your authentication logic here
-    navigate("/dashboard");
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
+    if(decodedToken.role=="Patient"){
+      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Patient"});
+      alert(response.data.message);
+      if(response.data.message=='Login successful.'){
+        navigate('/dashboard');
+      }
+    }
+    else if(decodedToken.role=="Doctor"){
+      console.log("before");
+      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Doctor"});
+      console.log("after");
+      alert(response.data.message);
+      if(response.data.message=='Login successful.'){
+        navigate('/dashboard');
+      }
+    }
   };
 
   return (
