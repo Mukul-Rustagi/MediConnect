@@ -7,6 +7,7 @@ import {
   selectSelectedDateTime,
 } from "../store/features/schedule/scheduleSlice";
 import { addAppointment } from "../store/features/appointments/appointmentSlice";
+import { Navigate } from "react-router";
 
 const PaymentConfirmation = () => {
   const dispatch = useDispatch();
@@ -81,8 +82,11 @@ const PaymentConfirmation = () => {
             }
           : null,
     };
+    dispatch(setStep(4));
 
-    dispatch(setPaymentMethod(paymentData));
+    dispatch(setPaymentMethod(paymentMethod));
+    console.log("hi");
+
     dispatch(setStep(4));
   };
 

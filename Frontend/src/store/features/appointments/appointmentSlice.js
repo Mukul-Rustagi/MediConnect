@@ -2,30 +2,31 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   appointments: [],
-  status: "idle",
-  error: null,
 };
 
 const appointmentSlice = createSlice({
   name: "appointments",
   initialState,
   reducers: {
-    addAppointment: {
-      reducer: (state, action) => {
-        state.appointments.push(action.payload);
-      },
-      prepare: (appointment) => {
-        return {
-          payload: {
-            ...appointment,
-            id: Date.now(),
-            createdAt: new Date().toISOString(),
-          },
-        };
-      },
+    addAppointment: (state, action) => {
+      console.log(action.payload);
+      state.appointments.push(action.payload); // Changed to push to allow multiple appointments
+    },
+    updateAppointmentStatus: (state, action) => {
+      const { id, status } = action.payload;
+      const appointment = state.appointments.find((a) => a.id === id);
+      if (appointment) {
+        appointment.status = status;
+      }
+    },
+    cancelAppointment: (state, action) => {
+      const id = action.payload;
+      state.appointments = state.appointments.filter((a) => a.id !== id);
     },
   },
 });
 
-export const { addAppointment } = appointmentSlice.actions;
+// ✅ Make sure you export the actions and reducer
+export const { addAppointment, updateAppointmentStatus, cancelAppointment } =
+  appointmentSlice.actions;
 export default appointmentSlice.reducer;

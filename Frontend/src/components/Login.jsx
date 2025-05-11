@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
     rememberMe: false,
   });
@@ -33,13 +33,13 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="mail">Email</label>
               <input
                 type="text"
-                id="username"
-                name="username"
-                placeholder="Enter your username"
-                value={formData.username}
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />

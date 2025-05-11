@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles/MedicalPage.css";
 import ScheduleAppointment from "./ScheduleAppointment.jsx";
 
-const AppoinmentsPage = ({ isDoctorView = true }) => {
+const AppoinmentsPage = ({ isDoctorView }) => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
   const [showSchedule, setShowSchedule] = useState(false);
   // Sample appointment data
@@ -56,7 +56,7 @@ const AppoinmentsPage = ({ isDoctorView = true }) => {
         <>
           <header className="page-header">
             <h1>Appointments</h1>
-            {isDoctorView && (
+            {!isDoctorView && (
               <div className="action-buttons">
                 <button
                   className="btn primary"
