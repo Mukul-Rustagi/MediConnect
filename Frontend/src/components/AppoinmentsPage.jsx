@@ -1,9 +1,10 @@
-import "../styles/MedicalPage.css";
 import React, { useState } from "react";
+import "../styles/MedicalPage.css";
+import ScheduleAppointment from "./ScheduleAppointment.jsx";
 
-const AppoinmentsPage = ({ isDoctorView = false }) => {
+const AppoinmentsPage = ({ isDoctorView }) => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
-
+  const [showSchedule, setShowSchedule] = useState(false);
   // Sample appointment data
   const appointments = [
     {
@@ -49,81 +50,99 @@ const AppoinmentsPage = ({ isDoctorView = false }) => {
 
   return (
     <div className="medical-page">
-      <header className="page-header">
-        <h1>Appointments</h1>
-        <div className="action-buttons">
-          <button className="btn primary">+ New Appointment</button>
-        </div>
-      </header>
+      {showSchedule ? (
+        <ScheduleAppointment onBack={() => setShowSchedule(false)} />
+      ) : (
+        <>
+          <header className="page-header">
+            <h1>Appointments</h1>
+            {!isDoctorView && (
+              <div className="action-buttons">
+                <button
+                  className="btn primary"
+                  onClick={() => setShowSchedule(true)}
+                >
+                  + New Appointment
+                </button>
+              </div>
+            )}
+          </header>
 
-      <div className="filter-tabs">
-        <button
-          className={`filter-tab ${activeFilter === "all" ? "active" : ""}`}
-          onClick={() => setActiveFilter("all")}
-        >
-          All Appointments
-        </button>
-        <button
-          className={`filter-tab ${
-            activeFilter === "upcoming" ? "active" : ""
-          }`}
-          onClick={() => setActiveFilter("upcoming")}
-        >
-          Upcoming
-        </button>
-        <button
-          className={`filter-tab ${activeFilter === "past" ? "active" : ""}`}
-          onClick={() => setActiveFilter("past")}
-        >
-          Past
-        </button>
-      </div>
-
-      <div className="appointments-list">
-        {filteredAppointments.length > 0 ? (
-          filteredAppointments.map((appointment) => (
-            <div
-              key={appointment.id}
-              className={`appointment-card ${appointment.status}`}
+          <div className="filter-tabs">
+            <button
+              className={`filter-tab ${activeFilter === "all" ? "active" : ""}`}
+              onClick={() => setActiveFilter("all")}
             >
-              <div className="appointment-main">
-                <h3>{appointment.title}</h3>
-                <p className="appointment-meta">
-                  <span className="label">With:</span> {appointment.provider}
-                </p>
-                <p className="appointment-meta">
-                  <span className="label">When:</span>{" "}
-                  {new Date(appointment.date).toLocaleDateString()} at{" "}
-                  {appointment.time}
-                </p>
-                <p className="appointment-meta">
-                  <span className="label">Type:</span> {appointment.type}
-                </p>
-                <p className="appointment-meta">
-                  <span className="label">Location:</span>{" "}
-                  {appointment.location}
-                </p>
-              </div>
-              <div className="appointment-actions">
-                <span className={`status-badge ${appointment.status}`}>
-                  {appointment.status}
-                </span>
-                <div className="action-buttons">
-                  {appointment.status === "pending" && (
-                    <button className="btn small">Confirm</button>
-                  )}
-                  <button className="btn small secondary">Reschedule</button>
-                  <button className="btn small">Details</button>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="empty-state">
-            <p>No {activeFilter} appointments found</p>
+              All Appointments
+            </button>
+            <button
+              className={`filter-tab ${
+                activeFilter === "upcoming" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("upcoming")}
+            >
+              Upcoming
+            </button>
+            <button
+              className={`filter-tab ${
+                activeFilter === "past" ? "active" : ""
+              }`}
+              onClick={() => setActiveFilter("past")}
+            >
+              Past
+            </button>
           </div>
-        )}
-      </div>
+
+          <div className="appointments-list">
+            {filteredAppointments.length > 0 ? (
+              filteredAppointments.map((appointment) => (
+                <div
+                  key={appointment.id}
+                  className={`appointment-card ${appointment.status}`}
+                >
+                  <div className="appointment-main">
+                    <h3>{appointment.title}</h3>
+                    <p className="appointment-meta">
+                      <span className="label">With:</span>{" "}
+                      {appointment.provider}
+                    </p>
+                    <p className="appointment-meta">
+                      <span className="label">When:</span>{" "}
+                      {new Date(appointment.date).toLocaleDateString()} at{" "}
+                      {appointment.time}
+                    </p>
+                    <p className="appointment-meta">
+                      <span className="label">Type:</span> {appointment.type}
+                    </p>
+                    <p className="appointment-meta">
+                      <span className="label">Location:</span>{" "}
+                      {appointment.location}
+                    </p>
+                  </div>
+                  <div className="appointment-actions">
+                    <span className={`status-badge ${appointment.status}`}>
+                      {appointment.status}
+                    </span>
+                    {/* <div className="action-buttons">
+                      {appointment.status === "pending" && (
+                        <button className="btn small">Confirm</button>
+                      )}
+                      <button className="btn small secondary">
+                        Reschedule
+                      </button>
+                      <button className="btn small">Details</button>
+                    </div> */}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">
+                <p>No {activeFilter} appointments found</p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -1,93 +1,146 @@
-import React from "react";
+import React, { useEffect } from "react";
+import "../styles/Dashboard.css";
+import { useState } from "react";
+import axios from 'axios';
+import {
+  FaCalendarAlt,
+  FaEnvelope,
+  FaPills,
+  FaFileInvoiceDollar,
+  FaBell,
+  FaUser,
+} from "react-icons/fa";
 import QuickActionCard from "./QuickActionCard";
 import AppointmentCard from "./Appointment";
 import MessageCard from "./MessageCard";
+import { toggleMobileOpen } from "../store/features/UI/uiSlice";
+import patientData from "../Data/PatientData";
+import axiosInstance from "../utils/axiosinstance";
 
-const PatientHome = () => {
-  const upcomingAppointments = [
-    {
-      id: 1,
-      title: "Primary Care Follow-up",
-      doctor: "Dr. Samantha Freeman",
-      date: "Dec 20, 2023",
-      time: "10:00 AM",
-      location: "Main Clinic",
-    },
-    {
-      id: 2,
-      title: "Dermatology Consultation",
-      doctor: "Dr. Michael Chen",
-      date: "Dec 22, 2023",
-      time: "2:30 PM",
-      location: "Specialty Center",
-    },
-  ];
+const PatientHome = ({ summaryData }) => {
+  const [logged_in_patient_data,set_patient_data] = useState({});
+  const [upcomingAppointments,set_upcomingappointments] = useState({});
+  useEffect(()=>{
+  (async function(){
+    const patientAppointment = await axiosInstance.get('appointment');
+    console.log(patientAppointment);
+    set_upcomingappointments(patientAppointment.data.data);
+  })();
+},[]);
 
-  const recentMessages = [
-    {
-      id: 1,
-      sender: "Dr. Samantha Freeman",
-      preview:
-        "Your test results are ready. Please review them at your earliest convenience.",
-      time: "2 hours ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      sender: "Billing Department",
-      preview: "Your recent payment has been processed. Thank you!",
-      time: "3 days ago",
-      unread: false,
-    },
-  ];
 
+
+  // Quick actions
   const quickActions = [
     {
       id: 1,
-      title: "Request a new appointment",
-      description:
-        "Want to book an appointment with a specific provider? You can do that here",
+      title: "Request Appointment",
+      description: "Book with a specific provider",
       icon: "📅",
-      actionText: "Request an appointment →",
+      actionText: "Request now",
+      color: "var(--primary)",
     },
     {
       id: 2,
-      title: "Upload health documents",
-      description:
-        "Share your medical records or test results with your care team",
+      title: "Upload Documents",
+      description: "Share medical records with your team",
       icon: "📄",
-      actionText: "Upload now →",
+      actionText: "Upload now",
+      color: "var(--success)",
+    },
+    {
+      id: 3,
+      title: "View Test Results",
+      description: "Access your latest lab reports",
+      icon: "🔬",
+      actionText: "View results",
+      color: "var(--purple)",
+    },
+    {
+      id: 4,
+      title: "Pay Bill",
+      description: "Make a payment online",
+      icon: "💳",
+      actionText: "Pay now",
+      color: "var(--orange)",
     },
   ];
 
+
+
   return (
-    <div className="patient-home">
-      <section className="dashboard-section">
-        <h2>Your next appointment is in 3 days</h2>
-        <div className="appointments-grid">
-          {upcomingAppointments.map((appt) => (
-            <AppointmentCard key={appt.id} appointment={appt} />
-          ))}
-        </div>
-      </section>
+    <div className="patient-dashboard">
+      <div className="dashboard-main">
+        <div className="dashboard-content">
+          {/* Summary Cards */}
+          <div className="summary-cards">
+            <div className="summary-card upcoming">
+              <div className="summary-icon">
+                <FaCalendarAlt />
+              </div>
+              <h3>Upcoming Appointments</h3>
+              <p>{upcomingAppointments.length}</p>
+            </div>
 
-      <section className="dashboard-section">
-        <h2>Messages</h2>
-        <div className="messages-grid">
-          {recentMessages.map((msg) => (
-            <MessageCard key={msg.id} message={msg} />
-          ))}
-        </div>
-      </section>
 
-      <section className="dashboard-section quick-actions">
-        <h2>Quick Actions</h2>
-        <div className="quick-actions-grid">
-          {quickActions.map((action) => (
-            <QuickActionCard key={action.id} action={action} />
-          ))}
+
+
+           
+
+
+
+
+            <div className="summary-card prescriptions">
+              <div className="summary-icon">
+                <FaPills />
+              </div>
+              <h3>Active Prescriptions</h3>
+              <p>{summaryData.activePrescriptions}</p>
+            </div>
+            <div className="summary-card bills">
+              <div className="summary-icon">
+                <FaFileInvoiceDollar />
+              </div>
+              <h3>Total Due</h3>
+              <p>${summaryData.totalBillsDue.toFixed(2)}</p>
+            </div>
+          </div>
+
+          {/* Main Content Sections */}
+          <section className="dashboard-section appointments-section">
+            <div className="section-header">
+              <h2>Upcoming Appointments</h2>
+              <button className="view-all">View All</button>
+            </div>
+            <div className="cards-grid">
+              {upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map((appt) => (
+                  <AppointmentCard key={appt.id} appointment={appt} />
+                ))
+              ) : (
+                <div className="empty-state">
+                  No upcoming appointments scheduled
+                </div>
+              )}
+            </div>
+          </section>
+
+          <div className="content-columns">
+            
+
+            <section className="dashboard-section quick-actions-section">
+              <div className="section-header">
+                <h2>Quick Actions</h2>
+              </div>
+              <div className="actions-grid">
+                {quickActions.map((action) => (
+                  <QuickActionCard key={action.id} action={action} />
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

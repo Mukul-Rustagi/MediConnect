@@ -12,8 +12,7 @@ const createDoctor = async (req, res) => {
 
 const getAllDoctors = async (req, res) => {
   try {
-    const { specialization } = req.query;
-    const result = await doctorService.getAllDoctors(specialization);
+    const result = await doctorService.getAllDoctors();
     res.json(result);
   } catch (error) {
     res.status(500).json(sendErrorResponse(error.message));
@@ -32,6 +31,7 @@ const getDoctorById = async (req, res) => {
 
 const updateDoctor = async (req, res) => {
   try {
+    
     const result = await doctorService.updateDoctor(req.params.id, req.body);
     if (!result.data) return res.status(404).json(result);
     res.json(result);

@@ -1,10 +1,18 @@
 const User = require('../models/User');
+const Doctor = require('../models/Doctor');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 
 // Fetch User Profile
-const getUserProfile = async (userId) => {
+const getUserProfile = async (userId,role) => {
   try {
-    const user = await User.findById(userId).select('-password -otp'); // Exclude sensitive data
+    let user;
+
+    if (role === 'Doctor') {
+      user = await Doctor.findById(userId).select('-password -token');
+    } else {
+      user = await User.findById(userId).select('-password -otp');
+    }
+
     if (!user) throw new Error('User not found');
     return sendSuccessResponse(user);
   } catch (error) {
@@ -13,9 +21,22 @@ const getUserProfile = async (userId) => {
 };
 
 // Update User Profile
-const updateUserProfile = async (userId, userData) => {
+const updateUserProfile = async (userId, userData,role) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true }).select('-password -otp');
+    let updatedUser;
+
+    if (role === 'Doctor') {
+      updatedUser = await Doctor.findByIdAndUpdate(userId, userData, {
+        new: true,
+        runValidators: true
+      });
+    } else {
+      updatedUser = await User.findByIdAndUpdate(userId, userData, {
+        new: true,
+        runValidators: true
+      });
+    }
+
     if (!updatedUser) throw new Error('User update failed');
     return sendSuccessResponse(updatedUser);
   } catch (error) {

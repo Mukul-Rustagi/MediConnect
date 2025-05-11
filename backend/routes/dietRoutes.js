@@ -1,17 +1,11 @@
 // routes/dietRoutes.js
-const express = require('express');
-const { getDietRecommendations } = require('../controllers/dietController');
-const authenticate = require('../middleware/authenticate');
-const authorizeRoles = require('../middleware/authorizeRoles');
+const express = require("express");
+const { getDietRecommendations } = require("../controllers/dietController");
+const authenticate = require("../middleware/authenticate");
 
 const router = express.Router();
 
-// Change from GET to POST
-router.post(
-  '/recommendations',
-  authenticate,
-  authorizeRoles('doctor', 'patient'),
-  getDietRecommendations
-);
+// Allow all authenticated users to access diet recommendations
+router.post("/recommendations", authenticate, getDietRecommendations);
 
 module.exports = router;
