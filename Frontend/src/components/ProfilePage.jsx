@@ -1,15 +1,17 @@
 import React, { useState,useEffect } from "react";
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 import "../styles/MedicalPage.css";
+import axiosInstance from "../utils/axiosinstance";
 const ProfilePage = ({ isDoctorView = true }) => {
-  let decodedToken="";
+  const [decodedToken, setDecodedToken] = useState(null);
     useEffect(()=>{
       (async function(){
         const token = localStorage.getItem('token');
         console.log(token);
-        const userData = await axios.get('http://localhost:5000/api/user/profile', {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    });
+      
+        setDecodedToken(jwtDecode(token));
+        const userData = await axiosInstance.get('user/profile');
         console.log(userData);
       })();
     },[]);
@@ -36,11 +38,37 @@ const ProfilePage = ({ isDoctorView = true }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setEditMode(false);
-    // Here you would typically save to API
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!decodedToken?.id) return console.error("User ID not found in token");
+
+  const updatePayload = {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phoneNumber: formData.phone,
+    clinicAddress: formData.address,
+    dateOfBirth: formData.dateOfBirth,
+    gender: formData.gender,
   };
+
+  try {
+    const response = await axios.put(
+      `http://localhost:5000/api/doctors/${decodedToken.id}`,
+      updatePayload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    console.log("Profile updated:", response.data);
+    setEditMode(false);
+  } catch (error) {
+    console.error("Update failed:", error.response?.data || error.message);
+  }
+};
+
 
   return (
     <div className="medical-page profile-page">

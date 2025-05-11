@@ -45,7 +45,7 @@ const createDoctor = async (doctorData) => {
 };
 
 // Get all doctors or by specialization (MongoDB only)
-const getAllDoctors = async (specialization) => {
+const getAllDoctors = async () => {
   // const cacheKey = specialization
   //   ? cacheKeys.bySpecialization(specialization)
   //   : cacheKeys.allDoctors();
@@ -58,8 +58,7 @@ const getAllDoctors = async (specialization) => {
     // }
 
     // Fallback to MongoDB
-    const query = specialization ? { specialization } : {};
-    const doctors = await Doctor.find(query).sort({ createdAt: -1 });
+    const doctors = await Doctor.find();
 
     // Set cache (expires after TTL)
     // await redis.set(cacheKey, JSON.stringify(doctors), 'EX', CACHE_TTL);
@@ -93,6 +92,7 @@ const getDoctorById = async (id) => {
 
 // Update doctor (MongoDB only)
 const updateDoctor = async (id, updateData) => {
+  console.log("hello");
   try {
     const doctor = await Doctor.findByIdAndUpdate(id, updateData, {
       new: true,

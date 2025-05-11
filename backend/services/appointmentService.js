@@ -1,50 +1,56 @@
-// services/appointmentService.js
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const Doctor = require('../models/Doctor');
+const Payment = require("../models/paymentModel");
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 const { sendAppointmentConfirmation } = require('../utils/emailService');
-
-const Payment = require("../models/paymentModel"); // Import payment model
+const mongoose = require('mongoose');
 
 const createAppointment = async (appointmentData) => {
   try {
     const { userId, doctorId, date, time, paymentId } = appointmentData;
 
-    // 1. Validate required data
+    // 1. Validate required fields
     if (!userId || !doctorId || !date || !time || !paymentId) {
-      return sendErrorResponse("Missing required appointment fields.");
+      return sendErrorResponse("Missing required appointment fields (userId, doctorId, date, time, paymentId).");
     }
 
-    // 2. Check if payment exists and is completed
+    // 2. Validate date format
+    const dateTimeString = `${date}T${time}`; // e.g., 2025-10-05T14:30
+    const dateTime = new Date(dateTimeString);
+    if (isNaN(dateTime.getTime())) {
+      return sendErrorResponse("Invalid date or time format. Use YYYY-MM-DD for date and HH:mm for time.");
+    }
+
+    // 3. Check if payment exists and is completed
     const payment = await Payment.findById(paymentId);
     if (!payment || payment.status !== "completed") {
       return sendErrorResponse("Payment not found or not completed.");
     }
 
-    // 3. Prevent duplicate appointment for same payment
+    // 4. Prevent duplicate appointment for same payment
     const existingAppointment = await Appointment.findOne({ paymentId });
     if (existingAppointment) {
       return sendErrorResponse("Appointment already created for this payment.");
     }
 
-    // 4. Create appointment
+    // 5. Create appointment
     const appointment = await Appointment.create({
-      user: userId,
-      doctor: doctorId,
-      date,
-      time,
+      userId,
+      doctorId,
+      dateTime,
       paymentId,
       status: "confirmed"
     });
 
-    // 5. Fetch user and doctor for email
+    // 6. Fetch user and doctor for email
     const [user, doctor] = await Promise.all([
       User.findById(userId),
       Doctor.findById(doctorId),
     ]);
     if (!user || !doctor) throw new Error("Doctor or user not found");
 
+    // 7. Send confirmation email
     const emailData = {
       ...appointment.toObject(),
       user: { name: user.name },
@@ -61,23 +67,22 @@ const createAppointment = async (appointmentData) => {
   }
 };
 
-
-// ... rest of the service code remains same
-
-// Get all appointments for a user
 const getAppointments = async (userId) => {
   try {
-    const appointments = await Appointment.find({ user: userId });
+    const appointments = await Appointment.find({ userId }).populate('doctorId');
     return sendSuccessResponse(appointments);
   } catch (error) {
     return sendErrorResponse(error.message);
   }
 };
 
-// Update appointment status (e.g., from pending to completed)
 const updateAppointmentStatus = async (appointmentId, status) => {
   try {
-    const appointment = await Appointment.findByIdAndUpdate(appointmentId, { status }, { new: true });
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status },
+      { new: true }
+    );
     if (!appointment) throw new Error('Appointment not found');
     return sendSuccessResponse(appointment);
   } catch (error) {
@@ -85,8 +90,73 @@ const updateAppointmentStatus = async (appointmentId, status) => {
   }
 };
 
+const getAppointmentById = async (appointmentId) => {
+  try {
+    const appointment = await Appointment.findById(appointmentId).populate('doctorId userId');
+    if (!appointment) {
+      return sendErrorResponse("Appointment not found.");
+    }
+    return sendSuccessResponse(appointment);
+  } catch (error) {
+    return sendErrorResponse("Failed to fetch appointment: " + error.message);
+  }
+};
+
+const getAppointmentsByDoctor = async (doctorId) => {
+  try {
+    const appointments = await Appointment.find({ doctorId }).populate('userId');
+    return sendSuccessResponse(appointments);
+  } catch (error) {
+    return sendErrorResponse('Failed to fetch doctor appointments: ' + error.message);
+  }
+};
+
+// Get upcoming appointments for a user
+const getUpcomingAppointments = async (userId) => {
+  try {
+    const currentDate = new Date();
+    
+    const appointments = await Appointment.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      dateTime: { $gt: currentDate },
+      status: 'completed'
+    })
+    .populate('doctorId', 'name specialization')
+    .sort({ dateTime: 1 });
+
+    return appointments;
+  } catch (error) {
+    console.error('Error in getUpcomingAppointments:', error);
+    throw new Error('Failed to fetch upcoming appointments');
+  }
+};
+
+// Get past appointments for a user
+const getPastAppointments = async (userId) => {
+  try {
+    const currentDate = new Date();
+    
+    const appointments = await Appointment.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      dateTime: { $lte: currentDate },
+      status: 'completed'
+    })
+    .populate('doctorId', 'name specialization')
+    .sort({ dateTime: -1 });
+
+    return appointments;
+  } catch (error) {
+    console.error('Error in getPastAppointments:', error);
+    throw new Error('Failed to fetch past appointments');
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointments,
   updateAppointmentStatus,
+  getAppointmentById,
+  getAppointmentsByDoctor,
+  getUpcomingAppointments,
+  getPastAppointments
 };

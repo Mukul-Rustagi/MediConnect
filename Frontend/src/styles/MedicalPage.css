@@ -901,3 +901,52 @@
     gap: 15px;
   }
 }
+/* Page Container */
+.doctors-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px 20px;
+  background-color: #f5f9ff;
+}
+
+/* Card Link Styling */
+.doctor-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Individual Doctor Card */
+.doctor-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px 20px;
+  width: 260px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Doctor Name */
+.doctor-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+/* Doctor Info */
+.doctor-card p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Strong labels */
+.doctor-card p strong {
+  color: #111;
+}

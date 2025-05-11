@@ -1,168 +1,222 @@
-import React, { useState } from "react";
-import Calendar from "react-calendar";
-import { format } from "../utils/dateUtils"; // Import format from date-fns
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectSelectedProvider,
-  selectAvailableDates,
-  selectAvailableTimes,
-  selectIsDateAvailable,
-  selectDateTime,
-  setStep,
-} from "../store/features/schedule/scheduleSlice";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../utils/axiosinstance";
+import SquarePaymentButton from "./PayPalButton";
+import { jwtDecode } from "jwt-decode";
 
-const DateTimeSelection = () => {
-  const dispatch = useDispatch();
-  const provider = useSelector(selectSelectedProvider);
-  const availableDates = useSelector(selectAvailableDates);
-  const availableTimes = useSelector(selectAvailableTimes);
-
-  // Add missing state variables
-  const [date, setDate] = useState(new Date());
+const DateTimeSelection = ({ id }) => {
+  const [calendarDays, setCalendarDays] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [bookedDates, setBookedDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const today = new Date();
 
-  // Add the missing formatDate function
-  const formatDate = (date) => {
-    const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
-    const year = d.getFullYear();
+  const timeSlots = [
+    "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM",
+    "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+    "6:00 PM", "7:00 PM"
+  ];
 
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
+  // Get user and token from localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        const decoded = jwtDecode(storedToken);
+        setUser({ id: decoded.id, email: decoded.email });
+        setToken(storedToken);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, []);
 
-    return [year, month, day].join("-");
-  };
+  // Fetch all appointments
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axiosInstance.get("appointment");
+        const all = response.data.data;
 
-  const formatTimeDisplay = (time) => {
-    const [hours, minutes] = time.split(":");
-    const hour = parseInt(hours, 10);
-    return hour >= 12
-      ? `${hour > 12 ? hour - 12 : hour}:${minutes} PM`
-      : `${hour}:${minutes} AM`;
-  };
+        setAppointments(all);
 
-  const handleContinue = () => {
-    if (selectedTime) {
-      const appointmentDate = formatDate(date);
-      dispatch(
-        selectDateTime({
-          date: appointmentDate,
-          time: selectedTime,
-          displayDate: format(date, "MMMM d, yyyy"),
-          displayTime: formatTimeDisplay(selectedTime),
-        })
-      );
-      dispatch(setStep(3));
+        const doctorBookedDates = all
+          .filter((a) => a.doctorId === id)
+          .map((a) => new Date(a.dateTime).toDateString());
+
+        setBookedDates(doctorBookedDates);
+      } catch (error) {
+        console.error("Error fetching appointments", error);
+      }
+    })();
+  }, [id]);
+
+  // Generate calendar days
+  useEffect(() => {
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    const days = [];
+
+    for (let i = 0; i < firstDayIndex; i++) days.push(null);
+    for (let d = 1; d <= totalDays; d++) days.push(new Date(year, month, d));
+
+    setCalendarDays(days);
+  }, []);
+
+  const handleDayClick = (date) => {
+    const strDate = date.toDateString();
+    if (!bookedDates.includes(strDate)) {
+      setSelectedDate(date);
+      setShowConfirmation(false); // Reset confirmation on new date selection
     }
   };
 
-  const isAvailable = (date) => {
-    const dateString = formatDate(date);
-    return availableDates.includes(dateString);
+  const handleTimeSlotClick = (time) => {
+    setSelectedTime(time);
+    setShowConfirmation(true); // Show confirmation once a time slot is selected
   };
 
-  const tileDisabled = ({ date, view }) => {
-    if (view === "month") {
-      return !isAvailable(date);
-    }
-    return false;
+  const getBookedTimesForSelectedDate = () => {
+    if (!selectedDate) return [];
+
+    return appointments
+      .filter(
+        (a) =>
+          a.doctorId === id &&
+          new Date(a.dateTime).toDateString() === selectedDate.toDateString()
+      )
+      .map((a) => {
+        const t = new Date(a.dateTime);
+        return t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      });
   };
 
-  const tileClassName = ({ date, view }) => {
-    if (view === "month") {
-      return isAvailable(date) ? "available-date" : "unavailable-date";
-    }
-    return null;
+  const monthYear = today.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const bookedTimes = getBookedTimesForSelectedDate();
+
+  const handlePaymentSuccess = (data) => {
+    setPaymentSuccess(true);
+    setPaymentError(null);
+    // You can add additional success handling here
+    console.log('Payment successful:', data);
   };
 
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-    setSelectedTime(null);
+  const handlePaymentError = (error) => {
+    setPaymentError(error.message || 'Payment failed. Please try again.');
+    setPaymentSuccess(false);
+    console.error('Payment error:', error);
+  };
+
+  // Render individual day buttons
+  const renderDay = (date, idx) => {
+    if (!date) return <div key={idx} className="col p-2" />;
+
+    const isBooked = bookedDates.includes(date.toDateString());
+    const isSelected = selectedDate?.toDateString() === date.toDateString();
+
+    let btnClass = "btn w-100 ";
+    if (isBooked) btnClass += "btn-danger";
+    else if (isSelected) btnClass += "btn-success";
+    else btnClass += "btn-outline-primary";
+
+    return (
+      <div key={idx} className="col p-2">
+        <button
+          className={btnClass}
+          disabled={isBooked}
+          onClick={() => handleDayClick(date)}
+        >
+          {date.getDate()}
+        </button>
+      </div>
+    );
   };
 
   return (
-    <div className="datetime-selection">
-      <div className="provider-summary">
-        <img src={provider.image} alt={provider.name} />
-        <div>
-          <h2>{provider.name}</h2>
-          <p>{provider.specialty}</p>
-        </div>
+    <div className="container my-4 p-4 border rounded shadow-sm bg-white">
+      <h4 className="text-center mb-4">{monthYear}</h4>
+
+      <div className="row fw-bold text-center border-bottom pb-2">
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+          <div className="col" key={d}>{d}</div>
+        ))}
       </div>
 
-      <div className="calendar-container">
-        <h3>Select a date and time</h3>
-        <div className="month-navigation">
-          <button
-            onClick={() => setMonth((prev) => (prev > 0 ? prev - 1 : 11))}
-          >
-            &lt;
-          </button>
-          <h4>
-            {new Date(year, month).toLocaleString("default", {
-              month: "long",
-              year: "numeric",
+      <div className="row flex-wrap text-center mt-2">
+        {calendarDays.map((date, idx) => renderDay(date, idx))}
+      </div>
+
+      {selectedDate && !showConfirmation && (
+        <div className="mt-4">
+          <h5 className="text-center">
+            Available Time Slots for {selectedDate.toDateString()}
+          </h5>
+          <div className="row text-center mt-3">
+            {timeSlots.map((slot) => {
+              const isBooked = bookedTimes.includes(slot);
+              return (
+                <div key={slot} className="col-6 col-md-3 p-2">
+                  <button
+                    className={`btn w-100 ${isBooked ? "btn-danger" : "btn-outline-success"}`}
+                    disabled={isBooked}
+                    onClick={() => !isBooked && handleTimeSlotClick(slot)}
+                  >
+                    {slot}
+                  </button>
+                </div>
+              );
             })}
-          </h4>
-          <button
-            onClick={() => setMonth((prev) => (prev < 11 ? prev + 1 : 0))}
-          >
-            &gt;
-          </button>
-        </div>
-
-        <Calendar
-          onChange={handleDateChange}
-          value={date}
-          tileDisabled={tileDisabled}
-          tileClassName={tileClassName}
-          minDetail="month"
-          prev2Label={null}
-          next2Label={null}
-          view="month"
-          activeStartDate={new Date(year, month, 1)}
-          onActiveStartDateChange={({ activeStartDate }) => {
-            setMonth(activeStartDate.getMonth());
-            setYear(activeStartDate.getFullYear());
-          }}
-        />
-
-        {isAvailable(date) && (
-          <div className="time-selection">
-            <h4>Available times for {date.toLocaleDateString()}</h4>
-            <div className="time-slots">
-              {availableTimes.map((time) => (
-                <button
-                  key={time}
-                  className={`time-slot ${
-                    selectedTime === time ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedTime(time)}
-                >
-                  {formatTimeDisplay(time)}
-                </button>
-              ))}
-            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {!isAvailable(date) && (
-          <p className="no-availability">No availability on this date</p>
-        )}
-      </div>
+      {/* Show confirmation button when time is selected */}
+      {showConfirmation && (
+        <div className="mt-4 text-center">
+          <h5>Confirm your appointment</h5>
+          <p>
+            You have selected: {selectedDate.toDateString()} at {selectedTime}
+          </p>
+          <button
+            className="btn btn-success w-50"
+            onClick={() => setShowConfirmation(false)}
+          >
+            Confirm Appointment
+          </button>
 
-      <div className="action-buttons">
-        <button
-          className="btn primary"
-          disabled={!selectedTime}
-          onClick={handleContinue}
-        >
-          Continue
-        </button>
-      </div>
+          {/* Display Square Payment Button */}
+          <div className="mt-3">
+            {user && token ? (
+              <SquarePaymentButton 
+                amount={1}
+                user={user}
+                token={token}
+                appointmentData={{
+                  doctorId: id,
+                  date: selectedDate.toISOString().split('T')[0],
+                  time: selectedTime
+                }}
+              />
+            ) : (
+              <div className="alert alert-warning">
+                Please log in to proceed with payment
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

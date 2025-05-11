@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles/Dashboard.css";
+import { useState } from "react";
+import axios from 'axios';
 import {
   FaCalendarAlt,
   FaEnvelope,
@@ -13,27 +15,20 @@ import AppointmentCard from "./Appointment";
 import MessageCard from "./MessageCard";
 import { toggleMobileOpen } from "../store/features/UI/uiSlice";
 import patientData from "../Data/PatientData";
+import axiosInstance from "../utils/axiosinstance";
 
 const PatientHome = ({ summaryData }) => {
-  const {
-    name = "Patient",
-    upcomingAppointments = [],
-    messages = [],
-    prescriptions = [],
-    billing = {},
-  } = patientData || {};
+  const [logged_in_patient_data,set_patient_data] = useState({});
+  const [upcomingAppointments,set_upcomingappointments] = useState({});
+  useEffect(()=>{
+  (async function(){
+    const patientAppointment = await axiosInstance.get('appointment');
+    console.log(patientAppointment);
+    set_upcomingappointments(patientAppointment.data.data);
+  })();
+},[]);
 
-  // Calculate summary data
-  console.log(patientData);
-  // Filter and sort data
-  const filteredAppointments = upcomingAppointments
-    .filter((appt) => ["confirmed", "upcoming"].includes(appt.status))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 2);
-  console.log(filteredAppointments);
-  const filteredMessages = messages
-    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-    .slice(0, 2);
+
 
   // Quick actions
   const quickActions = [
@@ -71,61 +66,10 @@ const PatientHome = ({ summaryData }) => {
     },
   ];
 
-  const userInitials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("");
+
 
   return (
     <div className="patient-dashboard">
-      {/* Sidebar */}
-      {/* <div className="dashboard-sidebar">
-        <div className="sidebar-header">
-          <h2>Health Portal</h2>
-        </div>
-        <nav>
-          <ul>
-            <li className="active">
-              <button className="sidebar-tab">
-                <span className="tab-icon">🏠</span>
-                <span className="tab-label">Dashboard</span>
-              </button>
-            </li>
-            <li>
-              <button className="sidebar-tab">
-                <span className="tab-icon">📅</span>
-                <span className="tab-label">Appointments</span>
-              </button>
-            </li>
-            <li>
-              <button className="sidebar-tab">
-                <span className="tab-icon">💊</span>
-                <span className="tab-label">Prescriptions</span>
-              </button>
-            </li>
-            <li>
-              <button className="sidebar-tab">
-                <span className="tab-icon">💬</span>
-                <span className="tab-label">Messages</span>
-              </button>
-            </li>
-            <li>
-              <button className="sidebar-tab">
-                <span className="tab-icon">💰</span>
-                <span className="tab-label">Billing</span>
-              </button>
-            </li>
-            <li className="logout">
-              <button className="sidebar-tab">
-                <span className="tab-icon">🚪</span>
-                <span className="tab-label">Logout</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div> */}
-
-      {/* Main Content */}
       <div className="dashboard-main">
         <div className="dashboard-content">
           {/* Summary Cards */}
@@ -135,15 +79,17 @@ const PatientHome = ({ summaryData }) => {
                 <FaCalendarAlt />
               </div>
               <h3>Upcoming Appointments</h3>
-              <p>{summaryData.upcomingAppointments}</p>
+              <p>{upcomingAppointments.length}</p>
             </div>
-            <div className="summary-card messages">
-              <div className="summary-icon">
-                <FaEnvelope />
-              </div>
-              <h3>Unread Messages</h3>
-              <p>{summaryData.unreadMessages}</p>
-            </div>
+
+
+
+
+           
+
+
+
+
             <div className="summary-card prescriptions">
               <div className="summary-icon">
                 <FaPills />
@@ -167,8 +113,8 @@ const PatientHome = ({ summaryData }) => {
               <button className="view-all">View All</button>
             </div>
             <div className="cards-grid">
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((appt) => (
+              {upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map((appt) => (
                   <AppointmentCard key={appt.id} appointment={appt} />
                 ))
               ) : (
@@ -180,21 +126,7 @@ const PatientHome = ({ summaryData }) => {
           </section>
 
           <div className="content-columns">
-            <section className="dashboard-section messages-section">
-              <div className="section-header">
-                <h2>Recent Messages</h2>
-                <button className="view-all">View All</button>
-              </div>
-              <div className="messages-list">
-                {filteredMessages.length > 0 ? (
-                  filteredMessages.map((msg) => (
-                    <MessageCard key={msg.id} message={msg} />
-                  ))
-                ) : (
-                  <div className="empty-state">No recent messages</div>
-                )}
-              </div>
-            </section>
+            
 
             <section className="dashboard-section quick-actions-section">
               <div className="section-header">

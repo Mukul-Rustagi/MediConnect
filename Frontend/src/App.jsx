@@ -19,15 +19,24 @@ import DoctorHome from "./components/DoctorHome";
 import { jwtDecode } from "jwt-decode";
 // import useEffect from
 
-function App() {
-  let decodedToken="";
-  useEffect(()=>{
-    const token = localStorage.getItem('token');
-    decodedToken = jwtDecode(token);
-    console.log(decodedToken.role,decodedToken.id,decodedToken.email);
 
-  })
-  const [user, setUser] = useState({ type: decodedToken.role }); // You can manage user state here
+function App() {
+  const [user, setUser] = useState(null); // null until token is processed
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log(decoded.role, decoded.id, decoded.email);
+        setUser({ type: decoded.role, id: decoded.id, email: decoded.email });
+      } catch (err) {
+        console.error("Invalid token", err);
+        setUser(null);
+      }
+    }
+  }, []);
+
   const {
     name = "Patient",
     upcomingAppointments = [],
@@ -35,6 +44,7 @@ function App() {
     prescriptions = [],
     billing = {},
   } = patientData || {};
+
   const summaryData = {
     upcomingAppointments: upcomingAppointments.length,
     unreadMessages: messages.filter((msg) => msg.unread).length,
@@ -49,7 +59,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        {user?.type === "patient" ? (
+        {user?.type == "Patient" ? (
           <Route
             path="/dashboard"
             element={

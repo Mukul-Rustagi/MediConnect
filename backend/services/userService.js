@@ -21,9 +21,22 @@ const getUserProfile = async (userId,role) => {
 };
 
 // Update User Profile
-const updateUserProfile = async (userId, userData) => {
+const updateUserProfile = async (userId, userData,role) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, userData, { new: true }).select('-password -otp');
+    let updatedUser;
+
+    if (role === 'Doctor') {
+      updatedUser = await Doctor.findByIdAndUpdate(userId, userData, {
+        new: true,
+        runValidators: true
+      });
+    } else {
+      updatedUser = await User.findByIdAndUpdate(userId, userData, {
+        new: true,
+        runValidators: true
+      });
+    }
+
     if (!updatedUser) throw new Error('User update failed');
     return sendSuccessResponse(updatedUser);
   } catch (error) {

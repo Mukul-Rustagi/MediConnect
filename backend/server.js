@@ -60,7 +60,7 @@ connectDb();
 app.use('/uploads', express.static(path.join(__dirname, 'storage/uploads')));
 
 // Routes for API Endpoints
-app.use('/api/payments', paymentRoutes);
+app.use('/api', paymentRoutes);
 app.use('/api/consultations', consultationRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/patients', patientRoutes);

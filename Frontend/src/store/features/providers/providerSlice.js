@@ -62,6 +62,9 @@ const providerSlice = createSlice({
   name: "providers",
   initialState,
   reducers: {
+    setProviders: (state, action) => {
+      state.providers = action.payload;
+    },
     setSelectedSpecialty: (state, action) => {
       state.selectedSpecialty = action.payload;
     },
@@ -71,7 +74,7 @@ const providerSlice = createSlice({
   },
 });
 
-export const { setSelectedSpecialty, setSearchTerm } = providerSlice.actions;
+export const { setSelectedSpecialty, setSearchTerm, setProviders } = providerSlice.actions;
 
 // Selectors
 export const selectProvidersState = (state) => state.providers;

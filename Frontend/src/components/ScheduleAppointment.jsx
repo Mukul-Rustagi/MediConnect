@@ -1,51 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axiosInstance from "../utils/axiosinstance";
 import "../styles/MedicalPage.css";
-import ProviderSelection from "./ProviderSelection";
-import DateTimeSelection from "./DateTimeSelection";
-import PaymentConfirmation from "./PaymentConfirmation";
-import AppointmentConfirmed from "./AppointmentConfirmed";
-import {
-  selectCurrentStep,
-  selectSelectedProvider,
-  selectSelectedDateTime,
-  selectPaymentMethod,
-  resetSchedule,
-  setStep, // Add this import
-} from "../store/features/schedule/scheduleSlice";
-import { useDispatch, useSelector } from "react-redux";
-const ScheduleAppointment = ({ onBack }) => {
-  const dispatch = useDispatch();
-  const step = useSelector(selectCurrentStep);
-  const selectedProvider = useSelector(selectSelectedProvider);
-  const selectedDateTime = useSelector(selectSelectedDateTime);
-  const paymentMethod = useSelector(selectPaymentMethod);
-  const handleBack = () => {
-    if (step === 1) {
-      dispatch(resetSchedule());
-      onBack();
-    } else {
-      dispatch(setStep(step - 1));
-    }
-  };
+import DateTimeSelection from './DateTimeSelection';
+const ScheduleAppointment = () => {
+  const [doctors, setDoctors] = useState([]);
+
+  const [allDoctorsView,set_allDoctorsView] = useState(true);
+  const [particularDoctor,set_particularDoctor] = useState();
+  const [id,setid]=useState();
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axiosInstance.get("doctors");
+        setDoctors(response.data.data);
+        console.log(response.data.data);
+      } catch (err) {
+        
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
 
   return (
-    <div className="medical-page">
-      <header className="page-header">
-        <h1>Schedule an appointment</h1>
-        {step !== 1 && (
-          <button className="btn secondary" onClick={handleBack}>
-            Back
-          </button>
-        )}
-      </header>
+<div className="container">
+  {allDoctorsView && <div className="row">
+    {doctors.map((item, index) => (
+      <button className="btn btn-success col-3" key={index} onClick={()=>{
+        set_allDoctorsView(false);
+        set_particularDoctor(true);
+        setid(item._id);
+      }}>
+        <h1>{item.firstName}</h1>
+        <p>{item.specialization}</p>
+        <p>{item.experienceYears}</p>
+        <p>{item._id}</p>
+      </button>
+    ))}
 
-      <div className="appointment-flow">
-        {step === 1 && <ProviderSelection />}
-        {step === 2 && <DateTimeSelection />}
-        {step === 3 && <PaymentConfirmation />}
-        {step === 4 && <AppointmentConfirmed onComplete={onBack} />}
-      </div>
-    </div>
+
+    
+  </div>}
+  {particularDoctor && <DateTimeSelection id={id}/>}
+</div>
+
   );
 };
 

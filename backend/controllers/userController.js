@@ -31,7 +31,7 @@ const updateUserProfile = [
         updatedData.profilePicture = `/uploads/profile_pictures/${req.file.filename}`;
       }
 
-      const result = await userService.updateUserProfile(userId, updatedData);
+      const result = await userService.updateUserProfile(userId, updatedData,req.user.role);
 
       if (result.status === 'error') {
         return res.status(400).json(result);

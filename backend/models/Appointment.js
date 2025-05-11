@@ -21,10 +21,13 @@ const appointmentSchema = new mongoose.Schema({
     default: 'pending',
   },
   paymentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Payment',
+    type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Appointment', appointmentSchema);

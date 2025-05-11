@@ -1,74 +1,46 @@
-// services/paymentService.js
 const Payment = require("../models/paymentModel");
-const {
-  sendErrorResponse,
-  sendSuccessResponse,
-} = require("../utils/responseHandler");
-const {
-  getPaymentStatus: checkPaymentStatus,
-} = require("../utils/paymentGateway");
+const { sendErrorResponse, sendSuccessResponse } = require("../utils/responseHandler");
 
-// Make a payment
 const makePayment = async (paymentData) => {
   try {
-    console.log("Incoming Payment Payload:", paymentData);
     const { userId, amount, paymentMethod } = paymentData;
 
     if (!userId || !amount || !paymentMethod) {
-      return {
-        status: "error",
-        message:
-          "Missing required payment data. Please provide amount, payment method, and user ID.",
-      };
+      return sendErrorResponse("Missing required payment fields: userId, amount, or paymentMethod.");
     }
 
     const payment = new Payment({
       userId,
-      totalAmount: amount, // Map amount to totalAmount for the database
+      totalAmount: amount,
       paymentMethod,
-      status: "completed", // Simulate success for now
+      status: "completed",
       date: new Date(),
     });
 
     await payment.save();
 
-    return {
-      status: "success",
-      message: "Payment processed successfully.",
-      data: payment,
-    };
+    return sendSuccessResponse("Payment processed successfully.", payment);
   } catch (error) {
-    console.error("Payment Processing Error:", error);
-    return {
-      status: "error",
-      message: "An error occurred while processing the payment.",
-      error: error.message,
-    };
+    console.error("PaymentService Error:", error);
+    return sendErrorResponse("An error occurred while processing the payment.", error.message);
   }
 };
 
-// Get payment status (optional)
 const getPaymentStatus = async (paymentId) => {
   try {
     const payment = await Payment.findById(paymentId);
 
     if (!payment) {
-      return {
-        status: "error",
-        message: "Payment not found",
-      };
+      return sendErrorResponse("Payment not found.");
     }
 
-    return {
-      status: "success",
-      data: { status: payment.status, date: payment.date },
-    };
+    return sendSuccessResponse("Payment found.", {
+      status: payment.status,
+      date: payment.date,
+    });
   } catch (error) {
-    return {
-      status: "error",
-      message: "Failed to fetch payment status.",
-      error: error.message,
-    };
+    console.error("GetStatus Error:", error);
+    return sendErrorResponse("Failed to fetch payment status.", error.message);
   }
 };
 
