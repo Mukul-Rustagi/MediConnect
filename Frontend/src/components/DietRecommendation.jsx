@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "../styles/DietRecommendation.css";
+import "../styles/Modal.css";
 
 const DietRecommendation = ({ onClose }) => {
   const [userData, setUserData] = useState({
@@ -18,6 +19,12 @@ const DietRecommendation = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedSection, setExpandedSection] = useState(null);
+
+  useEffect(() => {
+    if (dietPlan) {
+      console.log("Updated diet plan:", dietPlan);
+    }
+  }, [dietPlan]);
 
   const fetchDietRecommendation = async () => {
     setLoading(true);
@@ -94,13 +101,14 @@ const DietRecommendation = ({ onClose }) => {
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onClose}>
-          ×
-        </button>
-
-        <h1>Personalized Diet Plan</h1>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2>AI Diet Recommendation</h2>
+          <button onClick={onClose} className="close-button">
+            ×
+          </button>
+        </div>
         <div className="diet-recommendation-container">
           <div className="user-data-form">
             <h2>Your Profile</h2>
@@ -242,7 +250,10 @@ const DietRecommendation = ({ onClose }) => {
                 </div>
                 {expandedSection === "breakfast" && (
                   <div className="section-content">
-                    <p>{dietPlan.data.breakfast}</p>
+                    <p>
+                      {dietPlan.breakfast ||
+                        "No breakfast recommendations available"}
+                    </p>
                   </div>
                 )}
               </div>
@@ -257,7 +268,9 @@ const DietRecommendation = ({ onClose }) => {
                 </div>
                 {expandedSection === "lunch" && (
                   <div className="section-content">
-                    <p>{dietPlan.data.lunch}</p>
+                    <p>
+                      {dietPlan.lunch || "No lunch recommendations available"}
+                    </p>
                   </div>
                 )}
               </div>
@@ -272,7 +285,9 @@ const DietRecommendation = ({ onClose }) => {
                 </div>
                 {expandedSection === "dinner" && (
                   <div className="section-content">
-                    <p>{dietPlan.data.dinner}</p>
+                    <p>
+                      {dietPlan.dinner || "No dinner recommendations available"}
+                    </p>
                   </div>
                 )}
               </div>
@@ -293,7 +308,10 @@ const DietRecommendation = ({ onClose }) => {
                           <li key={index}>{snack}</li>
                         ))
                       ) : (
-                        <li>{dietPlan.data.snacks}</li>
+                        <li>
+                          {dietPlan.snacks ||
+                            "No snack recommendations available"}
+                        </li>
                       )}
                     </ul>
                   </div>
@@ -310,7 +328,10 @@ const DietRecommendation = ({ onClose }) => {
                 </div>
                 {expandedSection === "water" && (
                   <div className="section-content">
-                    <p>{dietPlan.data.waterIntake}</p>
+                    <p>
+                      {dietPlan.waterIntake ||
+                        "No water intake recommendations available"}
+                    </p>
                   </div>
                 )}
               </div>
@@ -331,7 +352,9 @@ const DietRecommendation = ({ onClose }) => {
                           <li key={index}>{tip}</li>
                         ))
                       ) : (
-                        <li>{dietPlan.data.generalTips}</li>
+                        <li>
+                          {dietPlan.generalTips || "No general tips available"}
+                        </li>
                       )}
                     </ul>
                   </div>

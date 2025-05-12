@@ -7,6 +7,7 @@ import PatientBilling from "./PatientBilling";
 import PatientsLabs from "./PatientsLabs";
 import PatientAppoinments from "./AppoinmentsPage";
 import ProfilePage from "./ProfilePage";
+import NearByHospitals from "./Near_By_Hospitals";
 
 const PatientView = ({ activeTab }) => {
   const renderTabContent = () => {
@@ -16,6 +17,8 @@ const PatientView = ({ activeTab }) => {
 
       case "appointments":
         return <PatientAppoinments isDoctorView={false} />;
+      case "nearby-hospitals":
+        return <NearByHospitals />;
       case "messages":
         return <MessagesPage isDoctorView={false} />;
       case "prescriptions":

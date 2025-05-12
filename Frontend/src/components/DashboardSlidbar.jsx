@@ -10,6 +10,7 @@ import {
   FaUser,
   FaMoneyBillAlt,
   FaArrowLeft,
+  FaHospital,
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMobileOpen } from "../store/features/UI/uiSlice";
@@ -30,14 +31,12 @@ const DashboardSidebar = ({ userType }) => {
       path: "/dashboard/appointments",
       icon: <FaCalendarAlt />,
     },
-
     {
-      id: "prescriptions",
-      label: "Prescriptions",
-      path: "/dashboard/prescriptions",
-      icon: <FaPills />,
+      id: "nearby-hospitals",
+      label: "Nearby Hospitals",
+      path: "/dashboard/nearby-hospitals",
+      icon: <FaHospital />,
     },
-    { id: "labs", label: "Labs", path: "/dashboard/labs", icon: <FaFlask /> },
     {
       id: "health-records",
       label: "Health Record",

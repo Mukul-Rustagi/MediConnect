@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DietRecommendation from "./DietRecommendation";
+import NearByHospitals from "./Near_By_Hospitals";
+import MapComponent from "./Near_By_Hospitals2";
 
 const QuickActionCard = ({ action }) => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
+  const [hospitalsModalOpen, setHospitalsModalOpen] = useState(false);
 
   // Determine the target route or action based on the card title
   const handleNavigate = () => {
@@ -15,7 +18,10 @@ const QuickActionCard = ({ action }) => {
       case "View Schedule":
         navigate("/dashboard/appointments");
         break;
-      case "View Diet Plan using AI":
+      case "Show Near by hospital":
+        setHospitalsModalOpen(true);
+        break;
+      case "Make a Diet Plan by AI":
         setModalOpen(true);
         break;
       default:
@@ -23,12 +29,14 @@ const QuickActionCard = ({ action }) => {
     }
   };
 
-  // Close the modal
+  // Close the modals
   const handleClose = () => setModalOpen(false);
+  const handleHospitalsClose = () => setHospitalsModalOpen(false);
 
   return (
     <>
       {modalOpen && <DietRecommendation onClose={handleClose} />}
+      {hospitalsModalOpen && <NearByHospitals onClose={handleHospitalsClose} />}
 
       <div
         className="quick-action-card"

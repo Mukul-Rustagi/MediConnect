@@ -45,11 +45,17 @@ const app = express();
 // Create HTTP server for WebSocket (Socket.IO)
 const server = http.createServer(app);
 
-// Initialize WebRTC signaling
-initWebRTC(server);
+// Secure CORS configuration
+app.use(cors({
+  origin: '*', // Change for production
+  methods: ['GET', 'POST']
+}));
+
+
+
+// Store connected users
 
 // Use CORS and Body Parsing
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

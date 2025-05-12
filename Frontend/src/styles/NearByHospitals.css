@@ -1,0 +1,140 @@
+.nearby-hospitals {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nearby-hospitals h1 {
+  color: var(--dark);
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.hospitals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.hospital-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  transition: var(--transition);
+}
+
+.hospital-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hospital-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hospital-icon {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.hospital-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--dark);
+}
+
+.hospital-details {
+  margin-bottom: 1.5rem;
+}
+
+.distance {
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--secondary);
+}
+
+.detail-row .icon {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.detail-row a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.detail-row a:hover {
+  text-decoration: underline;
+}
+
+.hospital-specialties {
+  margin-bottom: 1.5rem;
+}
+
+.hospital-specialties h3 {
+  font-size: 1rem;
+  color: var(--dark);
+  margin-bottom: 0.75rem;
+}
+
+.specialties-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.specialty-tag {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.hospital-rating {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rating {
+  background: var(--success);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--secondary);
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .nearby-hospitals {
+    padding: 1rem;
+  }
+
+  .hospitals-grid {
+    grid-template-columns: 1fr;
+  }
+} 

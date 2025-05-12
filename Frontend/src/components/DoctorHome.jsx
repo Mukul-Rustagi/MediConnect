@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppointmentCard from "./Appointment";
 import MessageCard from "./MessageCard";
 import PatientCard from "./PatientCard";
 import QuickActionCard from "./QuickActionCard";
+import { jwtDecode } from "jwt-decode";
 import {
   FaCalendarAlt,
   FaEnvelope,
@@ -11,30 +12,10 @@ import {
   FaUser,
   FaStethoscope,
 } from "react-icons/fa";
+import axios from "axios";
 
 const DoctorHome = () => {
-  // State for dynamic data
-  const [todaysAppointments, setTodaysAppointments] = useState([
-    {
-      id: 1,
-      title: "Annual Physical",
-      patient: "John Doe",
-      date: "Today",
-      time: "10:00 AM",
-      location: "Exam Room 3",
-      status: "confirmed",
-    },
-    {
-      id: 2,
-      title: "Follow-up Visit",
-      patient: "Sarah Johnson",
-      date: "Today",
-      time: "11:30 AM",
-      location: "Exam Room 2",
-      status: "upcoming",
-    },
-  ]);
-
+  const [appointments, setAppointments] = useState([]);
   const [recentMessages, setRecentMessages] = useState([
     {
       id: 1,
@@ -51,70 +32,33 @@ const DoctorHome = () => {
       unread: false,
     },
   ]);
+  const [recentPatients, setRecentPatients] = useState([]);
 
-  const [recentPatients, setRecentPatients] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      lastVisit: "Dec 15, 2023",
-      nextAppointment: "Jan 10, 2024",
-      avatar: "JD",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      lastVisit: "Dec 10, 2023",
-      nextAppointment: "Jan 5, 2024",
-      avatar: "SJ",
-    },
-  ]);
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const token = localStorage.getItem("token");
+      const doctorId = jwtDecode(token).id;
+      const response = await axios.get(`http://localhost:5000/api/appointment/${doctorId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // Only show appointments for this doctor
+      setAppointments(response.data.data.filter(item => item.doctorId === doctorId));
+    };
+    fetchAppointments();
+  }, []);
 
   // Summary data
   const summaryData = {
-    upcomingAppointments: todaysAppointments.length,
+    upcomingAppointments: appointments.length,
     unreadMessages: recentMessages.filter((msg) => msg.unread).length,
     activePatients: recentPatients.length,
     completedVisits: 42, // Example static data
   };
 
-  // Quick actions for doctors
-  const quickActions = [
-    {
-      id: 1,
-      title: "Start Consultation",
-      description: "Begin a virtual visit with a patient",
-      icon: <FaStethoscope />,
-      actionText: "Start Now",
-      color: "var(--primary)",
-    },
-    {
-      id: 2,
-      title: "Write Prescription",
-      description: "Create and send a new prescription",
-      icon: "💊",
-      actionText: "Create Now",
-      color: "var(--success)",
-    },
-    {
-      id: 3,
-      title: "Order Tests",
-      description: "Request lab tests for patients",
-      icon: "🔬",
-      actionText: "Order Now",
-      color: "var(--purple)",
-    },
-    {
-      id: 4,
-      title: "View Schedule",
-      description: "Check your full appointment calendar",
-      icon: "📅",
-      actionText: "View Now",
-      color: "var(--orange)",
-    },
-  ];
-
-  // Filter and sort data
-  const filteredAppointments = todaysAppointments
+  const filteredAppointments = appointments
     .filter((appt) => ["confirmed", "upcoming"].includes(appt.status))
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -130,7 +74,7 @@ const DoctorHome = () => {
           <div className="summary-icon">
             <FaCalendarAlt />
           </div>
-          <h3>Today's Appointments</h3>
+          <h3>Upcoming Appointments</h3>
           <p>{summaryData.upcomingAppointments}</p>
         </div>
         {/* <div className="summary-card messages">
@@ -162,100 +106,30 @@ const DoctorHome = () => {
         <div className="content-left">
           <section className="dashboard-section appointments-section">
             <div className="section-header">
-              <h2>Today's Appointments</h2>{" "}
+              <h2>Upcoming Appointments</h2>
             </div>
             <div className="cards-grid">
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((appt) => (
+              {appointments.length > 0 ? (
+                appointments.map((appt) => (
                   <AppointmentCard
-                    key={appt.id}
+                    key={appt._id || appt.id}
                     appointment={appt}
                     isDoctorView
-                    onCancel={() => handleCancelAppointment(appt.id)}
                   />
                 ))
               ) : (
                 <div className="empty-state">
-                  No appointments scheduled for today
+                  No appointments scheduled
                 </div>
               )}
             </div>
           </section>
 
-          <section className="dashboard-section patients-section">
-            <div className="section-header">
-              <h2>Recent Patients</h2>
-              {/* <button className="view-all">View All</button> */}
-            </div>
-            <div className="patients-grid">
-              {recentPatients.length > 0 ? (
-                recentPatients.map((patient) => (
-                  <PatientCard
-                    key={patient.id}
-                    patient={patient}
-                    onSelect={() => handleViewPatient(patient.id)}
-                  />
-                ))
-              ) : (
-                <div className="empty-state">No recent patients</div>
-              )}
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column */}
-        <div className="content-right">
-          <section className="dashboard-section quick-actions-section">
-            <div className="section-header">
-              <h2>Quick Actions</h2>
-            </div>
-            <div className="actions-grid">
-              {quickActions.map((action) => (
-                <QuickActionCard
-                  key={action.id}
-                  action={action}
-                  onClick={() => handleQuickAction(action.id)}
-                />
-              ))}
-            </div>
-          </section>
+          
         </div>
       </div>
     </div>
   );
-
-  // Handler functions
-  function handleCancelAppointment(appointmentId) {
-    setTodaysAppointments((prev) =>
-      prev.map((appt) =>
-        appt.id === appointmentId ? { ...appt, status: "cancelled" } : appt
-      )
-    );
-  }
-
-  function handleViewPatient(patientId) {
-    // Navigate to patient details or open modal
-    console.log("View patient:", patientId);
-  }
-
-  function handleMarkAsRead(messageId) {
-    setRecentMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === messageId ? { ...msg, unread: false } : msg
-      )
-    );
-  }
-
-  function handleReplyToMessage(messageId) {
-    // Implement reply functionality
-    console.log("Reply to message:", messageId);
-  }
-
-  function handleQuickAction(actionId) {
-    // Handle different quick actions
-    console.log("Quick action:", actionId);
-    // You can add navigation or modal opening logic here
-  }
 };
 
 export default DoctorHome;

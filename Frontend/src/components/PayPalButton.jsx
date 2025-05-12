@@ -103,7 +103,7 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
                   userId: userData.id,
                   doctorId: appointmentData.doctorId,
                   dateTime: dateTime.toISOString(),
-                  status: 'completed'
+                  status: 'pending'
                 }
               });
 

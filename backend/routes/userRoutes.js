@@ -9,7 +9,7 @@ const userController = require('../controllers/userController');
 // @desc    Get user profile
 // @access  Private
 router.get('/profile', authenticate, userController.getUserProfile);
-
+router.get('/profile/:id',authenticate,userController.getUserProfileById);
 // @route   PUT /api/users/profile
 // @desc    Update user profile
 // @access  Private

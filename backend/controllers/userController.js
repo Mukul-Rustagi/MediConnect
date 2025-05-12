@@ -18,6 +18,18 @@ const getUserProfile = async (req, res) => {
     return res.status(500).json(sendErrorResponse('Error fetching user profile.'));
   }
 };
+const getUserProfileById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const result = await userService.getUserProfileById(userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(sendErrorResponse('Error fetching user profile.'));
+  }
+}
+
+
 
 // Update User Profile with image upload
 const updateUserProfile = [
@@ -73,5 +85,6 @@ const uploadMeetingFiles = [
 module.exports = {
   getUserProfile,
   updateUserProfile,
-  uploadMeetingFiles
+  uploadMeetingFiles,
+  getUserProfileById
 };

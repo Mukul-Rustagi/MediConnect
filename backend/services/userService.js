@@ -20,6 +20,16 @@ const getUserProfile = async (userId,role) => {
   }
 };
 
+const getUserProfileById = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    return sendSuccessResponse(user);
+  } catch (error) {
+    return sendErrorResponse(error.message);
+  }
+};
+
+
 // Update User Profile
 const updateUserProfile = async (userId, userData,role) => {
   try {
@@ -65,4 +75,5 @@ module.exports = {
   getUserProfile,
   updateUserProfile,
   saveMeetingFiles,
+  getUserProfileById
 };

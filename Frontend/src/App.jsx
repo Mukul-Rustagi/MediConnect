@@ -21,10 +21,13 @@ import { jwtDecode } from "jwt-decode";
 
 
 function App() {
+  
   const [user, setUser] = useState(null); // null until token is processed
   
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    // localStorage.removeItem("token");
+    // localStorage.setItem('token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjEzMWU0ZDEyZGMwNzU1MDJhM2Y4ZCIsImVtYWlsIjoia2F2QGdtYWlsLmNvbSIsInJvbGUiOiJQYXRpZW50IiwiaWF0IjoxNzQ3MDA3OTk3LCJleHAiOjE3NDc2MTI3OTd9.T7qMdOqqWQTxAtVjhpoDNtlL6YDm2wP-Fz1qI9CopUU')
+    const token = localStorage.getItem("token")||"";
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -96,6 +99,7 @@ function App() {
             />
           </Route>
         )}
+        <Route path="/patient/home" element={<PatientHome />} />
       </Routes>
     </BrowserRouter>
   );
