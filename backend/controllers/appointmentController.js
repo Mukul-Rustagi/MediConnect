@@ -27,28 +27,13 @@ const bookAppointment = async (req, res) => {
 // Get appointments for authenticated user
 const getAppointmentsByUser = async (req, res) => {
   const userId = req.user._id;
-  const cacheKey = `appointments:user:${userId}`;
+ 
 
   try {
-    // Try Redis cache
-    try {
-      const cached = await redis.get(cacheKey);
-      if (cached) return res.json(JSON.parse(cached));
-    } catch (err) {
-      console.warn('Redis get failed, fetching from MongoDB');
-    }
 
-    // Fallback to MongoDB
     const result = await appointmentService.getAppointments(userId);
+    console.log(result);
     if (result.status === 'error') return res.status(400).json(result);
-
-    // Try caching in Redis
-    try {
-      await redis.set(cacheKey, JSON.stringify(result), 'EX', 300);
-    } catch (err) {
-      console.warn('Redis set failed, continuing without caching');
-    }
-
     return res.json(result);
   } catch (err) {
     return res.status(500).json(sendErrorResponse('Failed to fetch appointments'));
@@ -58,8 +43,11 @@ const getAppointmentsByUser = async (req, res) => {
 // Get a specific appointment by ID
 const getAppointmentById = async (req, res) => {
   try {
+    // console.log(req.user.role);
     const appointmentId = req.params.id;
-    const result = await appointmentService.getAppointmentById(appointmentId);
+    // console.log(appointmentId);
+    const result = await appointmentService.getAppointmentById(appointmentId,req.user.role);
+    console.log(result);
     if (result.status === 'error') return res.status(404).json(result);
 
     return res.json(result);

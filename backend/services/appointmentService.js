@@ -68,8 +68,12 @@ const createAppointment = async (appointmentData) => {
 };
 
 const getAppointments = async (userId) => {
+  // console.log("hello");
   try {
-    const appointments = await Appointment.find({ userId }).populate('doctorId');
+    console.log(userId);
+    const appointments = await Appointment.find({ userId });
+
+    console.log(appointments);
     return sendSuccessResponse(appointments);
   } catch (error) {
     return sendErrorResponse(error.message);
@@ -90,9 +94,17 @@ const updateAppointmentStatus = async (appointmentId, status) => {
   }
 };
 
-const getAppointmentById = async (appointmentId) => {
+const getAppointmentById = async (appointmentId,role) => {
+  console.log("helloo");
+  console.log(appointmentId);
   try {
-    const appointment = await Appointment.findById(appointmentId).populate('doctorId userId');
+    let appointment;
+    if(role=="Patient"){
+    appointment = await Appointment.find({userId:appointmentId});
+    }
+    else if(role=="Doctor"){
+      appointment = await Appointment.find({doctorId:appointmentId});
+    }
     if (!appointment) {
       return sendErrorResponse("Appointment not found.");
     }

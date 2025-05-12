@@ -82,7 +82,7 @@ const Signup = ({ onSwitchToLogin }) => {
       let response;
       if (role === "Patient") {
         response = await axios.post("http://localhost:5000/api/v1/register", { ...patientData, role });
-        console.log(response);
+        // console.log(response);
         alert(response.data.message);
         if(response.data.message=='User registered successfully.'){
           // console.log(response.data.data.token);
@@ -90,9 +90,9 @@ const Signup = ({ onSwitchToLogin }) => {
           navigate('/login');
         }
       } else if (role === "Doctor") {
-        console.log("kavya");
+        // console.log("kavya");
         response = await axios.post("http://localhost:5000/api/doctors/", { ...doctorData, role });
-        console.log(response);
+        // console.log(response);
         alert(response.data.message);
         if(response.data.message=='Doctor created successfully'){
           localStorage.setItem('token',response.data.data.token);
@@ -315,9 +315,9 @@ const Signup = ({ onSwitchToLogin }) => {
           required
         >
           <option value="">Select</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-          <option value="O">Other</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
       </div>
 

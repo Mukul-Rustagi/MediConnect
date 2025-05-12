@@ -1,9 +1,11 @@
 // src/App.js
-import React, { useState } from "react";
-import MapComponent from "./Nearbyhospitals2";
+import React, { useState, useEffect } from "react";
+import MapComponent from "./Near_By_Hospitals2";
+import "../styles/Near_By_Hospitals.css";
+import "../styles/Modal.css";
 // import hospitalData from './your-hospitals-data';
 
-const Near_By_Hospitals = () => {
+const Near_By_Hospitals = ({ onClose }) => {
   const hospitalData = [
     { name: "", state: "DELHI", latitude: 28.5672, longitude: 77.21 },
     { name: "", state: "DELHI", latitude: 28.6059, longitude: 77.0383 },
@@ -616,25 +618,44 @@ const Near_By_Hospitals = () => {
   };
 
   return (
-    <div className="container-fluid">
-      <center>
-        <h1>Hospital Map</h1>
-      </center>
-      <h3 style={{ color: "red" }}>Select the state</h3>
-      <div className="row">
-        {states.map((state) => (
-          <button
-            className="btn btn-secondary col"
-            style={{ margin: "4px", boxShadow: "0 0 2px 0 black" }}
-            key={state}
-            onClick={() => handleSelectState(state)}
-          >
-            {state}
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2>Nearby Hospitals</h2>
+          <button onClick={onClose} className="close-button">
+            ×
           </button>
-        ))}
+        </div>
+        <div className="state-selector">
+          <select
+            value={selectedState}
+            onChange={(e) => handleSelectState(e.target.value)}
+            className="state-dropdown"
+          >
+            <option value="">Select a State</option>
+            <option value="DELHI">Delhi</option>
+            <option value="GUJARAT">Gujarat</option>
+            <option value="PUNJAB">Punjab</option>
+            <option value="MAHARASHTRA">Maharashtra</option>
+            <option value="UTTAR PRADESH">Uttar Pradesh</option>
+            <option value="ANDHRA PRADESH">Andhra Pradesh</option>
+            <option value="TAMIL NADU">Tamil Nadu</option>
+            <option value="KARNATAKA">Karnataka</option>
+            <option value="WEST BENGAL">West Bengal</option>
+            <option value="GOA">Goa</option>
+            <option value="MADHYA PRADESH">Madhya Pradesh</option>
+            <option value="ODISHA">Odisha</option>
+            <option value="TELANGANA">Telangana</option>
+            <option value="CHENNAI">Chennai</option>
+          </select>
+        </div>
+        <div className="map-container">
+          <MapComponent
+            hospitalData={hospitalData}
+            selectedState={selectedState}
+          />
+        </div>
       </div>
-      <br />
-      <MapComponent hospitalData={hospitalData} selectedState={selectedState} />
     </div>
   );
 };

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const doctorSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    gender: { type: String, enum: ['male', 'female', 'other'], required: true },
+    gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true},
     specialization: { type: String, required: true },

@@ -5,14 +5,6 @@ const bcrypt= require('bcrypt');
 const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
 const JWT_SECRET=process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
-// const CACHE_TTL = 3600; // 1 hour
-
-// Cache key helpers
-// const cacheKeys = {
-//   allDoctors: () => 'doctors:all',
-//   bySpecialization: (specialization) => `doctors:specialization:${specialization}`,
-//   byId: (id) => `doctor:${id}`,
-// };
 
 // Create a new doctor (MongoDB only, Redis cache logic commented)
 
@@ -30,7 +22,13 @@ const createDoctor = async (doctorData) => {
             const doctor = new Doctor({
               firstName,lastName,gender,phoneNumber,specialization,experienceYears,clinicAddress,email,password:hashedPassword,role
             });
-            const payload = { id:doctor._id,email: email,role:role };
+            const genderMap = { M: "Male", F: "Female", O: "Other" };
+            const payload = {
+              id: doctor._id,
+              email: email,
+              role: role,
+              gender: genderMap[gender] || gender
+            };
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
             doctor.token=token;
             await doctor.save();
