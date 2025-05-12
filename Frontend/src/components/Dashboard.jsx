@@ -25,7 +25,7 @@ const Dashboard = () => {
       />
 
       <div className="dashboard-main">
-        <DashboardHeader userType={userType} toggleUserType={toggleUserType} />
+        {/* <DashboardHeader userType={userType} toggleUserType={toggleUserType} /> */}
 
         <div className="dashboard-content">
           {userType === "patient" ? (

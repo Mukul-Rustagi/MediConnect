@@ -13,6 +13,7 @@ const PatientView = ({ activeTab }) => {
     switch (activeTab) {
       case "home":
         return <PatientHome />;
+
       case "appointments":
         return <PatientAppoinments isDoctorView={false} />;
       case "messages":

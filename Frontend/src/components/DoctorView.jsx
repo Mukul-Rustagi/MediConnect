@@ -1,32 +1,33 @@
 import React from "react";
-import DoctorHome from "./DoctorHome";
-import DoctorAppointments from "./DoctorAppointments";
-import DoctorMessages from "./DoctorMessages";
-import DoctorPatients from "./DoctorPatients";
-import DoctorProfile from "./DoctorProfile";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AppoinmentsPage from "./AppoinmentsPage";
 import MessagesPage from "./MessagesPage";
+import DoctorHome from "./DoctorHome";
+import DoctorPatients from "./DoctorPatients";
 import ProfilePage from "./ProfilePage";
 
-const DoctorView = ({ activeTab }) => {
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "home":
-        return <DoctorHome />;
-      case "appointments":
-        return <AppoinmentsPage isDoctorView={true} />;
-      case "messages":
-        return <MessagesPage isDoctorView={true} />;
-      case "patients":
-        return <DoctorPatients />;
-      case "profile":
-        return <ProfilePage isDoctorView={true} />;
-      default:
-        return <DoctorHome />;
-    }
-  };
+const DoctorView = () => {
+  return (
+    <Routes>
+      <Route path="/dashboard" element={<DoctorHome />} />
+      <Route
+        path="/dashboard/appointments"
+        element={<AppoinmentsPage isDoctorView={true} />}
+      />
+      <Route
+        path="/dashboard/messages"
+        element={<MessagesPage isDoctorView={true} />}
+      />
+      <Route path="/dashboard/patients" element={<DoctorPatients />} />
+      <Route
+        path="/dashboard/profile"
+        element={<ProfilePage isDoctorView={true} />}
+      />
 
-  return <div className="doctor-view">{renderTabContent()}</div>;
+      {/* Optional fallback route */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
 };
 
 export default DoctorView;

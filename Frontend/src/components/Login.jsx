@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
-
+import { useNavigate } from "react-router";
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    rememberMe: false,
+    email: "",
+    password: ""
   });
 
   const handleChange = (e) => {
@@ -16,10 +18,28 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Login submitted:", formData);
-    // Add your authentication logic here
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
+    if(decodedToken.role=="Patient"){
+      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Patient"});
+      alert(response.data.message);
+      if(response.data.message=='Login successful.'){
+        navigate('/dashboard');
+      }
+    }
+    else if(decodedToken.role=="Doctor"){
+      console.log("before");
+      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Doctor"});
+      console.log("after");
+      alert(response.data.message);
+      if(response.data.message=='Login successful.'){
+        navigate('/dashboard');
+      }
+    }
   };
 
   return (
@@ -30,13 +50,13 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="mail">Email</label>
               <input
                 type="text"
-                id="username"
-                name="username"
-                placeholder="Enter your username"
-                value={formData.username}
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />
@@ -76,7 +96,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               Forgot your username or password?
             </button>
             <span className="auth-divider">|</span>
-            <button className="auth-link" onClick={onSwitchToSignup}>
+            <button className="auth-link" onClick={() => navigate("/signUp")}>
               Don't have an account? Sign up now.
             </button>
           </div>

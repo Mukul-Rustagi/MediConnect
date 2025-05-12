@@ -23,5 +23,6 @@ router.get('/me', authenticate, (req, res) => {
 router.get('/admin', authenticate, authorizeRoles('admin'), (req, res) => {
   res.status(200).json({ message: 'Admin route accessed', user: req.user });
 });
+router.post('/logout', authenticate, authController.logoutUser);
 
 module.exports = router;

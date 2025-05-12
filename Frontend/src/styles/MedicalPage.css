@@ -480,3 +480,473 @@
       text-align: center;
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* Appointment Scheduling Flow */
+.appointment-flow {
+  margin-top: 20px;
+}
+
+/* Provider Selection */
+.provider-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.specialty-tabs {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 10px;
+}
+
+.specialty-tab {
+  padding: 8px 16px;
+  background: #f5f7fa;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.specialty-tab.active {
+  background: #3498db;
+  color: white;
+}
+
+.providers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.providers-list h2 {
+  font-size: 18px;
+  color: #2c3e50;
+  margin: 15px 0 10px;
+}
+
+.provider-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.provider-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.provider-card.unavailable {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.provider-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.provider-info h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #2c3e50;
+}
+
+.provider-info p {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.availability {
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: 4px;
+}
+
+/* Date Time Selection */
+.datetime-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.provider-summary {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.provider-summary img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.provider-summary h2 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.provider-summary p {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+.calendar-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.month-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.month-navigation button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #3498db;
+}
+
+.month-navigation h4 {
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.react-calendar {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+}
+
+.react-calendar__tile--active {
+  background: #3498db;
+  color: white;
+}
+
+.react-calendar__tile--now {
+  background: #f8f9fa;
+}
+
+.react-calendar__tile--disabled {
+  background: #f8f9fa;
+  color: #bdc3c7;
+}
+
+.available-date {
+  background: #e3f2fd;
+}
+
+.unavailable-date {
+  background: #f8f9fa;
+  color: #bdc3c7;
+}
+
+.time-selection {
+  margin-top: 20px;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.time-slot {
+  padding: 8px;
+  background: #f5f7fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.time-slot.selected {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.time-slot:hover:not(.selected) {
+  background: #e3f2fd;
+}
+
+.no-availability {
+  text-align: center;
+  padding: 20px;
+  color: #7f8c8d;
+}
+
+/* Payment Confirmation */
+.payment-confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.appointment-summary, .payment-methods {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.summary-item, .detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-item.total, .detail-item:last-child {
+  font-weight: bold;
+  border-bottom: none;
+}
+
+.method-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.method-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.method-option.selected {
+  border-color: #3498db;
+  background: #e3f2fd;
+}
+
+.card-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+/* Appointment Confirmed */
+.appointment-confirmed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.confirmation-header {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.confirmation-header svg {
+  width: 60px;
+  height: 60px;
+  stroke-width: 2;
+  stroke: #2ecc71;
+  fill: none;
+  margin-bottom: 15px;
+}
+
+.confirmation-header h2 {
+  color: #2ecc71;
+  margin-bottom: 8px;
+}
+
+.appointment-details, .email-notification {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .specialty-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+/* Page Container */
+.doctors-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px 20px;
+  background-color: #f5f9ff;
+}
+
+/* Card Link Styling */
+.doctor-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Individual Doctor Card */
+.doctor-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  padding: 24px 20px;
+  width: 260px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Doctor Name */
+.doctor-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+/* Doctor Info */
+.doctor-card p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Strong labels */
+.doctor-card p strong {
+  color: #111;
+}
