@@ -26,7 +26,7 @@ const PatientHome = ({ summaryData }) => {
   useEffect(() => {
     let decodedToken = jwtDecode(localStorage.getItem("token"));
     (async function () {
-      const patientAppointment = await axios.get(`http://localhost:5000/api/appointment/${jwtDecode(localStorage.getItem("token")).id}`, {
+      const patientAppointment = await axios.get(`${import.meta.env.VITE_API_URL}/api/appointment/${jwtDecode(localStorage.getItem("token")).id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

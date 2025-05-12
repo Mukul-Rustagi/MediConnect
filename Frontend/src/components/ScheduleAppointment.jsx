@@ -32,7 +32,7 @@ const ScheduleAppointment = () => {
           throw new Error("Authentication token not found");
         }
 
-        const response = await axios.get("http://localhost:5000/api/doctors", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/doctors`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

@@ -31,7 +31,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
     if (role == "Doctor" && appointment?.userId) {
       (async function () {
         try {
-          const response = await axios.get(`http://localhost:5000/api/user/profile/${appointment.userId}`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile/${appointment.userId}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
     } else if (role !== "Doctor" && appointment?.doctorId) {
       (async function () {
         try {
-          const response = await axios.get(`http://localhost:5000/api/doctors/${appointment.doctorId}`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/doctors/${appointment.doctorId}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",

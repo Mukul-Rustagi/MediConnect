@@ -25,7 +25,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     const decodedToken = jwtDecode(token);
     console.log(decodedToken);
     if(decodedToken.role=="Patient"){
-      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Patient"});
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/login`,{...formData,role:"Patient"});
       alert(response.data.message);
       if(response.data.message=='Login successful.'){
         navigate('/dashboard');
@@ -33,7 +33,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     }
     else if(decodedToken.role=="Doctor"){
       console.log("before");
-      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Doctor"});
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/login`,{...formData,role:"Doctor"});
       console.log("after");
       alert(response.data.message);
       if(response.data.message=='Login successful.'){

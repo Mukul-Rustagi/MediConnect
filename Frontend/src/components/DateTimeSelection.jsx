@@ -48,7 +48,12 @@ const DateTimeSelection = ({ id }) => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axiosInstance.get("appointment");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/appointment`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          });
         const all = response.data.data;
 
         setAppointments(all);

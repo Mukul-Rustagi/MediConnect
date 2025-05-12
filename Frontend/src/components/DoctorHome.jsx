@@ -38,7 +38,7 @@ const DoctorHome = () => {
     const fetchAppointments = async () => {
       const token = localStorage.getItem("token");
       const doctorId = jwtDecode(token).id;
-      const response = await axios.get(`http://localhost:5000/api/appointment/${doctorId}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/appointment/${doctorId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

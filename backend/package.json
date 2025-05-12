@@ -23,7 +23,8 @@
     "redis": "^5.0.1",
     "socket.io": "^4.8.1",
     "square": "^35.0.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "vercel": "^41.7.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
