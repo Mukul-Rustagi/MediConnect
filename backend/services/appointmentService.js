@@ -1,10 +1,13 @@
-const Appointment = require('../models/Appointment');
-const User = require('../models/User');
-const Doctor = require('../models/Doctor');
+const Appointment = require("../models/Appointment");
+const User = require("../models/User");
+const Doctor = require("../models/Doctor");
 const Payment = require("../models/paymentModel");
-const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
-const { sendAppointmentConfirmation } = require('../utils/emailService');
-const mongoose = require('mongoose');
+const {
+  sendErrorResponse,
+  sendSuccessResponse,
+} = require("../utils/responseHandler");
+const { sendAppointmentConfirmation } = require("../utils/emailService");
+const mongoose = require("mongoose");
 
 const createAppointment = async (appointmentData) => {
   try {
@@ -12,14 +15,18 @@ const createAppointment = async (appointmentData) => {
 
     // 1. Validate required fields
     if (!userId || !doctorId || !date || !time || !paymentId) {
-      return sendErrorResponse("Missing required appointment fields (userId, doctorId, date, time, paymentId).");
+      return sendErrorResponse(
+        "Missing required appointment fields (userId, doctorId, date, time, paymentId)."
+      );
     }
 
     // 2. Validate date format
     const dateTimeString = `${date}T${time}`; // e.g., 2025-10-05T14:30
     const dateTime = new Date(dateTimeString);
     if (isNaN(dateTime.getTime())) {
-      return sendErrorResponse("Invalid date or time format. Use YYYY-MM-DD for date and HH:mm for time.");
+      return sendErrorResponse(
+        "Invalid date or time format. Use YYYY-MM-DD for date and HH:mm for time."
+      );
     }
 
     // 3. Check if payment exists and is completed
@@ -40,7 +47,7 @@ const createAppointment = async (appointmentData) => {
       doctorId,
       dateTime,
       paymentId,
-      status: "confirmed"
+      status: "confirmed",
     });
 
     // 6. Fetch user and doctor for email
@@ -55,11 +62,12 @@ const createAppointment = async (appointmentData) => {
       ...appointment.toObject(),
       user: { name: user.name },
       doctor: { name: doctor.name },
-      department: doctor.specialization
+      department: doctor.specialization,
     };
 
-    sendAppointmentConfirmation(user.email, emailData)
-      .catch(err => console.error("Email sending failed:", err));
+    sendAppointmentConfirmation(user.email, emailData).catch((err) =>
+      console.error("Email sending failed:", err)
+    );
 
     return sendSuccessResponse(appointment, "Appointment booked successfully.");
   } catch (error) {
@@ -71,7 +79,9 @@ const getAppointments = async (userId) => {
   // console.log("hello");
   try {
     console.log(userId);
-    const appointments = await Appointment.find({ userId });
+    const appointments = await Appointment.find({ userId }).populate(
+      "doctorId"
+    );
 
     console.log(appointments);
     return sendSuccessResponse(appointments);
@@ -87,23 +97,26 @@ const updateAppointmentStatus = async (appointmentId, status) => {
       { status },
       { new: true }
     );
-    if (!appointment) throw new Error('Appointment not found');
+    if (!appointment) throw new Error("Appointment not found");
     return sendSuccessResponse(appointment);
   } catch (error) {
     return sendErrorResponse(error.message);
   }
 };
 
-const getAppointmentById = async (appointmentId,role) => {
+const getAppointmentById = async (appointmentId, role) => {
   console.log("helloo");
   console.log(appointmentId);
   try {
     let appointment;
-    if(role=="Patient"){
-    appointment = await Appointment.find({userId:appointmentId});
-    }
-    else if(role=="Doctor"){
-      appointment = await Appointment.find({doctorId:appointmentId});
+    if (role == "Patient") {
+      appointment = await Appointment.find({ userId: appointmentId }).populate(
+        "doctorId"
+      );
+    } else if (role == "Doctor") {
+      appointment = await Appointment.find({
+        doctorId: appointmentId,
+      }).populate("userId");
     }
     if (!appointment) {
       return sendErrorResponse("Appointment not found.");
@@ -116,10 +129,14 @@ const getAppointmentById = async (appointmentId,role) => {
 
 const getAppointmentsByDoctor = async (doctorId) => {
   try {
-    const appointments = await Appointment.find({ doctorId }).populate('userId');
+    const appointments = await Appointment.find({ doctorId }).populate(
+      "userId"
+    );
     return sendSuccessResponse(appointments);
   } catch (error) {
-    return sendErrorResponse('Failed to fetch doctor appointments: ' + error.message);
+    return sendErrorResponse(
+      "Failed to fetch doctor appointments: " + error.message
+    );
   }
 };
 
@@ -127,19 +144,19 @@ const getAppointmentsByDoctor = async (doctorId) => {
 const getUpcomingAppointments = async (userId) => {
   try {
     const currentDate = new Date();
-    
+
     const appointments = await Appointment.find({
       userId: new mongoose.Types.ObjectId(userId),
       dateTime: { $gt: currentDate },
-      status: 'completed'
+      status: "completed",
     })
-    .populate('doctorId', 'name specialization')
-    .sort({ dateTime: 1 });
+      .populate("doctorId", "name specialization")
+      .sort({ dateTime: 1 });
 
     return appointments;
   } catch (error) {
-    console.error('Error in getUpcomingAppointments:', error);
-    throw new Error('Failed to fetch upcoming appointments');
+    console.error("Error in getUpcomingAppointments:", error);
+    throw new Error("Failed to fetch upcoming appointments");
   }
 };
 
@@ -147,19 +164,19 @@ const getUpcomingAppointments = async (userId) => {
 const getPastAppointments = async (userId) => {
   try {
     const currentDate = new Date();
-    
+
     const appointments = await Appointment.find({
       userId: new mongoose.Types.ObjectId(userId),
       dateTime: { $lte: currentDate },
-      status: 'completed'
+      status: "completed",
     })
-    .populate('doctorId', 'name specialization')
-    .sort({ dateTime: -1 });
+      .populate("doctorId", "name specialization")
+      .sort({ dateTime: -1 });
 
     return appointments;
   } catch (error) {
-    console.error('Error in getPastAppointments:', error);
-    throw new Error('Failed to fetch past appointments');
+    console.error("Error in getPastAppointments:", error);
+    throw new Error("Failed to fetch past appointments");
   }
 };
 
@@ -170,5 +187,5 @@ module.exports = {
   getAppointmentById,
   getAppointmentsByDoctor,
   getUpcomingAppointments,
-  getPastAppointments
+  getPastAppointments,
 };

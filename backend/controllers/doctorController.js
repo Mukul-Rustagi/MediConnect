@@ -1,5 +1,8 @@
-const doctorService = require('../services/doctorService');
-const { sendErrorResponse, sendSuccessResponse } = require('../utils/responseHandler');
+const doctorService = require("../services/doctorService");
+const {
+  sendErrorResponse,
+  sendSuccessResponse,
+} = require("../utils/responseHandler");
 
 const createDoctor = async (req, res) => {
   try {
@@ -31,7 +34,7 @@ const getDoctorById = async (req, res) => {
 
 const updateDoctor = async (req, res) => {
   try {
-    
+    console.log(req.body);
     const result = await doctorService.updateDoctor(req.params.id, req.body);
     if (!result.data) return res.status(404).json(result);
     res.json(result);
@@ -55,5 +58,5 @@ module.exports = {
   getAllDoctors,
   getDoctorById,
   updateDoctor,
-  deleteDoctor
+  deleteDoctor,
 };

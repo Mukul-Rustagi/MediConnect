@@ -1,40 +1,40 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const mongoose = require('mongoose');
-const path = require('path');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const { initWebRTC } = require('./utils/webrtcHelper'); // WebRTC helper
-const redis = require('./config/redis'); // Redis configuration
-const { connectDb } = require('./config/db'); // MongoDB configuration
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+const mongoose = require("mongoose");
+const path = require("path");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const { initWebRTC } = require("./utils/webrtcHelper"); // WebRTC helper
+const redis = require("./config/redis"); // Redis configuration
+const { connectDb } = require("./config/db"); // MongoDB configuration
 
 // Middleware
-const authenticate = require('./middleware/authenticate');
-const authorizeRoles = require('./middleware/authorizeRoles');
+const authenticate = require("./middleware/authenticate");
+const authorizeRoles = require("./middleware/authorizeRoles");
 
 // Controllers
-const paymentController = require('./controllers/paymentController');
-const consultationController = require('./controllers/consultationController');
-const conversationController = require('./controllers/conversationController');
-const patientController = require('./controllers/patientController');
-const dietController=require('./controllers/dietController');
-const doctorController=require('./controllers/doctorController');
-const adminController=require('./controllers/adminController');
-const authController = require('./controllers/authController');
-const userController = require('./controllers/userController');
-const appointmentController = require('./controllers/appointmentController');
+const paymentController = require("./controllers/paymentController");
+const consultationController = require("./controllers/consultationController");
+const conversationController = require("./controllers/conversationController");
+const patientController = require("./controllers/patientController");
+const dietController = require("./controllers/dietController");
+const doctorController = require("./controllers/doctorController");
+const adminController = require("./controllers/adminController");
+const authController = require("./controllers/authController");
+const userController = require("./controllers/userController");
+const appointmentController = require("./controllers/appointmentController");
 // Routes
-const paymentRoutes = require('./routes/paymentRoutes');
-const consultationRoutes = require('./routes/consultationRoutes');
-const conversationRoutes = require('./routes/conversationRoutes');
-const patientRoutes = require('./routes/patientRoutes');
-const dietRoutes=require('./routes/dietRoutes');
-const doctorRoutes=require('./routes/doctorRoutes');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const appointmentRoutes = require('./routes/appointmentRoutes');
-const adminRoutes=require('./routes/adminRoutes');
+const paymentRoutes = require("./routes/paymentRoutes");
+const consultationRoutes = require("./routes/consultationRoutes");
+const conversationRoutes = require("./routes/conversationRoutes");
+const patientRoutes = require("./routes/patientRoutes");
+const dietRoutes = require("./routes/dietRoutes");
+const doctorRoutes = require("./routes/doctorRoutes");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const appointmentRoutes = require("./routes/appointmentRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -46,12 +46,12 @@ const app = express();
 const server = http.createServer(app);
 
 // Secure CORS configuration
-app.use(cors({
-  origin: '*', // Change for production
-  methods: ['GET', 'POST']
-}));
-
-
+app.use(
+  cors({
+    origin: "*", // Change for production
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
 // Store connected users
 
@@ -63,29 +63,31 @@ app.use(express.urlencoded({ extended: true }));
 connectDb();
 
 // Static file serving for uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'storage/uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "storage/uploads")));
 
 // Routes for API Endpoints
-app.use('/api', paymentRoutes);
-app.use('/api/consultations', consultationRoutes);
-app.use('/api/conversations', conversationRoutes);
-app.use('/api/patients', patientRoutes);
-app.use('/api/diets',dietRoutes);
-app.use('/api/doctors',doctorRoutes);
-app.use('/api/v1',authRoutes);
-app.use('/api/user',userRoutes);
-app.use('/api/appointment',appointmentRoutes);
-app.use('/api/admin',adminRoutes);
+app.use("/api", paymentRoutes);
+app.use("/api/consultations", consultationRoutes);
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/patients", patientRoutes);
+app.use("/api/diets", dietRoutes);
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/v1", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/appointment", appointmentRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Error handling for invalid routes
-app.all('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found.' });
+app.all("*", (req, res) => {
+  res.status(404).json({ message: "Route not found." });
 });
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+  res
+    .status(500)
+    .json({ message: "Something went wrong!", error: err.message });
 });
 
 // Start the server

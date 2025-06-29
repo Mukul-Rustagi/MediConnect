@@ -20,6 +20,7 @@ const AppoinmentsPage = ({ isDoctorView }) => {
     }
 
     const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
     const role = decodedToken.role?.toLowerCase() || "";
     setUserRole(role);
 
@@ -110,17 +111,14 @@ const AppoinmentsPage = ({ isDoctorView }) => {
       } catch (error) {
         console.error("Error fetching appointments:", error);
       } finally {
-        console.log(appointments);
-
         setIsLoading(false);
       }
     };
 
     fetchAppointments();
   }, []);
-
   const filteredAppointments = appointments;
-
+  console.log(filteredAppointments);
   const getUserName = (appointment) => {
     if (userRole === "doctor") {
       const patientData = userProfiles[appointment.userId];
@@ -210,41 +208,45 @@ const AppoinmentsPage = ({ isDoctorView }) => {
           <div className="appointments-list">
             {filteredAppointments.length > 0 ? (
               filteredAppointments.map((appointment) => {
-                const userDetails = getUserDetails(appointment);
+                const userDetails = appointment;
                 return (
                   <div
                     key={appointment._id}
                     className={`appointment-card ${appointment.status}`}
                   >
+                    {console.log(userDetails)}
                     <div className="appointment-main">
                       <h3>{appointment.reason || "Medical Consultation"}</h3>
-                      <p className="appointment-meta">
-                        <span className="label">With:</span>{" "}
-                        {getUserName(appointment)}
-                      </p>
+
                       {userDetails && (
                         <>
                           {userRole === "doctor" ? (
                             <>
                               <p className="appointment-meta">
+                                <span className="label">With:</span>{" "}
+                                {userDetails.userId.firstName +
+                                  " " +
+                                  userDetails.userId.lastName}
+                              </p>
+                              <p className="appointment-meta">
                                 <span className="label">Email:</span>{" "}
-                                {userDetails.email}
+                                {userDetails.userId.email}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Phone:</span>{" "}
-                                {userDetails.phone}
+                                {userDetails.userId.phone}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Address:</span>{" "}
-                                {userDetails.address}
+                                {userDetails.userId.address}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Gender:</span>{" "}
-                                {userDetails.gender}
+                                {userDetails.userId.gender}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Blood Type:</span>{" "}
-                                {userDetails.bloodType}
+                                {userDetails.userId.bloodType}
                               </p>
                               {userDetails.profilePicture && (
                                 <div className="profile-picture">
@@ -258,29 +260,39 @@ const AppoinmentsPage = ({ isDoctorView }) => {
                           ) : (
                             <>
                               <p className="appointment-meta">
+                                <span className="label">With:</span>{" "}
+                                {userDetails.doctorId.firstName +
+                                  " " +
+                                  userDetails.doctorId.lastName}
+                              </p>
+                              <p className="appointment-meta">
                                 <span className="label">Specialization:</span>{" "}
-                                {userDetails.specialization}
+                                {userDetails.doctorId.specialization}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Contact:</span>{" "}
-                                {userDetails.phoneNumber}
+                                {userDetails.doctorId.phoneNumber}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Email:</span>{" "}
-                                {userDetails.email}
+                                {userDetails.doctorId.email}
                               </p>
-                              <p className="appointment-meta">
+                              {/* <p className="appointment-meta">
                                 <span className="label">Address:</span>{" "}
-                                {userDetails.address}
-                              </p>
+                                {userDetails.doctorId.address}
+                              </p> */}
                               <p className="appointment-meta">
                                 <span className="label">Gender:</span>{" "}
-                                {userDetails.gender}
+                                {userDetails.doctorId.gender}
+                              </p>
+                              <p className="appointment-meta">
+                                <span className="label">Location:</span>{" "}
+                                {userDetails.doctorId.clinicAddress || "Clinic"}
                               </p>
                               {userDetails.profilePicture && (
                                 <div className="profile-picture">
                                   <img
-                                    src={userDetails.profilePicture}
+                                    src={userDetails.doctorId.profilePicture}
                                     alt="Profile"
                                   />
                                 </div>
@@ -291,17 +303,12 @@ const AppoinmentsPage = ({ isDoctorView }) => {
                       )}
                       <p className="appointment-meta">
                         <span className="label">When:</span>{" "}
-                        {new Date(appointment.date).toLocaleDateString()} at{" "}
-                        {appointment.time}
+                        {new Date(appointment.dateTime).toLocaleDateString()}
                       </p>
-                      <p className="appointment-meta">
+                      {/* <p className="appointment-meta">
                         <span className="label">Type:</span>{" "}
                         {appointment.type || "Regular Checkup"}
-                      </p>
-                      <p className="appointment-meta">
-                        <span className="label">Location:</span>{" "}
-                        {appointment.location || "Clinic"}
-                      </p>
+                      </p> */}
                     </div>
                     <div className="appointment-actions">
                       <span className={`status-badge ${appointment.status}`}>
