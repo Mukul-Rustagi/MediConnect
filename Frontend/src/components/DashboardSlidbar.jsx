@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   FaHome,
@@ -14,67 +14,75 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMobileOpen } from "../store/features/UI/uiSlice";
+import { jwtDecode } from "jwt-decode";
 
 const DashboardSidebar = ({ userType }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const [user, setUser] = useState(null); // null until token is processed
 
   const [collapsed, setCollapsed] = useState(false);
   const mobileOpen = useSelector((state) => state.ui.mobileOpen);
+  useEffect(() => {
+    // localStorage.removeItem("token");
+    // localStorage.setItem('token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjEzMWU0ZDEyZGMwNzU1MDJhM2Y4ZCIsImVtYWlsIjoia2F2QGdtYWlsLmNvbSIsInJvbGUiOiJQYXRpZW50IiwiaWF0IjoxNzQ3MDA3OTk3LCJleHAiOjE3NDc2MTI3OTd9.T7qMdOqqWQTxAtVjhpoDNtlL6YDm2wP-Fz1qI9CopUU')
+    const token = localStorage.getItem("token") || "";
+    (async function () {
+      if (token) {
+        try {
+          const decoded = await jwtDecode(token);
+          console.log(decoded.role, decoded.id, decoded.email);
+          setUser({ type: decoded.role, id: decoded.id, email: decoded.email });
+        } catch (err) {
+          console.error("Invalid token", err);
+          setUser(null);
+        }
+      }
+    })();
+  }, []);
 
   const patientTabs = [
-    { id: "home", label: "Home", path: "/dashboard", icon: <FaHome /> },
+    { id: "home", label: "Home", path: "/dashboardPatient", icon: <FaHome /> },
     {
       id: "appointments",
       label: "Appointments",
-      path: "/dashboard/appointments",
+      path: "/dashboardPatient/appointments",
       icon: <FaCalendarAlt />,
     },
     {
       id: "nearby-hospitals",
       label: "Nearby Hospitals",
-      path: "/dashboard/nearby-hospitals",
+      path: "/dashboardPatient/nearby-hospitals",
       icon: <FaHospital />,
     },
-    {
-      id: "health-records",
-      label: "Health Record",
-      path: "/dashboard/health-records",
-      icon: <FaFileAlt />,
-    },
+
     {
       id: "profile",
       label: "Profile",
-      path: "/dashboard/profile",
+      path: "/dashboardPatient/profile",
       icon: <FaUser />,
-    },
-    {
-      id: "billing",
-      label: "Billing",
-      path: "/dashboard/billing",
-      icon: <FaMoneyBillAlt />,
     },
   ];
 
   const doctorTabs = [
-    { id: "home", label: "Home", path: "/dashboard", icon: <FaHome /> },
+    { id: "home", label: "Home", path: "/dashboardDoctor", icon: <FaHome /> },
     {
       id: "appointments",
       label: "Appointments",
-      path: "/dashboard/appointments",
+      path: "/dashboardDoctor/appointments",
       icon: <FaCalendarAlt />,
     },
 
     {
       id: "profile",
       label: "Profile",
-      path: "/dashboard/profile",
+      path: "/dashboardDoctor/profile",
       icon: <FaUser />,
     },
   ];
 
-  const tabs = userType === "patient" ? patientTabs : doctorTabs;
+  const tabs = user?.type === "Patient" ? patientTabs : doctorTabs;
 
   const isActive = (path) => {
     return (

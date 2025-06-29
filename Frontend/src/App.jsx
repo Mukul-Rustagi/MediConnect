@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import Login from "./components/Login";
@@ -17,27 +17,28 @@ import patientData from "./Data/PatientData";
 import DoctorView from "./components/DoctorView";
 import DoctorHome from "./components/DoctorHome";
 import { jwtDecode } from "jwt-decode";
+import Near_By_Hospitals from "./components/Near_By_Hospitals";
 // import useEffect from
 
-
 function App() {
-  
   const [user, setUser] = useState(null); // null until token is processed
-  
+
   useEffect(() => {
     // localStorage.removeItem("token");
     // localStorage.setItem('token','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjEzMWU0ZDEyZGMwNzU1MDJhM2Y4ZCIsImVtYWlsIjoia2F2QGdtYWlsLmNvbSIsInJvbGUiOiJQYXRpZW50IiwiaWF0IjoxNzQ3MDA3OTk3LCJleHAiOjE3NDc2MTI3OTd9.T7qMdOqqWQTxAtVjhpoDNtlL6YDm2wP-Fz1qI9CopUU')
-    const token = localStorage.getItem("token")||"";
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        console.log(decoded.role, decoded.id, decoded.email);
-        setUser({ type: decoded.role, id: decoded.id, email: decoded.email });
-      } catch (err) {
-        console.error("Invalid token", err);
-        setUser(null);
+    const token = localStorage.getItem("token") || "";
+    (async function () {
+      if (token) {
+        try {
+          const decoded = await jwtDecode(token);
+          console.log(decoded.role, decoded.id, decoded.email);
+          setUser({ type: decoded.role, id: decoded.id, email: decoded.email });
+        } catch (err) {
+          console.error("Invalid token", err);
+          setUser(null);
+        }
       }
-    }
+    })();
   }, []);
 
   const {
@@ -61,44 +62,36 @@ function App() {
         <Route path="/" element={<HealthcareCover />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
-        {user?.type == "Patient" ? (
+        <Route
+          path="/dashboardPatient"
+          element={<DashboardLayout summaryData={summaryData} />}
+        >
+          <Route index element={<PatientHome summaryData={summaryData} />} />
+          <Route path="appointments" element={<AppoinmentsPage />} />
+          <Route path="messages" element={<MessagesPage />} />
           <Route
-            path="/dashboard"
-            element={
-              <DashboardLayout userType={user.type} summaryData={summaryData} />
-            }
-          >
-            <Route index element={<PatientHome summaryData={summaryData} />} />
-            <Route path="appointments" element={<AppoinmentsPage />} />
-            <Route path="messages" element={<MessagesPage />} />
-            <Route
-              path="profile"
-              element={<ProfilePage isDoctorView={false} />}
-            />
+            path="profile"
+            element={<ProfilePage isDoctorView={false} />}
+          />
+          <Route path="nearby-hospitals" element={<Near_By_Hospitals />} />
 
-            <Route path="prescriptions" element={<PatientPrescription />} />
-            <Route path="labs" element={<PatientsLabs />} />
-            <Route path="health-records" element={<PatientHealthRecords />} />
-            <Route path="billing" element={<PatientBilling />} />
-          </Route>
-        ) : (
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DoctorHome />} />
-            <Route
-              path="appointments"
-              element={<AppoinmentsPage isDoctorView={true} />}
-            />
-            <Route
-              path="messages"
-              element={<MessagesPage isDoctorView={true} />}
-            />
-            <Route
-              path="profile"
-              element={<ProfilePage isDoctorView={true} />}
-            />
-          </Route>
-        )}
+          <Route path="prescriptions" element={<PatientPrescription />} />
+          <Route path="labs" element={<PatientsLabs />} />
+          <Route path="health-records" element={<PatientHealthRecords />} />
+          <Route path="billing" element={<PatientBilling />} />
+        </Route>
+        <Route path="/dashboardDoctor" element={<DashboardLayout />}>
+          <Route index element={<DoctorHome />} />
+          <Route
+            path="appointments"
+            element={<AppoinmentsPage isDoctorView={true} />}
+          />
+          <Route
+            path="messages"
+            element={<MessagesPage isDoctorView={true} />}
+          />
+          <Route path="profile" element={<ProfilePage isDoctorView={true} />} />
+        </Route>
         <Route path="/patient/home" element={<PatientHome />} />
       </Routes>
     </BrowserRouter>

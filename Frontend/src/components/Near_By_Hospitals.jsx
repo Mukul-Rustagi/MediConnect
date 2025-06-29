@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 import MapComponent from "./Near_By_Hospitals2";
 import "../styles/Near_By_Hospitals.css";
 import "../styles/Modal.css";
+import { useNavigate } from "react-router";
 // import hospitalData from './your-hospitals-data';
 
 const Near_By_Hospitals = ({ onClose }) => {
+  const navigate = useNavigate();
   const hospitalData = [
     { name: "", state: "DELHI", latitude: 28.5672, longitude: 77.21 },
     { name: "", state: "DELHI", latitude: 28.6059, longitude: 77.0383 },
@@ -622,7 +624,7 @@ const Near_By_Hospitals = ({ onClose }) => {
       <div className="modal-content">
         <div className="modal-header">
           <h2>Nearby Hospitals</h2>
-          <button onClick={onClose} className="close-button">
+          <button onClick={() => navigate(-1)} className="close-button">
             ×
           </button>
         </div>

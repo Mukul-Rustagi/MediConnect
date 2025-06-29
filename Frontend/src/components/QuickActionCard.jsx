@@ -12,11 +12,11 @@ const QuickActionCard = ({ action }) => {
   // Determine the target route or action based on the card title
   const handleNavigate = () => {
     switch (action.title) {
-      case "Start Consultation":
-        navigate("/dashboard/appointments");
+      case "Request Appointment":
+        navigate("/dashboardPatient/appointments");
         break;
       case "View Schedule":
-        navigate("/dashboard/appointments");
+        navigate("/dashboardPatient/appointments");
         break;
       case "Show Near by hospital":
         setHospitalsModalOpen(true);

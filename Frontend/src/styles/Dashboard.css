@@ -16,6 +16,7 @@
   --sidebar-width: 250px;
   --sidebar-collapsed-width: 80px;
   --header-height: 70px;
+  --bs-modal-bg:whitesmoke;
 }
 
 * {

@@ -1,34 +1,48 @@
-import React, { useState,useEffect } from "react";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../styles/MedicalPage.css";
 import axiosInstance from "../utils/axiosinstance";
-const ProfilePage = ({ isDoctorView = true }) => {
+const ProfilePage = ({ isDoctorView = false }) => {
   const [decodedToken, setDecodedToken] = useState(null);
-    useEffect(()=>{
-      (async function(){
-        const token = localStorage.getItem('token');
-        console.log(token);
-      
-        setDecodedToken(jwtDecode(token));
-        const userData = await axiosInstance.get('user/profile');
-        console.log(userData);
-      })();
-    },[]);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "(555) 123-4567",
-    address: "123 Main St, Anytown, USA",
-    dateOfBirth: "1985-05-15",
-    gender: "male",
-    bloodType: "A+",
-    allergies: "Penicillin, Peanuts",
-    conditions: "Hypertension",
-    medications: "Lisinopril 10mg daily",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    dateOfBirth: "",
+    gender: "",
+    bloodType: "",
+    allergies: "",
+    conditions: "",
+    medications: "",
+    specialization: "",
   });
+  useEffect(() => {
+    (async function () {
+      const token = localStorage.getItem("token");
+      console.log(token);
+
+      setDecodedToken(jwtDecode(token));
+      const userData = await axiosInstance.get("user/profile");
+      setFormData((prev) => ({
+        ...prev,
+        firstName: userData.data.data.firstName,
+        lastName: userData.data.data.lastName,
+        email: userData.data.data.email,
+        phone: userData.data.data.phoneNumber,
+        address: userData.data.data.clinicAddress,
+        dateOfBirth: userData.data.data.dateOfBirth,
+        gender: userData.data.data.gender,
+        specialization: userData.data.data.specialization,
+      }));
+      console.log("doctor view", isDoctorView);
+
+      console.log(userData);
+    })();
+  }, []);
+  const [editMode, setEditMode] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,37 +52,36 @@ const ProfilePage = ({ isDoctorView = true }) => {
     }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!decodedToken?.id) return console.error("User ID not found in token");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!decodedToken?.id) return console.error("User ID not found in token");
 
-  const updatePayload = {
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    email: formData.email,
-    phoneNumber: formData.phone,
-    clinicAddress: formData.address,
-    dateOfBirth: formData.dateOfBirth,
-    gender: formData.gender,
+    const updatePayload = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      dateOfBirth: formData.dateOfBirth,
+      gender: formData.gender,
+    };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/doctors/${decodedToken.id}`,
+        updatePayload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Profile updated:", response.data);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Update failed:", error.response?.data || error.message);
+    }
   };
-
-  try {
-    const response = await axios.put(
-      `http://localhost:5000/api/doctors/${decodedToken.id}`,
-      updatePayload,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    console.log("Profile updated:", response.data);
-    setEditMode(false);
-  } catch (error) {
-    console.error("Update failed:", error.response?.data || error.message);
-  }
-};
-
 
   return (
     <div className="medical-page profile-page">
@@ -105,7 +118,9 @@ const ProfilePage = ({ isDoctorView = true }) => {
             <h2>
               {formData.firstName} {formData.lastName}
             </h2>
-            <p>{isDoctorView ? "Cardiologist" : "Patient since 2020"}</p>
+            <p>
+              {isDoctorView ? formData.specialization : "Patient since 2020"}
+            </p>
           </div>
         </div>
 
@@ -310,7 +325,7 @@ const ProfilePage = ({ isDoctorView = true }) => {
             <div className="profile-info-grid">
               <div className="info-item">
                 <span className="info-label">Specialization</span>
-                <span className="info-value">Cardiology</span>
+                <span className="info-value">{formData.specialization}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">License Number</span>

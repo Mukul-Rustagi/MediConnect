@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import {
   FaCalendarAlt,
   FaMapMarkerAlt,
@@ -31,12 +31,15 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
     if (role == "Doctor" && appointment?.userId) {
       (async function () {
         try {
-          const response = await axios.get(`http://localhost:5000/api/user/profile/${appointment.userId}`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await axios.get(
+            `http://localhost:5000/api/user/profile/${appointment.userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
           setPatientData(response.data.data);
         } catch (e) {
           setPatientData(undefined);
@@ -45,12 +48,15 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
     } else if (role !== "Doctor" && appointment?.doctorId) {
       (async function () {
         try {
-          const response = await axios.get(`http://localhost:5000/api/doctors/${appointment.doctorId}`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const response = await axios.get(
+            `http://localhost:5000/api/doctors/${appointment.doctorId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
           setDoctorData(response.data.data);
         } catch (e) {
           setDoctorData(undefined);
@@ -62,7 +68,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
   const handleRedirect = () => {
-    window.location.href = 'https://webrtc-testing-t2az.onrender.com/';
+    window.location.href = "https://webrtc-testing-t2az.onrender.com/";
   };
   return (
     <>
@@ -84,10 +90,10 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
               {role === "Doctor"
                 ? patientData
                   ? `${patientData.firstName} ${patientData.lastName}`
-                  : 'Loading...'
+                  : "Loading..."
                 : doctorData
                 ? `Dr. ${doctorData.firstName} ${doctorData.lastName}`
-                : 'Loading...'}
+                : "Loading..."}
             </span>
           </div>
           {role === "Doctor" && patientData && (
@@ -106,7 +112,12 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
               </div>
               <div className="detail-row">
                 <span className="detail-icon">🎂</span>
-                <span>DOB: {patientData.dateOfBirth ? new Date(patientData.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
+                <span>
+                  DOB:{" "}
+                  {patientData.dateOfBirth
+                    ? new Date(patientData.dateOfBirth).toLocaleDateString()
+                    : "N/A"}
+                </span>
               </div>
               <div className="detail-row">
                 <span className="detail-icon">⚧️</span>
@@ -135,7 +146,14 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
               {patientData.profilePicture && (
                 <div className="detail-row">
                   <span className="detail-icon">🖼️</span>
-                  <span>Profile Picture: <img src={patientData.profilePicture} alt="Profile" style={{ width: 40, height: 40, borderRadius: '50%' }} /></span>
+                  <span>
+                    Profile Picture:{" "}
+                    <img
+                      src={patientData.profilePicture}
+                      alt="Profile"
+                      style={{ width: 40, height: 40, borderRadius: "50%" }}
+                    />
+                  </span>
                 </div>
               )}
             </>
@@ -155,7 +173,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
           <div className="detail-row">
             <FaCalendarAlt className="detail-icon" />
             <span>
-              {new Date(appointment.date).toLocaleDateString("en-US", {
+              {new Date(appointment.dateTime).toLocaleDateString("en-US", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
@@ -207,10 +225,10 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                     {role === "Doctor"
                       ? patientData
                         ? `${patientData.firstName} ${patientData.lastName}`
-                        : 'Loading...'
+                        : "Loading..."
                       : doctorData
                       ? `Dr. ${doctorData.firstName} ${doctorData.lastName}`
-                      : 'Loading...'}
+                      : "Loading..."}
                   </span>
                 </div>
                 {role === "Doctor" && patientData && (
@@ -225,11 +243,19 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Address:</span>
-                      <span className="detail-value">{patientData.address}</span>
+                      <span className="detail-value">
+                        {patientData.address}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">DOB:</span>
-                      <span className="detail-value">{patientData.dateOfBirth ? new Date(patientData.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
+                      <span className="detail-value">
+                        {patientData.dateOfBirth
+                          ? new Date(
+                              patientData.dateOfBirth
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Gender:</span>
@@ -237,28 +263,48 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Blood Type:</span>
-                      <span className="detail-value">{patientData.bloodType}</span>
+                      <span className="detail-value">
+                        {patientData.bloodType}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Allergies:</span>
-                      <span className="detail-value">{patientData.allergies}</span>
+                      <span className="detail-value">
+                        {patientData.allergies}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Medications:</span>
-                      <span className="detail-value">{patientData.medications}</span>
+                      <span className="detail-value">
+                        {patientData.medications}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Conditions:</span>
-                      <span className="detail-value">{patientData.conditions}</span>
+                      <span className="detail-value">
+                        {patientData.conditions}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Country:</span>
-                      <span className="detail-value">{patientData.country}</span>
+                      <span className="detail-value">
+                        {patientData.country}
+                      </span>
                     </div>
                     {patientData.profilePicture && (
                       <div className="detail-item">
                         <span className="detail-label">Profile Picture:</span>
-                        <span className="detail-value"><img src={patientData.profilePicture} alt="Profile" style={{ width: 40, height: 40, borderRadius: '50%' }} /></span>
+                        <span className="detail-value">
+                          <img
+                            src={patientData.profilePicture}
+                            alt="Profile"
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: "50%",
+                            }}
+                          />
+                        </span>
                       </div>
                     )}
                   </>
@@ -267,31 +313,42 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                   <>
                     <div className="detail-item">
                       <span className="detail-label">Specialization:</span>
-                      <span className="detail-value">{doctorData.specialization}</span>
+                      <span className="detail-value">
+                        {doctorData.specialization}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Experience:</span>
-                      <span className="detail-value">{doctorData.experienceYears} years</span>
+                      <span className="detail-value">
+                        {doctorData.experienceYears} years
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Contact:</span>
-                      <span className="detail-value">{doctorData.phoneNumber}</span>
+                      <span className="detail-value">
+                        {doctorData.phoneNumber}
+                      </span>
                     </div>
                     <div className="detail-item">
                       <span className="detail-label">Clinic Address:</span>
-                      <span className="detail-value">{doctorData.clinicAddress}</span>
+                      <span className="detail-value">
+                        {doctorData.clinicAddress}
+                      </span>
                     </div>
                   </>
                 )}
                 <div className="detail-item">
                   <span className="detail-label">Date:</span>
                   <span className="detail-value">
-                    {new Date(appointment.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      weekday: "long",
-                    })}
+                    {new Date(appointment.dateTime).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        weekday: "long",
+                      }
+                    )}
                   </span>
                 </div>
                 <div className="detail-item">

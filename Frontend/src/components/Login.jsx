@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router";
-import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
+    role: "",
   });
 
   const handleChange = (e) => {
@@ -18,26 +19,23 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login submitted:", formData);
-    const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
-    if(decodedToken.role=="Patient"){
-      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Patient"});
-      alert(response.data.message);
-      if(response.data.message=='Login successful.'){
-        navigate('/dashboard');
-      }
-    }
-    else if(decodedToken.role=="Doctor"){
-      console.log("before");
-      const response = await axios.post('http://localhost:5000/api/v1/login',{...formData,role:"Doctor"});
-      console.log("after");
-      alert(response.data.message);
-      if(response.data.message=='Login successful.'){
-        navigate('/dashboard');
+
+    const response = await axios.post(
+      "http://localhost:5000/api/v1/login",
+      formData
+    );
+    alert(response.data.message);
+    if (response.data.message == "Login successful.") {
+      console.log(response);
+      console.log(response.data.data.token);
+      localStorage.setItem("token", response.data.data.token);
+      if (formData.role == "Patient") {
+        navigate("/dashboardPatient");
+      } else {
+        navigate("/dashboardDoctor");
       }
     }
   };
@@ -70,6 +68,18 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
                 name="password"
                 placeholder="Enter your password"
                 value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="role">Role</label>
+              <input
+                type="text"
+                id="role"
+                name="role"
+                placeholder="Enter your role"
+                value={formData.role}
                 onChange={handleChange}
                 required
               />
