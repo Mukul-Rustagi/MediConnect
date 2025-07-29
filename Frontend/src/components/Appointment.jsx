@@ -30,20 +30,23 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   useEffect(() => {
     if (role == "Doctor" && appointment?.userId) {
       (async function () {
-        try {
-          const response = await axios.get(
-            `http://localhost:5000/api/user/profile/${appointment.userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          setPatientData(response.data.data);
-        } catch (e) {
-          setPatientData(undefined);
-        }
+        console.log(appointment);
+        // try {
+        //   const response = await axios.get(
+        //     `http://localhost:5000/api/user/profile/${appointment.userId}`,
+        //     {
+        //       headers: {
+        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //         "Content-Type": "application/json",
+        //       },
+        //     }
+        //   );
+        //   setPatientData(response.data.data);
+        //   console.log(response.data.data);
+        // } catch (e) {
+        //   setPatientData(undefined);
+        // }
+        setPatientData(appointment.userId);
       })();
     } else if (role !== "Doctor" && appointment?.doctorId) {
       (async function () {

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "../styles/Dashboard.css";
 import { useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import {
   FaCalendarAlt,
   FaEnvelope,
@@ -22,22 +22,26 @@ const PatientHome = ({ summaryData }) => {
   const [logged_in_patient_data, set_patient_data] = useState({});
   const [upcomingAppointments, set_upcomingappointments] = useState({});
 
-
   useEffect(() => {
     let decodedToken = jwtDecode(localStorage.getItem("token"));
     (async function () {
-      const patientAppointment = await axios.get(`http://localhost:5000/api/appointment/${jwtDecode(localStorage.getItem("token")).id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-    
-        
+      const patientAppointment = await axios.get(
+        `http://localhost:5000/api/appointment/${
+          jwtDecode(localStorage.getItem("token")).id
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       console.log(patientAppointment.data.data);
       let userId = jwtDecode(localStorage.getItem("token")).id;
-      set_upcomingappointments(patientAppointment.data.data.filter((item) => item.userId === userId));
+      set_upcomingappointments(
+        patientAppointment.data.data.filter((item) => item.userId === userId)
+      );
     })();
   }, []);
 

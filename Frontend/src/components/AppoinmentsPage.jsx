@@ -4,7 +4,7 @@ import ScheduleAppointment from "./ScheduleAppointment.jsx";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
-const AppoinmentsPage = ({ isDoctorView }) => {
+const AppointmentsPage = ({ isDoctorView }) => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
   const [showSchedule, setShowSchedule] = useState(false);
   const [appointments, setAppointments] = useState([]);
@@ -20,9 +20,9 @@ const AppoinmentsPage = ({ isDoctorView }) => {
     }
 
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
     const role = decodedToken.role?.toLowerCase() || "";
     setUserRole(role);
+    const userId = decodedToken.id;
 
     const fetchAppointments = async () => {
       try {
@@ -30,9 +30,7 @@ const AppoinmentsPage = ({ isDoctorView }) => {
         if (role === "doctor") {
           // Fetch appointments for doctor
           response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/appointment/${
-              decodedToken.id
-            }`,
+            `http://localhost:5000/api/appointment/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -40,74 +38,72 @@ const AppoinmentsPage = ({ isDoctorView }) => {
               },
             }
           );
+          setAppointments(response.data.data || []);
         } else {
           // Fetch appointments for patient
-          const patientAppointment = await axios.get(
-            `http://localhost:5000/api/appointment/${
-              jwtDecode(localStorage.getItem("token")).id
-            }`,
+          response = await axios.get(
+            `http://localhost:5000/api/appointment/${userId}`,
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             }
           );
-
-          console.log(patientAppointment.data.data);
-          let userId = jwtDecode(localStorage.getItem("token")).id;
-          if (patientAppointment.data) {
-            console.log("hi");
-            console.log(
-              patientAppointment.data.data.filter(
-                (item) => item.userId === userId
-              )
-            );
-            setAppointments(
-              patientAppointment.data.data.filter(
-                (item) => item.userId === userId
-              )
-            );
-          }
-          // Fetch user profiles for each appointment
-          const profiles = {};
-          for (const appointment of response.data.data) {
-            try {
-              if (role === "doctor") {
-                // Fetch patient profile
-                const patientResponse = await axios.get(
-                  `${import.meta.env.VITE_API_URL}/api/user/profile/${
-                    appointment.userId
-                  }`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                      "Content-Type": "application/json",
-                    },
-                  }
-                );
-                profiles[appointment.userId] = patientResponse.data.data;
-              } else {
-                // Fetch doctor profile
-                const doctorResponse = await axios.get(
-                  `${import.meta.env.VITE_API_URL}/api/doctors/${
-                    appointment.doctorId
-                  }`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                      "Content-Type": "application/json",
-                    },
-                  }
-                );
-                profiles[appointment.doctorId] = doctorResponse.data.data;
-              }
-            } catch (error) {
-              console.error("Error fetching user profile:", error);
-            }
-          }
-          setUserProfiles(profiles);
+          setAppointments(response.data.data || []);
         }
+
+        // Fetch user profiles for each appointment
+        const profiles = {};
+        const uniqueIds = new Set();
+
+        // Collect all unique user IDs we need to fetch
+        response.data.data.forEach((appointment) => {
+          if (role === "doctor") {
+            uniqueIds.add(appointment.userId); // Patient IDs
+          } else {
+            uniqueIds.add(appointment.doctorId); // Doctor IDs
+          }
+        });
+
+        // Fetch profiles for all unique IDs
+        for (const id of uniqueIds) {
+          try {
+            if (role === "doctor") {
+              // Fetch patient profile
+              const patientResponse = await axios.get(
+                `http://localhost:5000/api/user/profile/${id._id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              console.log(patientResponse);
+
+              profiles[id] = patientResponse.data.data;
+            } else {
+              // Fetch doctor profile
+              const doctorResponse = await axios.get(
+                `http://localhost:5000/api/doctors/${id._id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              profiles[id] = doctorResponse.data.data;
+              console.log(doctorResponse);
+            }
+          } catch (error) {
+            console.error("Error fetching user profile:", error);
+            profiles[id] = null;
+          }
+        }
+        console.log(profiles);
+        setUserProfiles(profiles);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       } finally {
@@ -117,52 +113,13 @@ const AppoinmentsPage = ({ isDoctorView }) => {
 
     fetchAppointments();
   }, []);
-  const filteredAppointments = appointments;
-  console.log(filteredAppointments);
-  const getUserName = (appointment) => {
-    if (userRole === "doctor") {
-      const patientData = userProfiles[appointment.userId];
-      return patientData
-        ? `${patientData.firstName} ${patientData.lastName}`
-        : "Loading...";
-    } else {
-      const doctorData = userProfiles[appointment.doctorId];
-      return doctorData
-        ? `Dr. ${doctorData.firstName} ${doctorData.lastName}`
-        : "Loading...";
-    }
-  };
 
-  const getUserDetails = (appointment) => {
-    if (userRole === "doctor") {
-      const patientData = userProfiles[appointment.userId];
-      if (!patientData) return null;
-      return {
-        email: patientData.email,
-        phone: patientData.phone,
-        address: patientData.address,
-        dateOfBirth: patientData.dateOfBirth,
-        gender: patientData.gender,
-        bloodType: patientData.bloodType,
-        allergies: patientData.allergies,
-        medications: patientData.medications,
-        conditions: patientData.conditions,
-        country: patientData.country,
-        profilePicture: patientData.profilePicture,
-      };
-    } else {
-      const doctorData = userProfiles[appointment.doctorId];
-      if (!doctorData) return null;
-      return {
-        specialization: doctorData.specialization,
-        phoneNumber: doctorData.phoneNumber,
-        email: doctorData.email,
-        address: doctorData.address,
-        gender: doctorData.gender,
-        profilePicture: doctorData.profilePicture,
-      };
+  const filteredAppointments = appointments.filter((appointment) => {
+    if (activeFilter === "upcoming") {
+      return new Date(appointment.dateTime) > new Date();
     }
-  };
+    return true;
+  });
 
   if (isLoading) {
     return <div className="loading">Loading...</div>;
@@ -208,13 +165,19 @@ const AppoinmentsPage = ({ isDoctorView }) => {
           <div className="appointments-list">
             {filteredAppointments.length > 0 ? (
               filteredAppointments.map((appointment) => {
-                const userDetails = appointment;
+                {
+                  console.log(userProfiles);
+                }
+                const userDetails =
+                  userRole === "doctor"
+                    ? userProfiles[appointment.userId]
+                    : userProfiles[appointment.doctorId];
+
                 return (
                   <div
                     key={appointment._id}
                     className={`appointment-card ${appointment.status}`}
                   >
-                    {console.log(userDetails)}
                     <div className="appointment-main">
                       <h3>{appointment.reason || "Medical Consultation"}</h3>
 
@@ -224,29 +187,27 @@ const AppoinmentsPage = ({ isDoctorView }) => {
                             <>
                               <p className="appointment-meta">
                                 <span className="label">With:</span>{" "}
-                                {userDetails.userId.firstName +
-                                  " " +
-                                  userDetails.userId.lastName}
+                                {`${userDetails.firstName} ${userDetails.lastName}`}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Email:</span>{" "}
-                                {userDetails.userId.email}
+                                {userDetails.email}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Phone:</span>{" "}
-                                {userDetails.userId.phone}
+                                {userDetails.phone}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Address:</span>{" "}
-                                {userDetails.userId.address}
+                                {userDetails.address}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Gender:</span>{" "}
-                                {userDetails.userId.gender}
+                                {userDetails.gender}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Blood Type:</span>{" "}
-                                {userDetails.userId.bloodType}
+                                {userDetails.bloodType}
                               </p>
                               {userDetails.profilePicture && (
                                 <div className="profile-picture">
@@ -261,38 +222,32 @@ const AppoinmentsPage = ({ isDoctorView }) => {
                             <>
                               <p className="appointment-meta">
                                 <span className="label">With:</span>{" "}
-                                {userDetails.doctorId.firstName +
-                                  " " +
-                                  userDetails.doctorId.lastName}
+                                {`Dr. ${userDetails.firstName} ${userDetails.lastName}`}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Specialization:</span>{" "}
-                                {userDetails.doctorId.specialization}
+                                {userDetails.specialization}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Contact:</span>{" "}
-                                {userDetails.doctorId.phoneNumber}
+                                {userDetails.phoneNumber}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Email:</span>{" "}
-                                {userDetails.doctorId.email}
+                                {userDetails.email}
                               </p>
-                              {/* <p className="appointment-meta">
-                                <span className="label">Address:</span>{" "}
-                                {userDetails.doctorId.address}
-                              </p> */}
                               <p className="appointment-meta">
                                 <span className="label">Gender:</span>{" "}
-                                {userDetails.doctorId.gender}
+                                {userDetails.gender}
                               </p>
                               <p className="appointment-meta">
                                 <span className="label">Location:</span>{" "}
-                                {userDetails.doctorId.clinicAddress || "Clinic"}
+                                {userDetails.clinicAddress || "Clinic"}
                               </p>
                               {userDetails.profilePicture && (
                                 <div className="profile-picture">
                                   <img
-                                    src={userDetails.doctorId.profilePicture}
+                                    src={userDetails.profilePicture}
                                     alt="Profile"
                                   />
                                 </div>
@@ -305,10 +260,6 @@ const AppoinmentsPage = ({ isDoctorView }) => {
                         <span className="label">When:</span>{" "}
                         {new Date(appointment.dateTime).toLocaleDateString()}
                       </p>
-                      {/* <p className="appointment-meta">
-                        <span className="label">Type:</span>{" "}
-                        {appointment.type || "Regular Checkup"}
-                      </p> */}
                     </div>
                     <div className="appointment-actions">
                       <span className={`status-badge ${appointment.status}`}>
@@ -339,4 +290,4 @@ const AppoinmentsPage = ({ isDoctorView }) => {
   );
 };
 
-export default AppoinmentsPage;
+export default AppointmentsPage;

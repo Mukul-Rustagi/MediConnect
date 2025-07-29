@@ -38,14 +38,19 @@ const DoctorHome = () => {
     const fetchAppointments = async () => {
       const token = localStorage.getItem("token");
       const doctorId = jwtDecode(token).id;
-      const response = await axios.get(`http://localhost:5000/api/appointment/${doctorId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.get(
+        `http://localhost:5000/api/appointment/${doctorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       // Only show appointments for this doctor
-      setAppointments(response.data.data.filter(item => item.doctorId === doctorId));
+      setAppointments(
+        response.data.data.filter((item) => item.doctorId === doctorId)
+      );
     };
     fetchAppointments();
   }, []);
@@ -109,6 +114,7 @@ const DoctorHome = () => {
               <h2>Upcoming Appointments</h2>
             </div>
             <div className="cards-grid">
+              {console.log(appointments)}
               {appointments.length > 0 ? (
                 appointments.map((appt) => (
                   <AppointmentCard
@@ -118,14 +124,10 @@ const DoctorHome = () => {
                   />
                 ))
               ) : (
-                <div className="empty-state">
-                  No appointments scheduled
-                </div>
+                <div className="empty-state">No appointments scheduled</div>
               )}
             </div>
           </section>
-
-          
         </div>
       </div>
     </div>
