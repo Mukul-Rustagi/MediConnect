@@ -18,6 +18,7 @@ const DateTimeSelection = ({ id }) => {
   const today = new Date();
 
   const timeSlots = [
+    "12:05 AM",
     "10:00 AM",
     "11:00 AM",
     "12:00 PM",
@@ -54,15 +55,17 @@ const DateTimeSelection = ({ id }) => {
         const all = response.data.data;
 
         setAppointments(all);
-
-        const doctorBookedDates = all
+        
+        if(all){const doctorBookedDates = all
           .filter((a) => a.doctorId === id)
           .map((a) => {
             const date = new Date(a.dateTime);
             return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
           });
+          setBookedDates(doctorBookedDates);
+        }
 
-        setBookedDates(doctorBookedDates);
+      
       } catch (error) {
         console.error("Error fetching appointments", error);
       }
@@ -112,6 +115,7 @@ const DateTimeSelection = ({ id }) => {
     if (!selectedDate) return [];
 
     const dateStr = selectedDate.toISOString().split("T")[0];
+    if(appointments){
     return appointments
       .filter(
         (a) =>
@@ -122,6 +126,8 @@ const DateTimeSelection = ({ id }) => {
         const t = new Date(a.dateTime);
         return t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       });
+    }
+    return  [];
   };
 
   const monthYear = today.toLocaleString("default", {

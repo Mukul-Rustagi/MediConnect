@@ -96,16 +96,20 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
               const dateTime = new Date(appointmentData.date);
               dateTime.setHours(hour, parseInt(minutes), 0, 0);
 
-              const response = await axiosInstance.post('/payment', {
-                sourceId: result.token,
-                amount: amount,
-                appointmentData: {
-                  userId: userData.id,
-                  doctorId: appointmentData.doctorId,
-                  dateTime: dateTime.toISOString(),
-                  status: 'pending'
-                }
-              });
+                const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/payment`, {
+                  sourceId: result.token,
+                  amount: amount,
+                  appointmentData: {
+                    userId: userData.id,
+                    doctorId: appointmentData.doctorId,
+                    dateTime: dateTime.toISOString(),
+                    status: 'pending'
+                  }
+                }, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem(token)}`
+  }
+});
 
               if (response.data.success) {
                 let dId = response.data.data.appointment.doctorId;
