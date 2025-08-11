@@ -2,7 +2,7 @@ const express = require('express');
 const nodemailer = require("nodemailer");
 const axios = require('axios');
 const router = express.Router();
-router.post('/sendEmail',async(req,res)=>{
+router.post('/',async(req,res)=>{
     // console.log(req.body.appointmentData.data.appointment.doctorId);
     // console.log(doctor_id);
 

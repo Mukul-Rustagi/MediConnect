@@ -76,7 +76,7 @@ app.use("/api/v1", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api", sendEmailRoutes);
+app.use("/api/sendEmail", sendEmailRoutes);
 app.use("/api/sendSocketCode",sendSocketCode);
 // Handle unknown routes
 app.all("*", (req, res) => {

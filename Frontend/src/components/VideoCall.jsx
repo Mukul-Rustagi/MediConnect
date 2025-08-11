@@ -28,21 +28,37 @@ function VideoCall() {
   const remoteVideoRef = useRef(null);
   const pcRef = useRef(null);
 
-  useEffect(async() => {
+  useEffect(() => {
+      const initVideoCall = async () => {
     const id = Math.random().toString(36).substring(2, 9);
-    console.log(role,doctorData,patientData);
-    if(role=="Patient"){
+    console.log(role, doctorData, patientData);
+    
+    try {
+      if (role === "Patient") {
         let email_of_doctor = doctorData.email;
-        const res = await axiosInstance.post('/sendSocketCode',{email:email_of_doctor,socketCode:id});
-
-    }
-    else if(role=="Doctor"){
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sendSocketCode`, {
+          email: email_of_doctor,
+          socketCode: id
+        });
+        console.log(res);
+      } else if (role === "Doctor") {
         let email_of_patient = patientData.email;
-        const res = await axiosInstance.post('/sendSocketCode',{email:email_of_patient,socketCode:id});
-
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sendSocketCode`, {
+          email: email_of_patient,
+          socketCode: id
+        });
+        console.log(res);
+      }
+      
+      setUserId(id);
+      socket.emit('join', id);
+    } catch (error) {
+      console.error("Error initializing video call:", error);
     }
-    setUserId(id);
-    socket.emit('join', id);
+  };
+
+  // Call the async function
+  initVideoCall();
 
     return () => {
       if (localStream) {

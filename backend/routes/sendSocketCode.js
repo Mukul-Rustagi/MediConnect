@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-router.post('/sendSocketCode',async(req,res)=>{
+const nodemailer = require("nodemailer");
+router.post('/',async(req,res)=>{
     const transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
