@@ -109,11 +109,11 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
 
               if (response.data.success) {
                 let dId = response.data.data.appointment.doctorId;
-                const r = await axios.get(`http://localhost:5000/api/doctors/${dId}`);
+                const r = await axios.get(`${import.meta.env.VITE_API_URL}/api/doctors/${dId}`);
                 let dName = r.data.data.firstName+" "+r.data.data.lastName;
-                const b = await axios.get(`http://localhost:5000/api/user/profile/${userData.id}`);
+                const b = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile/${userData.id}`);
                 let pName = b.data.data.firstName+" "+b.data.data.lastName;
-                
+
                 const sendEmail_to_patient = await axiosInstance.post('/sendEmail',{email:userData.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
                 const sendEmai_to_doctor =  await axiosInstance.post('/sendEmail',{email:r.data.data.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
 

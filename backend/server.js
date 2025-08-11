@@ -52,7 +52,6 @@ const server = http.createServer(app);
 app.use(
   cors({
     origin: "*", // Change in production
-    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
@@ -93,8 +92,7 @@ app.use((err, req, res, next) => {
 // ================= SOCKET.IO SETUP =================
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: "*"
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 120000,

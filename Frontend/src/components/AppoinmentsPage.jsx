@@ -30,7 +30,7 @@ const AppointmentsPage = ({ isDoctorView }) => {
         if (role === "doctor") {
           // Fetch appointments for doctor
           response = await axios.get(
-            `http://localhost:5000/api/appointment/${userId}`,
+            `${import.meta.env.VITE_API_URL}/api/appointment/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ const AppointmentsPage = ({ isDoctorView }) => {
         } else {
           // Fetch appointments for patient
           response = await axios.get(
-            `http://localhost:5000/api/appointment/${userId}`,
+            `${import.meta.env.VITE_API_URL}/api/appointment/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const AppointmentsPage = ({ isDoctorView }) => {
             if (role === "doctor") {
               // Fetch patient profile
               const patientResponse = await axios.get(
-                `http://localhost:5000/api/user/profile/${id._id}`,
+                `${import.meta.env.VITE_API_URL}/api/user/profile/${id._id}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ const AppointmentsPage = ({ isDoctorView }) => {
             } else {
               // Fetch doctor profile
               const doctorResponse = await axios.get(
-                `http://localhost:5000/api/doctors/${id._id}`,
+                `${import.meta.env.VITE_API_URL}/api/doctors/${id._id}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,

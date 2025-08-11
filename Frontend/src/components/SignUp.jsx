@@ -81,7 +81,7 @@ const Signup = ({ onSwitchToLogin }) => {
     try {
       let response;
       if (role === "Patient") {
-        response = await axios.post("http://localhost:5000/api/v1/register", { ...patientData, role });
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/register`, { ...patientData, role });
         // console.log(response);
         alert(response.data.message);
         if(response.data.message=='User registered successfully.'){
@@ -91,7 +91,7 @@ const Signup = ({ onSwitchToLogin }) => {
         }
       } else if (role === "Doctor") {
         // console.log("kavya");
-        response = await axios.post("http://localhost:5000/api/doctors/", { ...doctorData, role });
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/doctors/`, { ...doctorData, role });
         // console.log(response);
         alert(response.data.message);
         if(response.data.message=='Doctor created successfully'){
@@ -99,7 +99,7 @@ const Signup = ({ onSwitchToLogin }) => {
           navigate('/login');
         }
       } else if (role === "Admin") {
-        response = await axios.post("http://localhost:5000/api/v1/register", { ...adminData, role });
+        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/register`, { ...adminData, role });
       }
       // console.log(response);
       // navigate("/dashboard");

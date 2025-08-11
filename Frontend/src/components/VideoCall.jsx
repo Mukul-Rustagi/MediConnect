@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import "../styles/VideoCall.css";
 import axios from 'axios';
 // const socket = io('https://webrtc-backend-q4qz.onrender.com');
-const socket = io('http://localhost:5000');
+const socket = io(import.meta.env.VITE_API_URL);
 import { useLocation } from "react-router-dom";
 import axiosInstance from '../utils/axiosinstance';
 

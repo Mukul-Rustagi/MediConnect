@@ -68,7 +68,7 @@ const ProfilePage = ({ isDoctorView = false }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/doctors/${decodedToken.id}`,
+        `${import.meta.env.VITE_API_URL}/api/doctors/${decodedToken.id}`,
         updatePayload,
         {
           headers: {

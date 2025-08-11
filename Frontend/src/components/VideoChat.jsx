@@ -6,7 +6,7 @@ import '../styles/VideoChat.css';
 // Initialize socket connection with error handling
 let socket;
 try {
-  socket = io('http://localhost:5000', {
+  socket = io(`${import.meta.env.VITE_API_URL}`, {
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,

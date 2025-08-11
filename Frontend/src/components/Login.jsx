@@ -24,7 +24,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
     console.log("Login submitted:", formData);
 
     const response = await axios.post(
-      "http://localhost:5000/api/v1/login",
+      `${import.meta.env.VITE_API_URL}/api/v1/login`,
       formData
     );
     alert(response.data.message);
