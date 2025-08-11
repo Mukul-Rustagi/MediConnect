@@ -73,17 +73,21 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="role">Role</label>
-              <input
-                type="text"
-                id="role"
-                name="role"
-                placeholder="Enter your role"
-                value={formData.role}
-                onChange={handleChange}
-                required
-              />
-            </div>
+  <label htmlFor="role">Role</label>
+  <select
+    id="role"
+    name="role"
+    value={formData.role}
+    onChange={handleChange}
+    required
+  >
+    <option value="">Select your role</option>
+    <option value="Patient">Patient</option>
+    <option value="Doctor">Doctor</option>
+    <option value="Admin">Admin</option>
+  </select>
+</div>
+
 
             <div className="remember-me">
               <input

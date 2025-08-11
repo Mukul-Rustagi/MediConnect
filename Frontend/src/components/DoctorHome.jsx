@@ -55,12 +55,7 @@ const DoctorHome = () => {
       setAppointments(
         upData.filter((appointment) => {
            return (
-  new Date(appointment.dateTime) <= new Date() &&
-  (() => {
-    const endTime = new Date(appointment.dateTime);
-    endTime.setHours(endTime.getHours() + 1); // add 1 hour
-    return endTime > new Date();
-  })()
+  new Date(appointment.dateTime) <= new Date()
 );
         })
       );

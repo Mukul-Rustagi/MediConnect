@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import {
   FaCalendarAlt,
@@ -10,6 +11,7 @@ import {
 import "../styles/Appointment.css";
 
 const AppointmentCard = ({ appointment, isDoctorView = false }) => {
+  const navigate = useNavigate();
   const [doctorData, setDoctorData] = useState();
   const [patientData, setPatientData] = useState();
   const [role, setRole] = useState("");
@@ -30,7 +32,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   useEffect(() => {
     if (role == "Doctor" && appointment?.userId) {
       (async function () {
-        console.log(appointment);
+        console.log("helooooooooooooooooooooooo",appointment);
         // try {
         //   const response = await axios.get(
         //     `http://localhost:5000/api/user/profile/${appointment.userId}`,
@@ -71,7 +73,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
   const handleRedirect = () => {
-    window.location.href = "https://webrtc-testing-t2az.onrender.com/";
+    navigate('/video-call',{state:{role:role,doctorData:doctorData,patientData:patientData}});
   };
   return (
     <>
