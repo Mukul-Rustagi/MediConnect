@@ -28,6 +28,8 @@ const DateTimeSelection = ({ id }) => {
     "5:00 PM",
     "6:00 PM",
     "7:00 PM",
+    "8:00 PM",
+    "10:00 PM",
   ];
 
   // Get user and token from localStorage

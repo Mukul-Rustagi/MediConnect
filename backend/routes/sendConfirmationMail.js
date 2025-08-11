@@ -4,9 +4,7 @@ const axios = require('axios');
 const router = express.Router();
 router.post('/sendEmail',async(req,res)=>{
     // console.log(req.body.appointmentData.data.appointment.doctorId);
-    let doctor_id = req.body.appointmentData.data.appointment.doctorId;
     // console.log(doctor_id);
-    const response = await axios.get(`http://localhost:5000/api/doctors/${doctor_id}`);
 
     let appointmentDate = req.body.appointmentData.data.appointment.createdAt;
     const transporter = nodemailer.createTransport({
@@ -21,12 +19,13 @@ router.post('/sendEmail',async(req,res)=>{
           const mailOptions = {
             from: process.env.EMAIL_USER,
             to:req.body.email,
-            subject:"Doctors Appointment",
-            text:`Dear Patient,
+            subject:"Patient-Doctor Appointment",
+            text:`Dear Mediconnect user,
 
 Your online appointment has been successfully booked.
 
-Doctor: ${response.data.data.firstName+" "+response.data.data.lastName}
+Patient:${req.body.patientName}
+Doctor: ${req.body.doctorName}
 Date: ${appointmentDate}
 
 Please join the meeting 5 minutes before your scheduled time.
