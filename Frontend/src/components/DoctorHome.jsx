@@ -48,9 +48,23 @@ const DoctorHome = () => {
         }
       );
       // Only show appointments for this doctor
-      setAppointments(
-        response.data.data.filter((item) => item.doctorId === doctorId)
+
+      const upData = response.data.data.filter(
+        (item) => item.doctorId === doctorId
       );
+      setAppointments(
+        upData.filter((appointment) => {
+           return (
+  new Date(appointment.dateTime) <= new Date() &&
+  (() => {
+    const endTime = new Date(appointment.dateTime);
+    endTime.setHours(endTime.getHours() + 1); // add 1 hour
+    return endTime > new Date();
+  })()
+);
+        })
+      );
+
     };
     fetchAppointments();
   }, []);
@@ -79,7 +93,7 @@ const DoctorHome = () => {
           <div className="summary-icon">
             <FaCalendarAlt />
           </div>
-          <h3>Upcoming Appointments</h3>
+          <h3>Active Appointments</h3>
           <p>{summaryData.upcomingAppointments}</p>
         </div>
         {/* <div className="summary-card messages">
@@ -111,7 +125,7 @@ const DoctorHome = () => {
         <div className="content-left">
           <section className="dashboard-section appointments-section">
             <div className="section-header">
-              <h2>Upcoming Appointments</h2>
+              <h2>Active Appointments</h2>
             </div>
             <div className="cards-grid">
               {console.log(appointments)}

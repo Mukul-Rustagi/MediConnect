@@ -10,7 +10,7 @@ const authorizeRoles = require('../middleware/authorizeRoles');
 
 router.post('/', doctorController.createDoctor);
 router.get('/', authenticate,doctorController.getAllDoctors);
-router.get('/:id', authenticate,doctorController.getDoctorById);
+router.get('/:id', doctorController.getDoctorById);
 router.put('/:id', authenticate,doctorController.updateDoctor);
 router.delete('/:id', authenticate,doctorController.deleteDoctor);
 

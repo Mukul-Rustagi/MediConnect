@@ -81,9 +81,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
             <FaCalendarAlt />
           </div>
           <h3>{appointment.title}</h3>
-          <span className={`status-badge ${appointment.status}`}>
-            {appointment.status}
-          </span>
+          
         </div>
 
         <div className="appointment-details">
@@ -181,7 +179,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                 month: "short",
                 day: "numeric",
               })}{" "}
-              at {appointment.time}
+              at {new Date(appointment.dateTime).toLocaleTimeString()}
             </span>
           </div>
         </div>

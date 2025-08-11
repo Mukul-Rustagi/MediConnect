@@ -262,9 +262,7 @@ const AppointmentsPage = ({ isDoctorView }) => {
                       </p>
                     </div>
                     <div className="appointment-actions">
-                      <span className={`status-badge ${appointment.status}`}>
-                        {appointment.status}
-                      </span>
+                      
                       {userRole === "doctor" &&
                         appointment.status === "pending" && (
                           <div className="action-buttons">

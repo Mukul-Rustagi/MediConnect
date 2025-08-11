@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "../utils/axiosinstance";
-
 const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
   const paymentFormRef = useRef();
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
@@ -9,7 +8,7 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
   const [paymentError, setPaymentError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [userData, setUserData] = useState(null);
-
+ 
   useEffect(() => {
     // Get user data from token
     const storedToken = localStorage.getItem('token');
@@ -109,7 +108,9 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
 
               if (response.data.success) {
                 console.log('Payment successful:', response.data);
+                const sendEmail = await axiosInstance.post('/sendEmail',{email:userData.email,appointmentData:response.data,token:localStorage.getItem('token')});
                 window.location.reload();
+                console.log(sendEmail);
               } else {
                 throw new Error(response.data.message || 'Payment failed');
               }

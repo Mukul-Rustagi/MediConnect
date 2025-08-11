@@ -36,13 +36,25 @@ const PatientHome = ({ summaryData }) => {
           },
         }
       );
-
-      console.log(patientAppointment.data.data);
+      
       let userId = jwtDecode(localStorage.getItem("token")).id;
+      const upData = patientAppointment.data.data.filter(
+        (item) => item.userId === userId
+      );
       set_upcomingappointments(
-        patientAppointment.data.data.filter((item) => item.userId === userId)
+        upData.filter((appointment) => {
+          return (
+  new Date(appointment.dateTime) <= new Date() &&
+  (() => {
+    const endTime = new Date(appointment.dateTime);
+    endTime.setHours(endTime.getHours() + 1); // add 1 hour
+    return endTime > new Date();
+  })()
+);
+        })
       );
     })();
+ 
   }, []);
 
   // Quick actions
@@ -91,7 +103,7 @@ const PatientHome = ({ summaryData }) => {
               <div className="summary-icon">
                 <FaCalendarAlt />
               </div>
-              <h3>Upcoming Appointments</h3>
+              <h3>Active Appointments</h3>
               <p>{upcomingAppointments.length}</p>
             </div>
 
@@ -114,7 +126,7 @@ const PatientHome = ({ summaryData }) => {
           {/* Main Content Sections */}
           <section className="dashboard-section appointments-section">
             <div className="section-header">
-              <h2>Upcoming Appointments</h2>
+              <h2>Active Appointments</h2>
               <button className="view-all">View All</button>
             </div>
             <div className="cards-grid">

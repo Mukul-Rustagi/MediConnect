@@ -35,6 +35,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const sendEmailRoutes = require("./routes/sendConfirmationMail");
 
 // Load environment variables
 dotenv.config();
@@ -76,7 +77,7 @@ app.use("/api/v1", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/admin", adminRoutes);
-
+app.use("/api",sendEmailRoutes);
 // Error handling for invalid routes
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Route not found." });
