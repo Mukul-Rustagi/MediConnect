@@ -92,7 +92,7 @@ app.use((err, req, res, next) => {
 // ================= SOCKET.IO SETUP =================
 const io = socketIo(server, {
   cors: {
-    origin: "*"
+    origin: ["https://mediconnect-indol.vercel.app","http://localhost:5173"]
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 120000,

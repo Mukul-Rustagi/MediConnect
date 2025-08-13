@@ -257,6 +257,9 @@ function VideoCall() {
             onChange={(e) => setRemoteUserId(e.target.value)}
             disabled={callStatus !== 'disconnected'}
           />
+          <p style={{ marginTop: '4px', color: '#555', fontSize: '0.9rem' }}>
+    The code is sent to you emailid, please check!!
+  </p>
           <button
             onClick={startCall}
             disabled={callStatus !== 'disconnected' || !remoteUserId}

@@ -107,7 +107,7 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
                   }
                 }, {
   headers: {
-    Authorization: `Bearer ${localStorage.getItem(token)}`
+    Authorization: `Bearer ${localStorage.getItem('token')}`
   }
 });
 
@@ -118,12 +118,11 @@ const SquarePaymentButton = ({ amount, user, token, appointmentData }) => {
                 const b = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile/${userData.id}`);
                 let pName = b.data.data.firstName+" "+b.data.data.lastName;
 
-                const sendEmail_to_patient = await axiosInstance.post('/sendEmail',{email:userData.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
-                const sendEmai_to_doctor =  await axiosInstance.post('/sendEmail',{email:r.data.data.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
+                const sendEmail_to_patient = await axios.post(`${import.meta.env.VITE_API_URL}/api/sendEmail`,{email:userData.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
+                const sendEmai_to_doctor =  await axios.post(`${import.meta.env.VITE_API_URL}/api/sendEmail`,{email:r.data.data.email,appointmentData:response.data,token:localStorage.getItem('token'),doctorName:dName,patientName:pName});
 
 
                 window.location.reload();
-                console.log(sendEmail);
               } else {
                 throw new Error(response.data.message || 'Payment failed');
               }
