@@ -4,6 +4,13 @@ import ScheduleAppointment from "./ScheduleAppointment.jsx";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
+/** Normalize Mongo refs / strings to a single string id for maps and API URLs */
+const refId = (ref) => {
+  if (ref == null) return null;
+  if (typeof ref === "object" && ref._id != null) return String(ref._id);
+  return String(ref);
+};
+
 const AppointmentsPage = ({ isDoctorView }) => {
   const [activeFilter, setActiveFilter] = useState("upcoming");
   const [showSchedule, setShowSchedule] = useState(false);
@@ -53,26 +60,24 @@ const AppointmentsPage = ({ isDoctorView }) => {
           setAppointments(response.data.data || []);
         }
 
-        // Fetch user profiles for each appointment
         const profiles = {};
         const uniqueIds = new Set();
 
-        // Collect all unique user IDs we need to fetch
         response.data.data.forEach((appointment) => {
           if (role === "doctor") {
-            uniqueIds.add(appointment.userId); // Patient IDs
+            const pid = refId(appointment.userId);
+            if (pid) uniqueIds.add(pid);
           } else {
-            uniqueIds.add(appointment.doctorId); // Doctor IDs
+            const did = refId(appointment.doctorId);
+            if (did) uniqueIds.add(did);
           }
         });
 
-        // Fetch profiles for all unique IDs
-        for (const id of uniqueIds) {
+        for (const idStr of uniqueIds) {
           try {
             if (role === "doctor") {
-              // Fetch patient profile
               const patientResponse = await axios.get(
-                `http://localhost:5000/api/user/profile/${id._id}`,
+                `http://localhost:5000/api/user/profile/${idStr}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -80,13 +85,10 @@ const AppointmentsPage = ({ isDoctorView }) => {
                   },
                 }
               );
-              console.log(patientResponse);
-
-              profiles[id] = patientResponse.data.data;
+              profiles[idStr] = patientResponse.data.data;
             } else {
-              // Fetch doctor profile
               const doctorResponse = await axios.get(
-                `http://localhost:5000/api/doctors/${id._id}`,
+                `http://localhost:5000/api/doctors/${idStr}`,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -94,15 +96,13 @@ const AppointmentsPage = ({ isDoctorView }) => {
                   },
                 }
               );
-              profiles[id] = doctorResponse.data.data;
-              console.log(doctorResponse);
+              profiles[idStr] = doctorResponse.data.data;
             }
           } catch (error) {
             console.error("Error fetching user profile:", error);
-            profiles[id] = null;
+            profiles[idStr] = null;
           }
         }
-        console.log(profiles);
         setUserProfiles(profiles);
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -128,7 +128,9 @@ const AppointmentsPage = ({ isDoctorView }) => {
   return (
     <div className="medical-page">
       {showSchedule ? (
-        <ScheduleAppointment onBack={() => setShowSchedule(false)} />
+        <ScheduleAppointment
+          onBack={() => setShowSchedule(false)}
+        />
       ) : (
         <>
           <header className="page-header">
@@ -165,13 +167,13 @@ const AppointmentsPage = ({ isDoctorView }) => {
           <div className="appointments-list">
             {filteredAppointments.length > 0 ? (
               filteredAppointments.map((appointment) => {
-                {
-                  console.log(userProfiles);
-                }
-                const userDetails =
+                const otherId =
                   userRole === "doctor"
-                    ? userProfiles[appointment.userId]
-                    : userProfiles[appointment.doctorId];
+                    ? refId(appointment.userId)
+                    : refId(appointment.doctorId);
+                const userDetails = otherId
+                  ? userProfiles[otherId]
+                  : null;
 
                 return (
                   <div

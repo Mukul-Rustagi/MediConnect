@@ -1,0 +1,123 @@
+/* src/styles/CustomForm.css */
+.custom-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.custom-input-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-input-wrapper:focus-within {
+  border-color: rgba(96, 165, 250, 0.5); /* Soft blue border */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 0 15px rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.custom-input-icon {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+  z-index: 2;
+}
+
+.custom-input-wrapper:focus-within .custom-input-icon {
+  color: #60a5fa; /* Highlighted icon color matching the glow */
+}
+
+.custom-input-field {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f8fafc;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.custom-input-field.with-icon {
+  padding-left: 3rem; /* Leave room for icon */
+}
+
+.custom-input-field::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 300;
+}
+
+/* Select specific styles */
+.custom-select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 3rem; /* Leave room for chevron */
+}
+
+/* Style the dropdown options panel for selects */
+.custom-select-field option {
+  background-color: #0f172a; /* Dark background for options */
+  color: #f8fafc;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.custom-select-chevron {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: transform 0.3s ease, color 0.3s ease;
+  z-index: 2;
+}
+
+.custom-input-wrapper:focus-within .custom-select-chevron {
+  transform: translateY(-50%) rotate(180deg);
+  color: #60a5fa;
+}
+
+/* Fix autofill colors in Webkit to maintain glassmorphism */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+    -webkit-transition-delay: 9999s;
+}
+
+/* Custom form container additions */
+.custom-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.custom-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  padding-left: 0.2rem;
+}

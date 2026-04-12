@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../styles/Login.css";
 import { useNavigate } from "react-router";
+import CustomInput from "./CustomInput";
+import CustomSelect from "./CustomSelect";
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt, FaVenusMars, FaTint, FaAllergies, FaNotesMedical, FaPills, FaGlobe, FaLock, FaStethoscope, FaClock } from "react-icons/fa";
 
 const Signup = ({ onSwitchToLogin }) => {
   const navigate = useNavigate();
@@ -110,9 +113,10 @@ const Signup = ({ onSwitchToLogin }) => {
 
   const renderCommonFields = () => (
     <>
-      <div className="form-group">
-        <label htmlFor="firstName">First name</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="firstName" className="custom-label">First name</label>
+        <CustomInput
+          icon={FaUser}
           type="text"
           id="firstName"
           name="firstName"
@@ -127,9 +131,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="lastName">Last name</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="lastName" className="custom-label">Last name</label>
+        <CustomInput
+          icon={FaUser}
           type="text"
           id="lastName"
           name="lastName"
@@ -144,9 +149,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="email">Email address</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="email" className="custom-label">Email address</label>
+        <CustomInput
+          icon={FaEnvelope}
           type="email"
           id="email"
           name="email"
@@ -165,9 +171,10 @@ const Signup = ({ onSwitchToLogin }) => {
 
   const renderPatientFields = () => (
     <>
-      <div className="form-group">
-        <label htmlFor="phone">Phone number</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="phone" className="custom-label">Phone number</label>
+        <CustomInput
+          icon={FaPhone}
           type="tel"
           id="phone"
           name="phone"
@@ -178,9 +185,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="address">Address</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="address" className="custom-label">Address</label>
+        <CustomInput
+          icon={FaMapMarkerAlt}
           type="text"
           id="address"
           name="address"
@@ -190,9 +198,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="dateOfBirth">Date of Birth</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="dateOfBirth" className="custom-label">Date of Birth</label>
+        <CustomInput
+          icon={FaCalendarAlt}
           type="date"
           id="dateOfBirth"
           name="dateOfBirth"
@@ -201,9 +210,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="gender">Gender</label>
-        <select
+      <div className="custom-form-container">
+        <label htmlFor="gender" className="custom-label">Gender</label>
+        <CustomSelect
+          icon={FaVenusMars}
           name="gender"
           id="gender"
           value={patientData.gender}
@@ -214,12 +224,13 @@ const Signup = ({ onSwitchToLogin }) => {
           <option value="male">Male</option>
           <option value="female">Female</option>
           <option value="other">Other</option>
-        </select>
+        </CustomSelect>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="bloodType">Blood Type</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="bloodType" className="custom-label">Blood Type</label>
+        <CustomInput
+          icon={FaTint}
           type="text"
           id="bloodType"
           name="bloodType"
@@ -229,42 +240,58 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="allergies">Allergies</label>
-        <textarea
-          id="allergies"
-          name="allergies"
-          placeholder="List any allergies"
-          value={patientData.allergies}
-          onChange={handlePatientChange}
-        />
+      <div className="custom-form-container">
+        <label htmlFor="allergies" className="custom-label">Allergies</label>
+        <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+          <FaAllergies className="custom-input-icon" />
+          <textarea
+            className="custom-input-field with-icon"
+            id="allergies"
+            name="allergies"
+            placeholder="List any allergies"
+            value={patientData.allergies}
+            onChange={handlePatientChange}
+            rows="2"
+          />
+        </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="conditions">Medical Conditions</label>
-        <textarea
-          id="conditions"
-          name="conditions"
-          placeholder="List any medical conditions"
-          value={patientData.conditions}
-          onChange={handlePatientChange}
-        />
+      <div className="custom-form-container">
+        <label htmlFor="conditions" className="custom-label">Medical Conditions</label>
+        <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+          <FaNotesMedical className="custom-input-icon" />
+          <textarea
+            className="custom-input-field with-icon"
+            id="conditions"
+            name="conditions"
+            placeholder="List any medical conditions"
+            value={patientData.conditions}
+            onChange={handlePatientChange}
+            rows="2"
+          />
+        </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="medications">Current Medications</label>
-        <textarea
-          id="medications"
-          name="medications"
-          placeholder="List current medications"
-          value={patientData.medications}
-          onChange={handlePatientChange}
-        />
+      <div className="custom-form-container">
+        <label htmlFor="medications" className="custom-label">Current Medications</label>
+        <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+          <FaPills className="custom-input-icon" />
+          <textarea
+            className="custom-input-field with-icon"
+            id="medications"
+            name="medications"
+            placeholder="List current medications"
+            value={patientData.medications}
+            onChange={handlePatientChange}
+            rows="2"
+          />
+        </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="country">Country</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="country" className="custom-label">Country</label>
+        <CustomInput
+          icon={FaGlobe}
           type="text"
           id="country"
           name="country"
@@ -275,9 +302,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="password" className="custom-label">Password</label>
+        <CustomInput
+          icon={FaLock}
           type="password"
           id="password"
           name="password"
@@ -292,9 +320,10 @@ const Signup = ({ onSwitchToLogin }) => {
 
   const renderDoctorFields = () => (
     <>
-      <div className="form-group">
-        <label htmlFor="phoneNumber">Phone number</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="phoneNumber" className="custom-label">Phone number</label>
+        <CustomInput
+          icon={FaPhone}
           type="tel"
           id="phoneNumber"
           name="phoneNumber"
@@ -305,9 +334,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="gender">Gender</label>
-        <select
+      <div className="custom-form-container">
+        <label htmlFor="gender" className="custom-label">Gender</label>
+        <CustomSelect
+          icon={FaVenusMars}
           name="gender"
           id="gender"
           value={doctorData.gender}
@@ -318,12 +348,13 @@ const Signup = ({ onSwitchToLogin }) => {
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Other">Other</option>
-        </select>
+        </CustomSelect>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="specialization">Specialization</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="specialization" className="custom-label">Specialization</label>
+        <CustomInput
+          icon={FaStethoscope}
           type="text"
           id="specialization"
           name="specialization"
@@ -334,9 +365,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="experienceYears">Years of Experience</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="experienceYears" className="custom-label">Years of Experience</label>
+        <CustomInput
+          icon={FaClock}
           type="number"
           id="experienceYears"
           name="experienceYears"
@@ -349,20 +381,27 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="clinicAddress">Clinic Address</label>
-        <textarea
-          id="clinicAddress"
-          name="clinicAddress"
-          placeholder="Full clinic address"
-          value={doctorData.clinicAddress}
-          onChange={handleDoctorChange}
-          required
-        />
+      <div className="custom-form-container">
+        <label htmlFor="clinicAddress" className="custom-label">Clinic Address</label>
+        <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+          <FaMapMarkerAlt className="custom-input-icon" />
+          <textarea
+            className="custom-input-field with-icon"
+            id="clinicAddress"
+            name="clinicAddress"
+            placeholder="Full clinic address"
+            value={doctorData.clinicAddress}
+            onChange={handleDoctorChange}
+            required
+            rows="2"
+          />
+        </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input  
+
+      <div className="custom-form-container">
+        <label htmlFor="password" className="custom-label">Password</label>
+        <CustomInput  
+            icon={FaLock}
             type="password"
             id="password"
             name="password"
@@ -371,12 +410,13 @@ const Signup = ({ onSwitchToLogin }) => {
             onChange={handleDoctorChange}
             required
         />
-        </div>
+      </div>
 
       <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="availableDays">Available Days</label>
-          <input
+        <div className="custom-form-container">
+          <label htmlFor="availableDays" className="custom-label">Available Days</label>
+          <CustomInput
+            icon={FaCalendarAlt}
             type="text"
             id="availableDays"
             name="availableDays"
@@ -386,9 +426,10 @@ const Signup = ({ onSwitchToLogin }) => {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="timing">Timing</label>
-          <input
+        <div className="custom-form-container">
+          <label htmlFor="timing" className="custom-label">Timing</label>
+          <CustomInput
+            icon={FaClock}
             type="text"
             id="timing"
             name="timing"
@@ -407,9 +448,10 @@ const Signup = ({ onSwitchToLogin }) => {
 
   const renderAdminFields = () => (
     <>
-      <div className="form-group">
-        <label htmlFor="phone">Phone number</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="phone" className="custom-label">Phone number</label>
+        <CustomInput
+          icon={FaPhone}
           type="tel"
           id="phone"
           name="phone"
@@ -420,9 +462,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="country">Country</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="country" className="custom-label">Country</label>
+        <CustomInput
+          icon={FaGlobe}
           type="text"
           id="country"
           name="country"
@@ -433,9 +476,10 @@ const Signup = ({ onSwitchToLogin }) => {
         />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input
+      <div className="custom-form-container">
+        <label htmlFor="password" className="custom-label">Password</label>
+        <CustomInput
+          icon={FaLock}
           type="password"
           id="password"
           name="password"
@@ -459,9 +503,9 @@ const Signup = ({ onSwitchToLogin }) => {
           </p>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="role">Role</label>
-              <select
+            <div className="custom-form-container">
+              <label htmlFor="role" className="custom-label">Role</label>
+              <CustomSelect
                 name="role"
                 id="role"
                 onChange={handleRoleChange}
@@ -472,7 +516,7 @@ const Signup = ({ onSwitchToLogin }) => {
                 <option value="Patient">Patient</option>
                 <option value="Doctor">Doctor</option>
                 <option value="Admin">Admin</option>
-              </select>
+              </CustomSelect>
             </div>
 
             {renderCommonFields()}

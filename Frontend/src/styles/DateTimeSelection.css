@@ -1,100 +1,178 @@
-.datetime-selection-container {
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
-  max-width: 800px;
+/* ============================================================
+   MEDICONNECT – DateTime Selection
+   Light theme date/time picker
+   ============================================================ */
+
+.datetime-selection {
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
 }
 
-.calendar-section {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+.datetime-selection h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 1.25rem;
 }
 
-.time-slots-section {
-  background-color: white;
+/* === CALENDAR GRID === */
+.calendar-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
-.confirmation-section {
-  background-color: white;
-  padding: 1.5rem;
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-month {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.calendar-nav {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.4rem 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav:hover {
+  background: rgba(13, 148, 136, 0.1);
+  color: #0d9488;
+  border-color: rgba(13, 148, 136, 0.25);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-weekday {
   text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.4rem;
 }
 
-.payment-section {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #dee2e6;
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
 }
 
-/* Calendar Styles */
-.btn {
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #94a3b8;
+  border: 1px solid transparent;
+}
+
+.calendar-day:hover {
+  background: rgba(13, 148, 136, 0.1);
+  color: #0d9488;
+  border-color: rgba(13, 148, 136, 0.22);
+}
+
+.calendar-day.selected {
+  background: linear-gradient(135deg, #0d9488, #0284c7);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.28);
+}
+
+.calendar-day.today {
+  border-color: rgba(13, 148, 136, 0.45);
+  color: #0d9488;
+  font-weight: 600;
+}
+
+.calendar-day.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+}
+
+/* === TIME SLOTS === */
+.time-slots {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.time-slots h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 1rem;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.6rem;
+}
+
+.time-slot {
   padding: 0.5rem;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  text-align: center;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #64748b;
+  background: #f8fafc;
 }
 
-.btn-outline-primary {
-  color: #0d6efd;
-  border-color: #0d6efd;
+.time-slot:hover {
+  background: rgba(13, 148, 136, 0.1);
+  color: #0d9488;
+  border-color: rgba(13, 148, 136, 0.28);
 }
 
-.btn-outline-primary:hover:not(:disabled) {
-  background-color: #0d6efd;
-  color: white;
+.time-slot.selected {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.15), rgba(2, 132, 199, 0.12));
+  border-color: #0d9488;
+  color: #0f766e;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
-.btn-success {
-  background-color: #198754;
-  border-color: #198754;
-}
-
-.btn-success:hover {
-  background-color: #157347;
-  border-color: #146c43;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  border-color: #dc3545;
-}
-
-.btn-danger:hover {
-  background-color: #bb2d3b;
-  border-color: #b02a37;
-}
-
-/* Time Slots */
-.time-slots-section .btn {
-  margin: 0.25rem;
-  min-width: 100px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .datetime-selection-container {
-    padding: 1rem;
-    margin: 1rem;
-  }
-
-  .calendar-section,
-  .time-slots-section,
-  .confirmation-section {
-    padding: 1rem;
-  }
-
-  .btn {
-    padding: 0.4rem;
-    font-size: 0.8rem;
-  }
+.time-slot.booked {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
 }

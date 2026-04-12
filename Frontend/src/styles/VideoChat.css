@@ -1,65 +1,120 @@
-.video-chat-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
+/* ============================================================
+   MEDICONNECT – VideoChat Component
+   Dark-mode video call interface
+   ============================================================ */
 
 .video-chat-container {
-  background-color: #1a1a1a;
-  border-radius: 12px;
-  padding: 20px;
-  width: 90%;
-  max-width: 1200px;
-  height: 90vh;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  flex: 1;
-}
-
-.video-box {
+  height: 100vh;
+  background: #090d18;
+  font-family: 'Inter', sans-serif;
   position: relative;
-  background-color: #2a2a2a;
-  border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 16/9;
 }
 
-.video-box video {
+/* === VIDEO AREA === */
+.video-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d1220;
+}
+
+.remote-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #111827;
 }
 
-.video-label {
+.local-video {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 200px;
+  height: 140px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #1f2937;
+  border: 2px solid rgba(0, 212, 170, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  transition: all 0.3s ease;
 }
 
-.controls {
+.local-video:hover {
+  transform: scale(1.05);
+  border-color: #00d4aa;
+}
+
+/* === CALL INFO BAR === */
+.call-info-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  z-index: 20;
+}
+
+.call-participant-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.call-duration {
+  font-size: 0.875rem;
+  color: #00d4aa;
+  font-weight: 600;
+  background: rgba(0, 212, 170, 0.1);
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+  border: 1px solid rgba(0, 212, 170, 0.2);
+}
+
+.call-status {
+  font-size: 0.8rem;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.call-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+  animation: pulse-glow 2s infinite;
+}
+
+/* === CONTROLS === */
+.video-controls {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 
 .control-btn {
@@ -67,143 +122,180 @@
   height: 50px;
   border-radius: 50%;
   border: none;
-  background-color: #2a2a2a;
-  color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  transition: all 0.25s ease;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .control-btn:hover {
-  background-color: #3a3a3a;
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.08);
 }
 
 .control-btn.active {
-  background-color: #dc3545;
+  background: rgba(0, 212, 170, 0.15);
+  color: #00d4aa;
+  border-color: rgba(0, 212, 170, 0.25);
+}
+
+.control-btn.muted,
+.control-btn.camera-off {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
 }
 
 .control-btn.end-call {
-  background-color: #dc3545;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  width: 56px;
+  height: 56px;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 
 .control-btn.end-call:hover {
-  background-color: #c82333;
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
 }
 
-.chat-section {
-  background-color: #2a2a2a;
-  border-radius: 8px;
-  padding: 15px;
-  height: 200px;
+/* === CHAT PANEL === */
+.chat-panel {
+  width: 320px;
+  background: rgba(11, 15, 26, 0.95);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-.messages {
+.chat-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.chat-header h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
-.message {
+.chat-message {
+  max-width: 85%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.chat-message.outgoing {
+  background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(6, 182, 212, 0.2));
+  border: 1px solid rgba(0, 212, 170, 0.3);
+  color: #f1f5f9;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message.incoming {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-input-area {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
-  flex-direction: column;
-  max-width: 70%;
+  gap: 0.5rem;
 }
 
-.message.local {
-  align-self: flex-end;
-}
-
-.message.remote {
-  align-self: flex-start;
-}
-
-.message-bubble {
-  background-color: #3a3a3a;
-  padding: 10px;
-  border-radius: 8px;
-  color: white;
-}
-
-.message.local .message-bubble {
-  background-color: #007bff;
-}
-
-.timestamp {
-  font-size: 12px;
-  color: #888;
-  margin-top: 4px;
-}
-
-.message-input {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  background-color: #1a1a1a;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-.message-input input {
+.chat-input {
   flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background-color: #2a2a2a;
-  color: white;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: all 0.25s ease;
 }
 
-.message-input button {
-  padding: 8px 16px;
+.chat-input:focus {
+  border-color: #00d4aa;
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+.chat-input::placeholder {
+  color: #374151;
+}
+
+.chat-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00d4aa, #7c3aed);
   border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
+  color: #fff;
   cursor: pointer;
-}
-
-.message-input button:hover {
-  background-color: #0056b3;
-}
-
-.message-input button:disabled {
-  background-color: #666;
-  cursor: not-allowed;
-}
-
-.error-message {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: #dc3545;
-  text-align: center;
-  padding: 20px;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
 }
 
-.error-message p {
-  margin-bottom: 20px;
-  font-size: 18px;
+.chat-send-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
 }
 
-.error-message .btn {
-  padding: 10px 20px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* === ANIMATIONS === */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
 }
 
-.error-message .btn:hover {
-  background-color: #c82333;
-} 
+/* === RESPONSIVE === */
+.video-layout {
+  display: flex;
+  height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .chat-panel {
+    display: none;
+  }
+
+  .local-video {
+    width: 140px;
+    height: 100px;
+  }
+}

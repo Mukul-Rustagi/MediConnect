@@ -18,6 +18,7 @@ import DoctorView from "./components/DoctorView";
 import DoctorHome from "./components/DoctorHome";
 import { jwtDecode } from "jwt-decode";
 import Near_By_Hospitals from "./components/Near_By_Hospitals";
+import VideoCall from "./components/VideoCall";
 // import useEffect from
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
         <Route path="/" element={<HealthcareCover />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/video-call" element={<VideoCall.jsx />} />
         <Route
           path="/dashboardPatient"
           element={<DashboardLayout summaryData={summaryData} />}

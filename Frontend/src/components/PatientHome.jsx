@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Dashboard.css";
-import { useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -18,29 +18,39 @@ import { toggleMobileOpen } from "../store/features/UI/uiSlice";
 import patientData from "../Data/PatientData";
 import axiosInstance from "../utils/axiosinstance";
 
+const sameId = (a, b) => String(a ?? "") === String(b ?? "");
+
 const PatientHome = ({ summaryData }) => {
-  const [logged_in_patient_data, set_patient_data] = useState({});
-  const [upcomingAppointments, set_upcomingappointments] = useState({});
+  const navigate = useNavigate();
+  const [upcomingAppointments, set_upcomingappointments] = useState([]);
 
   useEffect(() => {
-    let decodedToken = jwtDecode(localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
     (async function () {
+      const decoded = jwtDecode(token);
+      const userId = decoded.id;
       const patientAppointment = await axios.get(
-        `http://localhost:5000/api/appointment/${
-          jwtDecode(localStorage.getItem("token")).id
-        }`,
+        `http://localhost:5000/api/appointment/${userId}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
       );
-
-      console.log(patientAppointment.data.data);
-      let userId = jwtDecode(localStorage.getItem("token")).id;
+      const rows = patientAppointment.data?.data || [];
+      const upData = rows.filter((item) => {
+        const uid = item.userId;
+        const plain =
+          uid && typeof uid === "object" && uid._id != null ? uid._id : uid;
+        return sameId(plain, userId);
+      });
       set_upcomingappointments(
-        patientAppointment.data.data.filter((item) => item.userId === userId)
+        upData.filter(
+          (appointment) => new Date(appointment.dateTime) > new Date()
+        )
       );
     })();
   }, []);
@@ -85,6 +95,17 @@ const PatientHome = ({ summaryData }) => {
     <div className="patient-dashboard">
       <div className="dashboard-main">
         <div className="dashboard-content">
+          <div className="home-hero">
+            <div className="home-hero-text">
+              <p className="home-hero-kicker">Your health hub</p>
+              <h1 className="home-hero-title">Welcome back</h1>
+              <p className="home-hero-sub">
+                Track visits, book care, and stay on top of what matters next.
+              </p>
+            </div>
+            <div className="home-hero-accent" aria-hidden />
+          </div>
+
           {/* Summary Cards */}
           <div className="summary-cards">
             <div className="summary-card upcoming">
@@ -115,12 +136,21 @@ const PatientHome = ({ summaryData }) => {
           <section className="dashboard-section appointments-section">
             <div className="section-header">
               <h2>Upcoming Appointments</h2>
-              <button className="view-all">View All</button>
+              <button
+                type="button"
+                className="view-all"
+                onClick={() => navigate("/dashboardPatient/appointments")}
+              >
+                View more
+              </button>
             </div>
             <div className="cards-grid">
               {upcomingAppointments.length > 0 ? (
                 upcomingAppointments.map((appt) => (
-                  <AppointmentCard key={appt.id} appointment={appt} />
+                  <AppointmentCard
+                    key={appt._id || appt.id}
+                    appointment={appt}
+                  />
                 ))
               ) : (
                 <div className="empty-state">

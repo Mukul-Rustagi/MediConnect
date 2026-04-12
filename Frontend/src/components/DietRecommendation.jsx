@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import CustomInput from "./CustomInput";
+import CustomSelect from "./CustomSelect";
 import "../styles/DietRecommendation.css";
 import "../styles/Modal.css";
 
@@ -113,9 +115,9 @@ const DietRecommendation = ({ onClose }) => {
           <div className="user-data-form">
             <h2>Your Profile</h2>
             <div className="form-grid">
-              <div className="form-group">
-                <label>Age</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Age</label>
+                <CustomInput
                   type="number"
                   name="age"
                   value={userData.age}
@@ -123,9 +125,9 @@ const DietRecommendation = ({ onClose }) => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Gender</label>
-                <select
+              <div className="custom-form-container">
+                <label className="custom-label">Gender</label>
+                <CustomSelect
                   name="gender"
                   value={userData.gender}
                   onChange={handleInputChange}
@@ -133,12 +135,12 @@ const DietRecommendation = ({ onClose }) => {
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                   <option value="other">Other</option>
-                </select>
+                </CustomSelect>
               </div>
 
-              <div className="form-group">
-                <label>Height (cm)</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Height (cm)</label>
+                <CustomInput
                   type="number"
                   name="height"
                   value={userData.height}
@@ -146,9 +148,9 @@ const DietRecommendation = ({ onClose }) => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Weight (kg)</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Weight (kg)</label>
+                <CustomInput
                   type="number"
                   name="weight"
                   value={userData.weight}
@@ -156,9 +158,9 @@ const DietRecommendation = ({ onClose }) => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Goal</label>
-                <select
+              <div className="custom-form-container">
+                <label className="custom-label">Goal</label>
+                <CustomSelect
                   name="goal"
                   value={userData.goal}
                   onChange={handleInputChange}
@@ -167,12 +169,12 @@ const DietRecommendation = ({ onClose }) => {
                   <option value="muscle gain">Muscle Gain</option>
                   <option value="maintenance">Maintenance</option>
                   <option value="improve health">Improve Health</option>
-                </select>
+                </CustomSelect>
               </div>
 
-              <div className="form-group">
-                <label>Activity Level</label>
-                <select
+              <div className="custom-form-container">
+                <label className="custom-label">Activity Level</label>
+                <CustomSelect
                   name="activityLevel"
                   value={userData.activityLevel}
                   onChange={handleInputChange}
@@ -182,12 +184,12 @@ const DietRecommendation = ({ onClose }) => {
                   <option value="moderate">Moderate Activity</option>
                   <option value="active">Active</option>
                   <option value="very active">Very Active</option>
-                </select>
+                </CustomSelect>
               </div>
 
-              <div className="form-group">
-                <label>Diet Preference</label>
-                <select
+              <div className="custom-form-container">
+                <label className="custom-label">Diet Preference</label>
+                <CustomSelect
                   name="dietPreference"
                   value={userData.dietPreference}
                   onChange={handleInputChange}
@@ -198,7 +200,7 @@ const DietRecommendation = ({ onClose }) => {
                   <option value="omnivore">Omnivore</option>
                   <option value="keto">Keto</option>
                   <option value="paleo">Paleo</option>
-                </select>
+                </CustomSelect>
               </div>
             </div>
 

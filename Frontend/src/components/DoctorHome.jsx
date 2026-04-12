@@ -47,9 +47,13 @@ const DoctorHome = () => {
           },
         }
       );
-      // Only show appointments for this doctor
+      const upData = response.data.data.filter(
+        (item) => item.doctorId === doctorId
+      );
       setAppointments(
-        response.data.data.filter((item) => item.doctorId === doctorId)
+        upData.filter((appointment) => {
+          return new Date(appointment.dateTime) > new Date();
+        })
       );
     };
     fetchAppointments();
@@ -114,7 +118,6 @@ const DoctorHome = () => {
               <h2>Upcoming Appointments</h2>
             </div>
             <div className="cards-grid">
-              {console.log(appointments)}
               {appointments.length > 0 ? (
                 appointments.map((appt) => (
                   <AppointmentCard

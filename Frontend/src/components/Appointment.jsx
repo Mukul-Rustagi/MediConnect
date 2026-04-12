@@ -9,53 +9,65 @@ import {
 } from "react-icons/fa";
 import "../styles/Appointment.css";
 
+const refId = (ref) => {
+  if (ref == null) return null;
+  if (typeof ref === "object" && ref._id != null) return String(ref._id);
+  return String(ref);
+};
+
 const AppointmentCard = ({ appointment, isDoctorView = false }) => {
   const [doctorData, setDoctorData] = useState();
   const [patientData, setPatientData] = useState();
   const [role, setRole] = useState("");
 
   useEffect(() => {
-    // Get user role from JWT token
     const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setRole(decoded.role);
+        setRole(decoded.role || "");
       } catch (e) {
         setRole("");
       }
     }
   }, []);
 
+  const isDoctor = role?.toLowerCase() === "doctor";
+
   useEffect(() => {
-    if (role == "Doctor" && appointment?.userId) {
-      (async function () {
-        console.log(appointment);
-        // try {
-        //   const response = await axios.get(
-        //     `http://localhost:5000/api/user/profile/${appointment.userId}`,
-        //     {
-        //       headers: {
-        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //         "Content-Type": "application/json",
-        //       },
-        //     }
-        //   );
-        //   setPatientData(response.data.data);
-        //   console.log(response.data.data);
-        // } catch (e) {
-        //   setPatientData(undefined);
-        // }
-        setPatientData(appointment.userId);
-      })();
-    } else if (role !== "Doctor" && appointment?.doctorId) {
+    if (!appointment) return;
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    if (isDoctor && appointment.userId) {
+      const uid = refId(appointment.userId);
+      if (!uid) return;
       (async function () {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/doctors/${appointment.doctorId._id}`,
+            `http://localhost:5000/api/user/profile/${uid}`,
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          setPatientData(response.data.data);
+        } catch (e) {
+          setPatientData(undefined);
+        }
+      })();
+    } else if (!isDoctor && appointment.doctorId) {
+      const did = refId(appointment.doctorId);
+      if (!did) return;
+      (async function () {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/doctors/${did}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             }
@@ -66,7 +78,12 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
         }
       })();
     }
-  }, [role, appointment?.doctorId, appointment?.userId]);
+  }, [isDoctor, appointment]);
+
+  const displayTitle =
+    appointment?.reason ||
+    appointment?.title ||
+    "Medical consultation";
 
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
@@ -80,7 +97,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
           <div className="appointment-icon">
             <FaCalendarAlt />
           </div>
-          <h3>{appointment.title}</h3>
+          <h3>{displayTitle}</h3>
           <span className={`status-badge ${appointment.status}`}>
             {appointment.status}
           </span>
@@ -90,7 +107,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
           <div className="detail-row">
             <FaUserMd className="detail-icon" />
             <span>
-              {role === "Doctor"
+              {isDoctor
                 ? patientData
                   ? `${patientData.firstName} ${patientData.lastName}`
                   : "Loading..."
@@ -99,7 +116,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                 : "Loading..."}
             </span>
           </div>
-          {role === "Doctor" && patientData && (
+          {isDoctor && patientData && (
             <>
               <div className="detail-row">
                 <span className="detail-icon">📧</span>
@@ -161,7 +178,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
               )}
             </>
           )}
-          {doctorData && role !== "Doctor" && (
+          {doctorData && !isDoctor && (
             <>
               <div className="detail-row">
                 <span className="detail-icon">🏥</span>
@@ -212,7 +229,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
               <div className="detail-grid">
                 <div className="detail-item">
                   <span className="detail-label">Title:</span>
-                  <span className="detail-value">{appointment.title}</span>
+                  <span className="detail-value">{displayTitle}</span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Status:</span>
@@ -222,10 +239,10 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">
-                    {role === "Doctor" ? "Patient:" : "Doctor:"}
+                    {isDoctor ? "Patient:" : "Doctor:"}
                   </span>
                   <span className="detail-value">
-                    {role === "Doctor"
+                    {isDoctor
                       ? patientData
                         ? `${patientData.firstName} ${patientData.lastName}`
                         : "Loading..."
@@ -234,7 +251,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                       : "Loading..."}
                   </span>
                 </div>
-                {role === "Doctor" && patientData && (
+                {isDoctor && patientData && (
                   <>
                     <div className="detail-item">
                       <span className="detail-label">Email:</span>
@@ -312,7 +329,7 @@ const AppointmentCard = ({ appointment, isDoctorView = false }) => {
                     )}
                   </>
                 )}
-                {doctorData && role !== "Doctor" && (
+                {doctorData && !isDoctor && (
                   <>
                     <div className="detail-item">
                       <span className="detail-label">Specialization:</span>

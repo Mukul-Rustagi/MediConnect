@@ -56,6 +56,12 @@ const DashboardSidebar = ({ userType }) => {
       path: "/dashboardPatient/nearby-hospitals",
       icon: <FaHospital />,
     },
+    {
+      id: "medical-recommendation",
+      label: "Medical Recommendation By AI",
+      path: "https://knock-below-news-armstrong.trycloudflare.com/",
+      icon: <FaHospital />,
+    },
 
     {
       id: "profile",

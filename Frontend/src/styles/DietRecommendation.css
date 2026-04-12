@@ -1,559 +1,345 @@
-/* DietRecommendation.css */
-/* backdrop covers the screen */
-.modal-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;           /* sit on top of everything */
-  }
-  
-  /* white “window” in the center */
-  .modal-content {
-    background: #fff;
-    max-width: 90%;
-    width: 800px;
-    max-height: 90%;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 2rem;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-  
-  /* simple close button in the top-right */
-  .close-button {
-    position: absolute;
-    top: 1rem; right: 1rem;
-    font-size: 1.5rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-  }
-  
-.diet-recommendation-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  h1, h2, h3 {
-    color: #2c3e50;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #4a6bff;
-  }
-  
-  .user-data-form {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #343a40;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-  
-  .medical-conditions {
-    margin: 1.5rem 0;
-  }
-  
-  .medical-conditions h3 {
-    margin-bottom: 0.75rem;
-  }
-  
-  .condition-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .condition-options label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #eef1ff;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  
-  .generate-btn {
-    background: #4a6bff;
-    color: white;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
-  .generate-btn:hover {
-    background: #3a5bef;
-  }
-  
-  .generate-btn:disabled {
-    background: #a0a0a0;
-    cursor: not-allowed;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    background: #f8d7da;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  
-  .diet-plan {
-    background: white;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .plan-section {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    cursor: pointer;
-  }
-  
-  .section-header h3 {
-    margin: 0;
-    color: #4a6bff;
-  }
-  
-  .section-header span {
-    font-size: 1.5rem;
-    color: #4a6bff;
-  }
-  
-  .section-content {
-    padding: 0 0 1.5rem 0;
-  }
-  
-  .section-content p {
-    line-height: 1.6;
-    color: #495057;
-  }
-  
-  .section-content ul {
-    padding-left: 1.5rem;
-  }
-  
-  .section-content li {
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
-  }
-  
-  .plan-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  
-  .print-btn,
-  .save-btn {
-    flex: 1;
-    padding: 1rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .print-btn {
-    background: white;
-    border: 1px solid #4a6bff;
-    color: #4a6bff;
-  }
-  
-  .print-btn:hover {
-    background: #f0f3ff;
-  }
-  
-  .save-btn {
-    background: #4a6bff;
-    color: white;
-    border: none;
-  }
-  
-  .save-btn:hover {
-    background: #3a5bef;
-  }
-  
-  @media (max-width: 768px) {
-    .diet-recommendation-container {
-      padding: 1rem;
-    }
-    
-    .form-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .plan-actions {
-      flex-direction: column;
-    }
-  }
+/* ============================================================
+   MEDICONNECT – Diet Recommendation (AI)
+   Dark-mode AI health recommendation panel
+   ============================================================ */
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 1rem;
+.diet-recommendation {
+  font-family: 'Inter', sans-serif;
+  color: #f1f5f9;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.modal-header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #4a6bff;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #666;
-  transition: all 0.2s ease;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+/* === MODAL OVERLAY === */
+.diet-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: static;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
 }
 
-.close-button:hover {
-  color: #333;
-  background-color: #f0f0f0;
-}/* DietRecommendation.css */
-/* backdrop covers the screen */
-.modal-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;           /* sit on top of everything */
-  }
-  
-  /* white “window” in the center */
-  .modal-content {
-    background: #fff;
-    max-width: 90%;
-    width: 800px;
-    max-height: 90%;
-    overflow-y: auto;
-    border-radius: 10px;
-    padding: 2rem;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-  
-  /* simple close button in the top-right */
-  .close-button {
-    position: absolute;
-    top: 1rem; right: 1rem;
-    font-size: 1.5rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-  }
-  
-.diet-recommendation-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  h1, h2, h3 {
-    color: #2c3e50;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #4a6bff;
-  }
-  
-  .user-data-form {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #343a40;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-  
-  .medical-conditions {
-    margin: 1.5rem 0;
-  }
-  
-  .medical-conditions h3 {
-    margin-bottom: 0.75rem;
-  }
-  
-  .condition-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .condition-options label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #eef1ff;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  
-  .generate-btn {
-    background: #4a6bff;
-    color: white;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    margin-top: 1rem;
-  }
-  
-  .generate-btn:hover {
-    background: #3a5bef;
-  }
-  
-  .generate-btn:disabled {
-    background: #a0a0a0;
-    cursor: not-allowed;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    background: #f8d7da;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  
-  .diet-plan {
-    background: white;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .plan-section {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-    cursor: pointer;
-  }
-  
-  .section-header h3 {
-    margin: 0;
-    color: #4a6bff;
-  }
-  
-  .section-header span {
-    font-size: 1.5rem;
-    color: #4a6bff;
-  }
-  
-  .section-content {
-    padding: 0 0 1.5rem 0;
-  }
-  
-  .section-content p {
-    line-height: 1.6;
-    color: #495057;
-  }
-  
-  .section-content ul {
-    padding-left: 1.5rem;
-  }
-  
-  .section-content li {
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
-  }
-  
-  .plan-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  
-  .print-btn,
-  .save-btn {
-    flex: 1;
-    padding: 1rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .print-btn {
-    background: white;
-    border: 1px solid #4a6bff;
-    color: #4a6bff;
-  }
-  
-  .print-btn:hover {
-    background: #f0f3ff;
-  }
-  
-  .save-btn {
-    background: #4a6bff;
-    color: white;
-    border: none;
-  }
-  
-  .save-btn:hover {
-    background: #3a5bef;
-  }
-  
-  @media (max-width: 768px) {
-    .diet-recommendation-container {
-      padding: 1rem;
-    }
-    
-    .form-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .plan-actions {
-      flex-direction: column;
-    }
-  }
+.diet-modal {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  animation: fadeInUp 0.3s ease;
+}
 
-.modal-header {
+/* === HEADER === */
+.diet-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 1rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.modal-header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #4a6bff;
+.diet-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.close-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #666;
-  transition: all 0.2s ease;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+.diet-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00d4aa, #7c3aed);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: static;
+  font-size: 1.3rem;
+  box-shadow: 0 6px 20px rgba(0, 212, 170, 0.3);
 }
 
-.close-button:hover {
-  color: #333;
-  background-color: #f0f0f0;
+.diet-header h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.3px;
+}
+
+.diet-header p {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* === CONTENT === */
+.diet-content {
+  padding: 2rem;
+}
+
+/* === INPUT SECTION === */
+.diet-input-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.diet-input-section h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 1rem;
+}
+
+.diet-form-group {
+  margin-bottom: 1rem;
+}
+
+.diet-form-group label {
+  display: block;
+  font-size: 0.77rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 0.45rem;
+}
+
+.diet-form-group input,
+.diet-form-group select,
+.diet-form-group textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.diet-form-group input:focus,
+.diet-form-group select:focus {
+  border-color: #00d4aa;
+  background: rgba(0, 212, 170, 0.04);
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.12);
+}
+
+.diet-form-group select option {
+  background: #1f2937;
+  color: #f1f5f9;
+}
+
+.diet-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* === AI GENERATE BUTTON === */
+.diet-generate-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, #00d4aa, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 25px rgba(0, 212, 170, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.diet-generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 212, 170, 0.5);
+}
+
+/* === RECOMMENDATION RESULTS === */
+.diet-results {
+  background: rgba(0, 212, 170, 0.04);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  animation: fadeInUp 0.4s ease;
+}
+
+.diet-results h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00d4aa;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 212, 170, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === MEAL CARDS === */
+.meals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.meal-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.meal-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(0, 212, 170, 0.2);
+  transform: translateY(-3px);
+}
+
+.meal-time {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #00d4aa;
+  margin-bottom: 0.5rem;
+}
+
+.meal-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.35rem;
+}
+
+.meal-details {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.meal-calories {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* === LOADING STATE === */
+.diet-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.diet-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(0, 212, 170, 0.2);
+  border-top-color: #00d4aa;
+  border-radius: 50%;
+  animation: spin-slow 0.8s linear infinite;
+}
+
+/* === CLOSE BUTTON === */
+.diet-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  transition: all 0.25s ease;
+  line-height: 1;
+}
+
+.diet-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .diet-modal {
+    border-radius: 16px;
+  }
+
+  .diet-content {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .diet-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .meals-grid {
+    grid-template-columns: 1fr;
+  }
 }

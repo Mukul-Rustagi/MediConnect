@@ -3,6 +3,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../styles/MedicalPage.css";
 import axiosInstance from "../utils/axiosinstance";
+import CustomInput from "./CustomInput";
+import CustomSelect from "./CustomSelect";
+
 const ProfilePage = ({ isDoctorView = false }) => {
   const [decodedToken, setDecodedToken] = useState(null);
   const [formData, setFormData] = useState({
@@ -129,18 +132,18 @@ const ProfilePage = ({ isDoctorView = false }) => {
           {editMode ? (
             <form className="profile-form">
               <div className="form-row">
-                <div className="form-group">
-                  <label>First Name</label>
-                  <input
+                <div className="custom-form-container">
+                  <label className="custom-label">First Name</label>
+                  <CustomInput
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label>Last Name</label>
-                  <input
+                <div className="custom-form-container">
+                  <label className="custom-label">Last Name</label>
+                  <CustomInput
                     type="text"
                     name="lastName"
                     value={formData.lastName}
@@ -149,9 +152,9 @@ const ProfilePage = ({ isDoctorView = false }) => {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label>Email</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Email</label>
+                <CustomInput
                   type="email"
                   name="email"
                   value={formData.email}
@@ -159,9 +162,9 @@ const ProfilePage = ({ isDoctorView = false }) => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Phone</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Phone</label>
+                <CustomInput
                   type="tel"
                   name="phone"
                   value={formData.phone}
@@ -169,9 +172,9 @@ const ProfilePage = ({ isDoctorView = false }) => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Address</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Address</label>
+                <CustomInput
                   type="text"
                   name="address"
                   value={formData.address}
@@ -180,18 +183,18 @@ const ProfilePage = ({ isDoctorView = false }) => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
-                  <label>Date of Birth</label>
-                  <input
+                <div className="custom-form-container">
+                  <label className="custom-label">Date of Birth</label>
+                  <CustomInput
                     type="date"
                     name="dateOfBirth"
                     value={formData.dateOfBirth}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label>Gender</label>
-                  <select
+                <div className="custom-form-container">
+                  <label className="custom-label">Gender</label>
+                  <CustomSelect
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
@@ -199,7 +202,7 @@ const ProfilePage = ({ isDoctorView = false }) => {
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
-                  </select>
+                  </CustomSelect>
                 </div>
               </div>
             </form>
@@ -220,17 +223,23 @@ const ProfilePage = ({ isDoctorView = false }) => {
               <div className="info-item">
                 <span className="info-label">Date of Birth</span>
                 <span className="info-value">
-                  {new Date(formData.dateOfBirth).toLocaleDateString()} (Age:{" "}
-                  {new Date().getFullYear() -
-                    new Date(formData.dateOfBirth).getFullYear()}
-                  )
+                  {(() => {
+                    const raw = formData.dateOfBirth;
+                    if (!raw) return "—";
+                    const d = new Date(raw);
+                    if (Number.isNaN(d.getTime())) return "—";
+                    const age = new Date().getFullYear() - d.getFullYear();
+                    return `${d.toLocaleDateString()} (Age: ${age})`;
+                  })()}
                 </span>
               </div>
               <div className="info-item">
                 <span className="info-label">Gender</span>
                 <span className="info-value">
-                  {formData.gender.charAt(0).toUpperCase() +
-                    formData.gender.slice(1)}
+                  {formData.gender && String(formData.gender).trim()
+                    ? String(formData.gender).charAt(0).toUpperCase() +
+                      String(formData.gender).slice(1).toLowerCase()
+                    : "—"}
                 </span>
               </div>
             </div>
@@ -242,9 +251,9 @@ const ProfilePage = ({ isDoctorView = false }) => {
             <h3>Medical Information</h3>
             {editMode ? (
               <form className="profile-form">
-                <div className="form-group">
-                  <label>Blood Type</label>
-                  <select
+                <div className="custom-form-container">
+                  <label className="custom-label">Blood Type</label>
+                  <CustomSelect
                     name="bloodType"
                     value={formData.bloodType}
                     onChange={handleChange}
@@ -257,37 +266,46 @@ const ProfilePage = ({ isDoctorView = false }) => {
                     <option value="AB-">AB-</option>
                     <option value="O+">O+</option>
                     <option value="O-">O-</option>
-                  </select>
+                  </CustomSelect>
                 </div>
 
-                <div className="form-group">
-                  <label>Allergies</label>
-                  <textarea
-                    name="allergies"
-                    value={formData.allergies}
-                    onChange={handleChange}
-                    rows="2"
-                  />
+                <div className="custom-form-container">
+                  <label className="custom-label">Allergies</label>
+                  <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+                    <textarea
+                      className="custom-input-field"
+                      name="allergies"
+                      value={formData.allergies}
+                      onChange={handleChange}
+                      rows="2"
+                    />
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label>Medical Conditions</label>
-                  <textarea
-                    name="conditions"
-                    value={formData.conditions}
-                    onChange={handleChange}
-                    rows="2"
-                  />
+                <div className="custom-form-container">
+                  <label className="custom-label">Medical Conditions</label>
+                  <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+                    <textarea
+                      className="custom-input-field"
+                      name="conditions"
+                      value={formData.conditions}
+                      onChange={handleChange}
+                      rows="2"
+                    />
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label>Current Medications</label>
-                  <textarea
-                    name="medications"
-                    value={formData.medications}
-                    onChange={handleChange}
-                    rows="2"
-                  />
+                <div className="custom-form-container">
+                  <label className="custom-label">Current Medications</label>
+                  <div className="custom-input-wrapper" style={{ height: 'auto' }}>
+                    <textarea
+                      className="custom-input-field"
+                      name="medications"
+                      value={formData.medications}
+                      onChange={handleChange}
+                      rows="2"
+                    />
+                  </div>
                 </div>
               </form>
             ) : (

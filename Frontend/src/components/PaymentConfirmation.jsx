@@ -8,6 +8,8 @@ import {
 } from "../store/features/schedule/scheduleSlice";
 import { addAppointment } from "../store/features/appointments/appointmentSlice";
 import { Navigate } from "react-router";
+import CustomInput from "./CustomInput";
+import { FaCreditCard, FaCalendarAlt, FaLock } from "react-icons/fa";
 
 const PaymentConfirmation = () => {
   const dispatch = useDispatch();
@@ -230,21 +232,23 @@ const PaymentConfirmation = () => {
 
         {paymentMethod === "card" && (
           <div className="card-details">
-            <div className="form-group">
-              <label>Card Number</label>
-              <input
+            <div className="custom-form-container">
+              <label className="custom-label">Card Number</label>
+              <CustomInput
+                icon={FaCreditCard}
                 type="text"
                 placeholder="1234 5678 9012 3456"
                 value={cardDetails.number}
                 onChange={handleCardNumberChange}
-                maxLength={19} // 16 digits + 3 spaces
+                maxLength={19}
               />
               {errors.number && <span className="error">{errors.number}</span>}
             </div>
             <div className="form-row">
-              <div className="form-group">
-                <label>Expiration Date</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">Expiration Date</label>
+                <CustomInput
+                  icon={FaCalendarAlt}
                   type="text"
                   placeholder="MM/YY"
                   value={cardDetails.expiry}
@@ -253,9 +257,10 @@ const PaymentConfirmation = () => {
                 />
                 {errors.expiry && <span className="error">{errors.expiry}</span>}
               </div>
-              <div className="form-group">
-                <label>CVV</label>
-                <input
+              <div className="custom-form-container">
+                <label className="custom-label">CVV</label>
+                <CustomInput
+                  icon={FaLock}
                   type="password"
                   placeholder="123"
                   value={cardDetails.cvv}

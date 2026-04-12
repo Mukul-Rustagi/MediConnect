@@ -11,8 +11,10 @@ import {
 import DateTimeSelection from "./DateTimeSelection";
 import "../styles/ScheduleAppointment.css";
 import axios from "axios";
+import CustomInput from "./CustomInput";
+import CustomSelect from "./CustomSelect";
 
-const ScheduleAppointment = () => {
+const ScheduleAppointment = ({ onBack = () => {} }) => {
   const [allDoctorsView, set_allDoctorsView] = useState(true);
   const [particularDoctor, set_particularDoctor] = useState(false);
   const [id, setid] = useState("");
@@ -57,11 +59,15 @@ const ScheduleAppointment = () => {
         // Transform the backend data to match our frontend structure
         const formattedDoctors = doctorsData.map((doctor) => ({
           _id: doctor._id,
-          firstName: `Dr. ${doctor.firstName} ${doctor.lastName}`,
+          firstName: doctor.firstName,
+          lastName: doctor.lastName,
+          displayName: `Dr. ${doctor.firstName} ${doctor.lastName}`,
           specialization: doctor.specialization,
           experienceYears: doctor.experienceYears,
-          avatar: `${doctor.firstName[0]}${doctor.lastName[0]}`,
-          rating: doctor.rating || 4.5, // Default rating if not provided
+          avatar: `${doctor.firstName?.[0] || ""}${
+            doctor.lastName?.[0] || ""
+          }`.toUpperCase(),
+          rating: doctor.rating || 4.5,
           hospital: doctor.hospital || "General Hospital",
           education: doctor.education || "MD",
           languages: doctor.languages || ["English"],
@@ -95,8 +101,9 @@ const ScheduleAppointment = () => {
   };
 
   const filteredDoctors = doctors.filter((doctor) => {
+    const full = `${doctor.firstName} ${doctor.lastName}`.toLowerCase();
     const matchesSearch =
-      doctor.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      full.includes(searchTerm.toLowerCase()) ||
       doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSpecialization =
       !selectedSpecialization ||
@@ -108,26 +115,36 @@ const ScheduleAppointment = () => {
     <div className="schedule-container">
       {allDoctorsView && (
         <>
-          <h2 className="section-title">Find Your Doctor</h2>
+          <div className="schedule-toolbar">
+            <button
+              type="button"
+              className="schedule-back-link"
+              onClick={onBack}
+            >
+              ← Back to appointments
+            </button>
+          </div>
+          <h2 className="section-title">Find your doctor</h2>
+          <p className="section-subtitle">
+            Search by name or specialty, then book a time that works for you.
+          </p>
 
           <div className="search-filter-container">
-            <div className="search-box">
-              <FaSearch className="search-icon" />
-              <input
+            <div className="custom-form-container" style={{ flex: 1 }}>
+              <CustomInput
+                icon={FaSearch}
                 type="text"
                 placeholder="Search by name or specialization..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
               />
             </div>
 
-            <div className="filter-box">
-              <FaFilter className="filter-icon" />
-              <select
+            <div className="custom-form-container filter-box">
+              <CustomSelect
+                icon={FaFilter}
                 value={selectedSpecialization}
                 onChange={(e) => setSelectedSpecialization(e.target.value)}
-                className="filter-select"
               >
                 <option value="">All Specializations</option>
                 {specializations.map((spec) => (
@@ -135,7 +152,7 @@ const ScheduleAppointment = () => {
                     {spec}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
             </div>
           </div>
 
@@ -152,10 +169,10 @@ const ScheduleAppointment = () => {
             <div className="doctors-grid">
               {filteredDoctors.map((doctor) => (
                 <div key={doctor._id} className="doctor-card">
-                  <div className="doctor-avatar">
-                    <FaUserMd />
+                  <div className="doctor-avatar" aria-hidden>
+                    {doctor.avatar || <FaUserMd />}
                   </div>
-                  <h3 className="doctor-name">{doctor.firstName}</h3>
+                  <h3 className="doctor-name">{doctor.displayName}</h3>
                   <span className="doctor-specialization">
                     {doctor.specialization}
                   </span>
@@ -198,7 +215,23 @@ const ScheduleAppointment = () => {
 
       {particularDoctor && (
         <div className="datetime-selection-container">
-          <h2 className="section-title">Schedule Appointment</h2>
+          <div className="schedule-toolbar">
+            <button
+              type="button"
+              className="schedule-back-link"
+              onClick={() => {
+                set_allDoctorsView(true);
+                set_particularDoctor(false);
+                setid("");
+              }}
+            >
+              ← Back to doctor list
+            </button>
+          </div>
+          <h2 className="section-title">Schedule appointment</h2>
+          <p className="section-subtitle">
+            Pick a date and time for your visit.
+          </p>
           <DateTimeSelection id={id} />
         </div>
       )}

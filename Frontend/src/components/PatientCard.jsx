@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../styles/PatientCard.css";
 import {
   FaUser,
   FaCalendarAlt,
@@ -51,7 +52,7 @@ const PatientCard = ({ patient }) => {
 
 const PatientDetailsModal = ({ patient, onClose }) => {
   return (
-    <div className="patient-modal-overlay">
+    <div className="patient-modal-overlay" onClick={onClose}>
       <div className="patient-modal" onClick={(e) => e.stopPropagation()}>
         <button className="close-modal" onClick={onClose}>
           <FaTimes />

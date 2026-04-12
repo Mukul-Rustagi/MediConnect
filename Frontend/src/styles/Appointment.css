@@ -1,207 +1,139 @@
-.appointment-card {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+/* ============================================================
+   MEDICONNECT – Appointment Cards
+   Light theme appointment management
+   ============================================================ */
+
+/* === APPOINTMENTS PAGE === */
+.appointments-page {
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
 }
 
-.appointment-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.appointment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.appointment-icon {
-  background-color: #4CAF50;
-  color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 15px;
-}
-
-.appointment-header h3 {
-  margin: 0;
-  flex-grow: 1;
-  color: #333;
-}
-
-.status-badge {
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.8em;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.status-badge.scheduled {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.status-badge.completed {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-badge.cancelled {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
-.appointment-details {
-  margin-bottom: 20px;
-}
-
-.detail-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  color: #666;
-}
-
-.detail-icon {
-  margin-right: 10px;
-  color: #4CAF50;
-}
-
-.card-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.btn-primary {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #45a049;
-}
-
-.btn-outline {
-  background-color: transparent;
-  border: 1px solid #4CAF50;
-  color: #4CAF50;
-}
-
-.btn-outline:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-
-/* Modal Styles */
-.appointment-detail-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
+.appointments-page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.modal-header h2 {
-  margin: 0;
-  color: #333;
+.appointments-page-header h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  color: #666;
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  padding: 0.5rem 1.1rem;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
+  transition: all 0.25s ease;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
 }
 
-.close-btn:hover {
-  color: #333;
+.filter-tab:hover {
+  background: #f8fafc;
+  color: #475569;
 }
 
-.detail-section {
-  margin-bottom: 20px;
+.filter-tab.active {
+  background: linear-gradient(135deg, #0d9488, #0284c7);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
 }
 
-.detail-section h3 {
-  color: #333;
-  margin-bottom: 15px;
+/* === BOOK APPOINTMENT BUTTON === */
+.book-appointment-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  background: linear-gradient(135deg, #0d9488, #0284c7);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.28);
+  font-family: 'Inter', sans-serif;
 }
 
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+.book-appointment-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(13, 148, 136, 0.38);
 }
 
-.detail-item {
+/* === APPOINTMENT LIST === */
+.appointments-list {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
-.detail-item.full-width {
-  grid-column: 1 / -1;
+/* === APPOINTMENT CARD BODY (ensure readable on dark dashboard) === */
+.appointment-card .detail-row {
+  color: #64748b;
+  font-size: 0.84rem;
 }
 
-.detail-label {
-  font-size: 0.9em;
-  color: #666;
-  margin-bottom: 5px;
+.appointment-card .detail-row span:not(.detail-icon) {
+  color: #334155;
 }
 
-.detail-value {
-  color: #333;
+/* === DETAIL MODAL (scoped; high z-index above Bootstrap) === */
+.appointment-detail-modal {
+  z-index: 1080;
+}
+
+.appointment-detail-modal .modal-content {
+  color: #0f172a;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.appointment-detail-modal .detail-section .detail-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.appointment-detail-modal .detail-section .detail-value {
+  display: block;
+  font-size: 0.92rem;
   font-weight: 500;
+  color: #0f172a !important;
+  line-height: 1.45;
 }
 
-.detail-value.status {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.9em;
+.appointment-detail-modal .detail-grid {
+  color: #0f172a;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .appointments-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

@@ -3,6 +3,9 @@ import "../styles/Login.css";
 import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import CustomInput from "./CustomInput";
+import { FaEnvelope, FaLock, FaUserShield } from "react-icons/fa";
+
 const Login = ({ onSwitchToSignup, onForgotPassword }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -27,6 +30,7 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
       "http://localhost:5000/api/v1/login",
       formData
     );
+    console.log(response);
     alert(response.data.message);
     if (response.data.message == "Login successful.") {
       console.log(response);
@@ -47,10 +51,11 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
           <h1 className="auth-title">Log in to your account</h1>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="mail">Email</label>
-              <input
-                type="text"
+            <div className="custom-form-container">
+              <label htmlFor="email" className="custom-label">Email</label>
+              <CustomInput
+                icon={FaEnvelope}
+                type="email"
                 id="email"
                 name="email"
                 placeholder="Enter your email"
@@ -60,9 +65,10 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
+            <div className="custom-form-container">
+              <label htmlFor="password" className="custom-label">Password</label>
+              <CustomInput
+                icon={FaLock}
                 type="password"
                 id="password"
                 name="password"
@@ -72,9 +78,10 @@ const Login = ({ onSwitchToSignup, onForgotPassword }) => {
                 required
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="role">Role</label>
-              <input
+            <div className="custom-form-container">
+              <label htmlFor="role" className="custom-label">Role</label>
+              <CustomInput
+                icon={FaUserShield}
                 type="text"
                 id="role"
                 name="role"

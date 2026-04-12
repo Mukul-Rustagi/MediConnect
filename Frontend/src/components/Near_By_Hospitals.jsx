@@ -4,8 +4,8 @@ import MapComponent from "./Near_By_Hospitals2";
 import "../styles/Near_By_Hospitals.css";
 import "../styles/Modal.css";
 import { useNavigate } from "react-router";
+import CustomSelect from "./CustomSelect";
 // import hospitalData from './your-hospitals-data';
-
 const Near_By_Hospitals = ({ onClose }) => {
   const navigate = useNavigate();
   const hospitalData = [
@@ -628,11 +628,10 @@ const Near_By_Hospitals = ({ onClose }) => {
             ×
           </button>
         </div>
-        <div className="state-selector">
-          <select
+        <div className="state-selector custom-form-container">
+          <CustomSelect
             value={selectedState}
             onChange={(e) => handleSelectState(e.target.value)}
-            className="state-dropdown"
           >
             <option value="">Select a State</option>
             <option value="DELHI">Delhi</option>
@@ -649,7 +648,7 @@ const Near_By_Hospitals = ({ onClose }) => {
             <option value="ODISHA">Odisha</option>
             <option value="TELANGANA">Telangana</option>
             <option value="CHENNAI">Chennai</option>
-          </select>
+          </CustomSelect>
         </div>
         <div className="map-container">
           <MapComponent

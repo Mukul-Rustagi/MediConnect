@@ -1,12 +1,28 @@
 // DashboardLayout.js
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import DashboardSidebar from "./DashboardSlidbar";
 import { FaBell, FaUser } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { toggleMobileOpen } from "../store/features/UI/uiSlice";
+import { jwtDecode } from "jwt-decode";
 
 const DashboardLayout = ({ user, summaryData }) => {
   const dispatch = useDispatch();
+  const [greetingName, setGreetingName] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const d = jwtDecode(token);
+      const fromEmail =
+        typeof d.email === "string" ? d.email.split("@")[0] : "";
+      setGreetingName(fromEmail || "there");
+    } catch {
+      setGreetingName("there");
+    }
+  }, []);
 
   return (
     <div className="dashboard-container">
@@ -32,7 +48,7 @@ const DashboardLayout = ({ user, summaryData }) => {
               )}
             </button>
             <div className="user-profile">
-              <span className="user-name">{name}</span>
+              <span className="user-name">{greetingName}</span>
               <div className="user-avatar">
                 <FaUser />
               </div>

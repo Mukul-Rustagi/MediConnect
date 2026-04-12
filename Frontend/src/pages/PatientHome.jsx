@@ -15,13 +15,13 @@ const PatientHome = () => {
         const userId = localStorage.getItem('userId');
         const response = await fetch(`http://localhost:5000/api/appointment/patient/${userId}`);
         const data = await response.json();
-        
+
         // Filter for upcoming confirmed appointments
-        const upcoming = data.filter(apt => 
-          new Date(apt.date) >= new Date() && 
+        const upcoming = data.filter(apt =>
+          new Date(apt.date) >= new Date() &&
           apt.status === 'confirmed'
         );
-        
+
         setUpcomingAppointments(upcoming);
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -64,7 +64,7 @@ const PatientHome = () => {
                   <FaUserMd className="doctor-icon" />
                   <h3>Dr. {appointment.doctorName}</h3>
                 </div>
-                
+
                 <div className="appointment-details">
                   <div className="detail-item">
                     <FaCalendarAlt />
@@ -77,7 +77,7 @@ const PatientHome = () => {
                 </div>
 
                 <div className="appointment-actions">
-                  <button 
+                  <button
                     className="join-meeting-btn"
                     onClick={() => handleJoinMeeting(appointment)}
                   >
